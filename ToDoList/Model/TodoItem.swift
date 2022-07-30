@@ -23,7 +23,7 @@ struct TodoItem {
         text: String,
         priority: Priority,
         deadline: Date? = nil,
-        isDone: Bool,
+        isDone: Bool = false,
         createdAt: Date = Date(),
         editedAt: Date? = nil
     ) {
