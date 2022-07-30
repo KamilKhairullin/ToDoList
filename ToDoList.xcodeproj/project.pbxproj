@@ -14,6 +14,7 @@
 		8E0E44802894A7E7007B0F5E /* ToDoListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E447F2894A7E7007B0F5E /* ToDoListTests.swift */; };
 		8E0E448A2894A7E7007B0F5E /* ToDoListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E44892894A7E7007B0F5E /* ToDoListUITests.swift */; };
 		8E0E448C2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E448B2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift */; };
+		8E66C36F2894AF6B00632D85 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E66C36E2894AF6B00632D85 /* TodoItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		8E0E44852894A7E7007B0F5E /* ToDoListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0E44892894A7E7007B0F5E /* ToDoListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListUITests.swift; sourceTree = "<group>"; };
 		8E0E448B2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		8E66C36E2894AF6B00632D85 /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 			children = (
 				8E0E44682894A7E6007B0F5E /* AppDelegate.swift */,
 				8E0E446C2894A7E6007B0F5E /* ViewController.swift */,
+				8E66C36D2894AF5100632D85 /* Model */,
 				8E0E44712894A7E7007B0F5E /* Assets.xcassets */,
 				8E0E44732894A7E7007B0F5E /* LaunchScreen.storyboard */,
 				8E0E44762894A7E7007B0F5E /* Info.plist */,
@@ -119,6 +122,14 @@
 				8E0E448B2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift */,
 			);
 			path = ToDoListUITests;
+			sourceTree = "<group>";
+		};
+		8E66C36D2894AF5100632D85 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				8E66C36E2894AF6B00632D85 /* TodoItem.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,6 +285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E0E446D2894A7E6007B0F5E /* ViewController.swift in Sources */,
+				8E66C36F2894AF6B00632D85 /* TodoItem.swift in Sources */,
 				8E0E44692894A7E6007B0F5E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
