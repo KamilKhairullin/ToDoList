@@ -21,7 +21,7 @@ final class FileCache {
 
     func addTask(_ task: TodoItem) {
         todoItemsDict[task.id] = task
-        setNeedsOrder()
+        setNeedsSort()
     }
 
     func deleteTask(id: String) -> TodoItem? {
@@ -29,7 +29,7 @@ final class FileCache {
             return nil
         }
         todoItemsDict[id] = nil
-        setNeedsOrder()
+        setNeedsSort()
         return value
     }
 
@@ -84,7 +84,7 @@ final class FileCache {
         return cachePath.appendingPathComponent(file)
     }
 
-    private func setNeedsOrder() {
+    private func setNeedsSort() {
         isDirty = true
     }
 }

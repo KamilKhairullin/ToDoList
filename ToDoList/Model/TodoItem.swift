@@ -83,19 +83,19 @@ extension TodoItem: JSONParsable {
         let deadline: Date?
         let editedAt: Date?
 
-        if let deadlineDouble = dict[CodingKeys.deadlineKey] as? Double {
-            deadline = Date(timeIntervalSince1970: TimeInterval(deadlineDouble))
+        if let unwrappedDeadline = dict[CodingKeys.deadlineKey] as? Double {
+            deadline = Date(timeIntervalSince1970: TimeInterval(unwrappedDeadline))
         } else { deadline = nil }
 
-        if let editedAtDouble = dict[CodingKeys.editedAtKey] as? Double {
-            editedAt = Date(timeIntervalSince1970: TimeInterval(editedAtDouble))
+        if let unwrappedEditedAt = dict[CodingKeys.editedAtKey] as? Double {
+            editedAt = Date(timeIntervalSince1970: TimeInterval(unwrappedEditedAt))
         } else { editedAt = nil }
 
         if let rawValuePriority = dict[CodingKeys.priorityKey] as? Int {
             if let unwrappedPriority = Priority(rawValue: rawValuePriority) {
                 priority = unwrappedPriority
             } else {
-                print("Error during unwrapping , invalid priority value: \(rawValuePriority)")
+                print("Error during unwrapping , invalid priority value: \(rawValuePriority) in json")
                 return nil
             }
         } else {
