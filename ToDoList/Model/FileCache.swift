@@ -3,21 +3,32 @@ import Foundation
 final class FileCache {
     // MARK: - Properties
 
-    private(set) var todoItems: [String: TodoItem] = [:]
+    var todoItems: [TodoItem] {
+        if !isDirty {
+            return Array(todoItemsDict.values)
+        } else {
+            isDirty = false
+            return Array(todoItemsDict.values.sorted {
+                ($0.createdAt, $0.id) < ($1.createdAt, $1.id)
+            })
+        }
+    }
+
+    private var todoItemsDict: [String: TodoItem] = [:]
     private var isDirty: Bool = false
 
     // MARK: - Public
 
     func addTask(_ task: TodoItem) {
-        todoItems[task.id] = task
+        todoItemsDict[task.id] = task
         setNeedsOrder()
     }
 
     func deleteTask(id: String) -> TodoItem? {
-        guard let value = todoItems[id] else {
+        guard let value = todoItemsDict[id] else {
             return nil
         }
-        todoItems[id] = nil
+        todoItemsDict[id] = nil
         setNeedsOrder()
         return value
     }
@@ -25,7 +36,7 @@ final class FileCache {
     func save(to file: String) {
         guard let path = getCachePath(for: file) else { return }
         do {
-            let items = todoItems.map { $0.value.json }
+            let items = todoItemsDict.map { $0.value.json }
             let json = try JSONSerialization.data(withJSONObject: items, options: [])
             try json.write(to: path, options: [])
         } catch let jsonError as NSError {
@@ -47,7 +58,7 @@ final class FileCache {
                 print("Unable to cast from jsonObject to [Any]")
                 return
             }
-            todoItems = [:]
+            todoItemsDict = [:]
             for object in objects {
                 if let todoItem = TodoItem.parse(json: object) {
                     addTask(todoItem)
@@ -65,22 +76,15 @@ final class FileCache {
             for: .cachesDirectory,
             in: .userDomainMask
         ).first
-        else { return nil }
+        else {
+            print("Unable to find cache directory")
+            return nil
+        }
+        print(cachePath.appendingPathComponent(file))
         return cachePath.appendingPathComponent(file)
     }
 
     private func setNeedsOrder() {
         isDirty = true
-    }
-
-    private func orderIfNeeded() -> [TodoItem] {
-        if !isDirty {
-            return Array(todoItems.values)
-        } else {
-            isDirty = false
-            return Array(todoItems.values.sorted {
-                $0.createdAt < $1.createdAt
-            })
-        }
     }
 }

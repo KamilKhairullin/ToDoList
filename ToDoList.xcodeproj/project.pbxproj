@@ -17,6 +17,7 @@
 		8EEB7C242894C095005D5FF1 /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7C232894C095005D5FF1 /* TodoItemTests.swift */; };
 		8EEB7EF72894C855005D5FF1 /* TodoItemParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7EF62894C855005D5FF1 /* TodoItemParsingTests.swift */; };
 		8EEB7EF92894D59C005D5FF1 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7EF82894D59C005D5FF1 /* FileCache.swift */; };
+		8EEB7EFF289565EE005D5FF1 /* FileCacheTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7EFE289565EE005D5FF1 /* FileCacheTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		8EEB7C232894C095005D5FF1 /* TodoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
 		8EEB7EF62894C855005D5FF1 /* TodoItemParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemParsingTests.swift; sourceTree = "<group>"; };
 		8EEB7EF82894D59C005D5FF1 /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
+		8EEB7EFE289565EE005D5FF1 /* FileCacheTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCacheTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 		8E0E447E2894A7E7007B0F5E /* ToDoListTests */ = {
 			isa = PBXGroup;
 			children = (
+				8EEB7EFD289565E6005D5FF1 /* FileCache */,
 				8EEB7C222894C07C005D5FF1 /* TodoItem */,
 			);
 			path = ToDoListTests;
@@ -144,6 +147,14 @@
 				8EEB7EF62894C855005D5FF1 /* TodoItemParsingTests.swift */,
 			);
 			path = TodoItem;
+			sourceTree = "<group>";
+		};
+		8EEB7EFD289565E6005D5FF1 /* FileCache */ = {
+			isa = PBXGroup;
+			children = (
+				8EEB7EFE289565EE005D5FF1 /* FileCacheTest.swift */,
+			);
+			path = FileCache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -311,6 +322,7 @@
 			files = (
 				8EEB7C242894C095005D5FF1 /* TodoItemTests.swift in Sources */,
 				8EEB7EF72894C855005D5FF1 /* TodoItemParsingTests.swift in Sources */,
+				8EEB7EFF289565EE005D5FF1 /* FileCacheTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
