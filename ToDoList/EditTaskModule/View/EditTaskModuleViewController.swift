@@ -15,7 +15,6 @@ final class EditTaskModuleViewController: UIViewController {
 
     private lazy var textView: UITextView = {
         let textView = UITextView()
-        textView.text = Constants.textViewText
         textView.font = FontPalette.body
         textView.layer.cornerRadius = Constants.cornerRadius
         textView.backgroundColor = ColorPalette.secondaryBackgroundColor
@@ -24,6 +23,7 @@ final class EditTaskModuleViewController: UIViewController {
         )
         textView.textColor = ColorPalette.labelPrimary
         textView.isScrollEnabled = false
+        textView.delegate = self
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
@@ -40,7 +40,7 @@ final class EditTaskModuleViewController: UIViewController {
     }()
 
     private lazy var priorityStackContainer: PriorityStackViewContainer = {
-        let container = PriorityStackViewContainer(frame: .zero)
+        let container = PriorityStackViewContainer(frame: .zero, output: output)
         container.translatesAutoresizingMaskIntoConstraints = false
         return container
     }()
@@ -64,11 +64,14 @@ final class EditTaskModuleViewController: UIViewController {
     private lazy var deleteButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitleColor(ColorPalette.red, for: .normal)
+        button.setTitleColor(ColorPalette.tertiary, for: .disabled)
         button.layer.cornerRadius = Constants.cornerRadius
         button.backgroundColor = ColorPalette.secondaryBackgroundColor
         button.titleLabel?.font = FontPalette.body
         button.setTitle(Constants.buttonText, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(deletePressed), for: .touchUpInside)
+        button.isEnabled = false
         return button
     }()
 
@@ -78,12 +81,17 @@ final class EditTaskModuleViewController: UIViewController {
         return separator
     }()
 
-    private lazy var saveButton: UIBarButtonItem = .init(
-        title: Constants.saveButtonText,
-        style: .plain,
-        target: self,
-        action: nil
-    )
+    private lazy var saveButton: UIBarButtonItem = {
+        let saveButton = UIBarButtonItem(
+            title: Constants.saveButtonText,
+            style: .plain,
+            target: self,
+            action: nil
+        )
+        saveButton.isEnabled = false
+        saveButton.addTargetForAction(target: self, action: #selector(saveButtonPressed))
+        return saveButton
+    }()
 
     // MARK: - Lifecycle
 
@@ -149,6 +157,23 @@ final class EditTaskModuleViewController: UIViewController {
 
     @objc func datePicked(sender: UIDatePicker) {
         output.newDatePicked(date: datePicker.date)
+    }
+
+    @objc func deletePressed(sender: UIButton) {
+        output.deletePressed()
+    }
+
+    @objc func saveButtonPressed(sender: UIBarButtonItem) {
+        output.save(
+            text: textView.text,
+            prioritySegment: priorityStackContainer.getSegmentControlValue(),
+            switchIsOn: deadlineStackContainer.getDeadlineSwitchStatus(),
+            deadlineDate: datePicker.date
+        )
+    }
+
+    @objc func textFieldDidChange(sender: UITextView) {
+        output.textEdited(to: sender.text)
     }
 
     // MARK: - Private
@@ -287,7 +312,6 @@ extension EditTaskModuleViewController {
         static let textViewMinHeight: CGFloat = 120
         static let stackItemHeight: CGFloat = 66
         static let buttonHeight: CGFloat = 56
-        static let textViewText: String = "Что делать?"
         static let buttonText: String = "Удалить"
         static let saveButtonText: String = "Cохранить"
         static let navigationItemTitle: String = "Дело"
@@ -307,23 +331,67 @@ extension EditTaskModuleViewController {
 // MARK: - EditTaskModuleViewInput extension
 
 extension EditTaskModuleViewController: EditTaskModuleViewInput {
-    func isCalendarHidden(_ isHidded: Bool, dateString: String, date: Date) {
-        datePicker.isHidden = isHidded
-        deadlineStackContainer.hideDeadlineDateLabel(isHidden: isHidded)
-        if isHidded == false {
-            deadlineStackContainer.setDeadlineDateLabel(text: dateString)
-            datePicker.date = date
-        }
+    func enableDelete() {
+        deleteButton.isEnabled = true
+    }
+
+    func disableDelete() {
+        deleteButton.isEnabled = false
+    }
+
+    func enableSave() {
+        saveButton.isEnabled = true
+    }
+
+    func disableSave() {
+        saveButton.isEnabled = false
+    }
+
+    func hideCalendar() {
+        UIView.animate(
+            withDuration: 0.5,
+            animations: {
+                self.datePicker.alpha = 0
+            },
+            completion: { [weak self] (_: Bool) in
+                self?.datePicker.isHidden = true
+                self?.deadlineStackContainer.hideDeadlineDateLabel(isHidden: true)
+            }
+        )
+    }
+
+    func showCalendar(dateString: String, date: Date) {
+        datePicker.isHidden = false
+        deadlineStackContainer.hideDeadlineDateLabel(isHidden: false)
+        deadlineStackContainer.setDeadlineDateLabel(text: dateString)
+        datePicker.date = date
+        UIView.animate(
+            withDuration: 0.5,
+            animations: {
+                self.datePicker.alpha = 1
+            },
+            completion: nil
+        )
     }
 
     func update(dateString: String) {
         deadlineStackContainer.setDeadlineDateLabel(text: dateString)
     }
 
-    func update(text: String, prioritySegment: Int, switchIsOn: Bool, deadlineDate: String) {
+    func update(text: String, prioritySegment: Int, switchIsOn: Bool, deadlineDate: String?) {
         textView.text = text
         priorityStackContainer.setSegmentControlHighlighted(selectedSegmentIndex: prioritySegment)
         deadlineStackContainer.setDeadlineSwitch(to: switchIsOn)
-        deadlineStackContainer.setDeadlineDateLabel(text: text)
+        if switchIsOn, let deadlineDate = deadlineDate {
+            deadlineStackContainer.setDeadlineDateLabel(text: deadlineDate)
+        }
+    }
+}
+
+// MARK: - UITextViewDelegate extension
+
+extension EditTaskModuleViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        output.textEdited(to: textView.text)
     }
 }

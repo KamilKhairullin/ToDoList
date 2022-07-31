@@ -4,6 +4,8 @@ import UIKit
 final class PriorityStackViewContainer: UIView {
     // MARK: - Properties
 
+    private var output: EditTaskModuleViewOutput
+
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -34,12 +36,14 @@ final class PriorityStackViewContainer: UIView {
         ])
         segmentControl.setImage(leftItem, forSegmentAt: 0)
         segmentControl.setImage(rightItem, forSegmentAt: 2)
+        segmentControl.addTarget(self, action: #selector(segmentControlValueChanged(_:)), for: .valueChanged)
         return segmentControl
     }()
 
     // MARK: - Lifecycle
 
-    override init(frame: CGRect) {
+    init(frame: CGRect, output: EditTaskModuleViewOutput) {
+        self.output = output
         super.init(frame: frame)
         setupViews()
         setupConstraints()
@@ -53,9 +57,18 @@ final class PriorityStackViewContainer: UIView {
     // MARK: - Public
 
     func setSegmentControlHighlighted(selectedSegmentIndex: Int) {
-        segmentControl.selectedSegmentIndex = selectedSegmentIndex
+        switch selectedSegmentIndex {
+        case 0 ... 2:
+            segmentControl.selectedSegmentIndex = selectedSegmentIndex
+        default:
+            segmentControl.selectedSegmentIndex = UISegmentedControl.noSegment
+        }
     }
 
+    func getSegmentControlValue() -> Int {
+        return segmentControl.selectedSegmentIndex
+    }
+    
     // MARK: - Private
 
     private func setupViews() {
@@ -74,6 +87,12 @@ final class PriorityStackViewContainer: UIView {
             label.leftAnchor.constraint(equalTo: leftAnchor),
             segmentControl.rightAnchor.constraint(equalTo: rightAnchor)
         ])
+    }
+    
+    // MARK: - Selectors
+    
+    @objc func segmentControlValueChanged(_ sender: UISegmentedControl) {
+        output.prioritySelected()
     }
 }
 

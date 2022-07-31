@@ -82,6 +82,10 @@ final class DeadlineStackViewContainer: UIView {
         deadlineDateLabel.text = text
     }
 
+    func getDeadlineSwitchStatus() -> Bool {
+        deadlineSwitch.isOn
+    }
+
     // MARK: - Private
 
     private func setupStackView() {
