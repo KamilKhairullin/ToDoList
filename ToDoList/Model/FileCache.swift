@@ -80,7 +80,6 @@ final class FileCache {
             print("Unable to find cache directory")
             return nil
         }
-        print(cachePath.appendingPathComponent(file))
         return cachePath.appendingPathComponent(file)
     }
 
