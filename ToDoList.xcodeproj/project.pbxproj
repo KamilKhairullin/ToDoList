@@ -8,16 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		8E0E44692894A7E6007B0F5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E44682894A7E6007B0F5E /* AppDelegate.swift */; };
-		8E0E446D2894A7E6007B0F5E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E446C2894A7E6007B0F5E /* ViewController.swift */; };
 		8E0E44722894A7E7007B0F5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E44712894A7E7007B0F5E /* Assets.xcassets */; };
 		8E0E44752894A7E7007B0F5E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E44732894A7E7007B0F5E /* LaunchScreen.storyboard */; };
 		8E0E448A2894A7E7007B0F5E /* ToDoListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E44892894A7E7007B0F5E /* ToDoListUITests.swift */; };
 		8E0E448C2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E448B2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift */; };
 		8E66C36F2894AF6B00632D85 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E66C36E2894AF6B00632D85 /* TodoItem.swift */; };
+		8ECEFA1F2896D8060098896B /* EditTaskModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECEFA1E2896D8060098896B /* EditTaskModuleBuilder.swift */; };
+		8ECEFA222896F4C20098896B /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECEFA212896F4C20098896B /* DateExtension.swift */; };
 		8EEB7C242894C095005D5FF1 /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7C232894C095005D5FF1 /* TodoItemTests.swift */; };
 		8EEB7EF72894C855005D5FF1 /* TodoItemParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7EF62894C855005D5FF1 /* TodoItemParsingTests.swift */; };
 		8EEB7EF92894D59C005D5FF1 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7EF82894D59C005D5FF1 /* FileCache.swift */; };
 		8EEB7EFF289565EE005D5FF1 /* FileCacheTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7EFE289565EE005D5FF1 /* FileCacheTest.swift */; };
+		8EEB81D528957D31005D5FF1 /* EditTaskModuleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB81D428957D31005D5FF1 /* EditTaskModuleViewController.swift */; };
+		8EEB81D728957D3C005D5FF1 /* EditTaskModulePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB81D628957D3C005D5FF1 /* EditTaskModulePresenter.swift */; };
+		8EEB84B22895C3ED005D5FF1 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB84B12895C3ED005D5FF1 /* ColorPalette.swift */; };
+		8EEB84B42895CC2C005D5FF1 /* FontPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB84B32895CC2C005D5FF1 /* FontPalette.swift */; };
+		8EEB84B62895D179005D5FF1 /* PriorityStackViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB84B52895D179005D5FF1 /* PriorityStackViewContainer.swift */; };
+		8EEB84B8289669AF005D5FF1 /* DeadlineStackViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB84B7289669AF005D5FF1 /* DeadlineStackViewContainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +47,6 @@
 /* Begin PBXFileReference section */
 		8E0E44652894A7E6007B0F5E /* ToDoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0E44682894A7E6007B0F5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8E0E446C2894A7E6007B0F5E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		8E0E44712894A7E7007B0F5E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E0E44742894A7E7007B0F5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8E0E44762894A7E7007B0F5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -49,10 +55,18 @@
 		8E0E44892894A7E7007B0F5E /* ToDoListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListUITests.swift; sourceTree = "<group>"; };
 		8E0E448B2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		8E66C36E2894AF6B00632D85 /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
+		8ECEFA1E2896D8060098896B /* EditTaskModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskModuleBuilder.swift; sourceTree = "<group>"; };
+		8ECEFA212896F4C20098896B /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		8EEB7C232894C095005D5FF1 /* TodoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
 		8EEB7EF62894C855005D5FF1 /* TodoItemParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemParsingTests.swift; sourceTree = "<group>"; };
 		8EEB7EF82894D59C005D5FF1 /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 		8EEB7EFE289565EE005D5FF1 /* FileCacheTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCacheTest.swift; sourceTree = "<group>"; };
+		8EEB81D428957D31005D5FF1 /* EditTaskModuleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskModuleViewController.swift; sourceTree = "<group>"; };
+		8EEB81D628957D3C005D5FF1 /* EditTaskModulePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskModulePresenter.swift; sourceTree = "<group>"; };
+		8EEB84B12895C3ED005D5FF1 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
+		8EEB84B32895CC2C005D5FF1 /* FontPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPalette.swift; sourceTree = "<group>"; };
+		8EEB84B52895D179005D5FF1 /* PriorityStackViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityStackViewContainer.swift; sourceTree = "<group>"; };
+		8EEB84B7289669AF005D5FF1 /* DeadlineStackViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadlineStackViewContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,8 +118,10 @@
 			isa = PBXGroup;
 			children = (
 				8E0E44682894A7E6007B0F5E /* AppDelegate.swift */,
-				8E0E446C2894A7E6007B0F5E /* ViewController.swift */,
-				8E66C36D2894AF5100632D85 /* Model */,
+				8EEB84B12895C3ED005D5FF1 /* ColorPalette.swift */,
+				8EEB84B32895CC2C005D5FF1 /* FontPalette.swift */,
+				8ECEFA202896F4B20098896B /* Common */,
+				8EEB81D128957C6F005D5FF1 /* EditTaskModule */,
 				8E0E44712894A7E7007B0F5E /* Assets.xcassets */,
 				8E0E44732894A7E7007B0F5E /* LaunchScreen.storyboard */,
 				8E0E44762894A7E7007B0F5E /* Info.plist */,
@@ -140,6 +156,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		8ECEFA202896F4B20098896B /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				8ECEFA212896F4C20098896B /* DateExtension.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		8EEB7C222894C07C005D5FF1 /* TodoItem */ = {
 			isa = PBXGroup;
 			children = (
@@ -155,6 +179,35 @@
 				8EEB7EFE289565EE005D5FF1 /* FileCacheTest.swift */,
 			);
 			path = FileCache;
+			sourceTree = "<group>";
+		};
+		8EEB81D128957C6F005D5FF1 /* EditTaskModule */ = {
+			isa = PBXGroup;
+			children = (
+				8EEB81D328957D17005D5FF1 /* Presenter */,
+				8EEB81D228957D10005D5FF1 /* View */,
+				8E66C36D2894AF5100632D85 /* Model */,
+				8ECEFA1E2896D8060098896B /* EditTaskModuleBuilder.swift */,
+			);
+			path = EditTaskModule;
+			sourceTree = "<group>";
+		};
+		8EEB81D228957D10005D5FF1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8EEB81D428957D31005D5FF1 /* EditTaskModuleViewController.swift */,
+				8EEB84B52895D179005D5FF1 /* PriorityStackViewContainer.swift */,
+				8EEB84B7289669AF005D5FF1 /* DeadlineStackViewContainer.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8EEB81D328957D17005D5FF1 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				8EEB81D628957D3C005D5FF1 /* EditTaskModulePresenter.swift */,
+			);
+			path = Presenter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -309,9 +362,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8E0E446D2894A7E6007B0F5E /* ViewController.swift in Sources */,
+				8EEB84B22895C3ED005D5FF1 /* ColorPalette.swift in Sources */,
+				8EEB81D528957D31005D5FF1 /* EditTaskModuleViewController.swift in Sources */,
+				8EEB84B8289669AF005D5FF1 /* DeadlineStackViewContainer.swift in Sources */,
+				8EEB84B42895CC2C005D5FF1 /* FontPalette.swift in Sources */,
 				8E66C36F2894AF6B00632D85 /* TodoItem.swift in Sources */,
+				8EEB81D728957D3C005D5FF1 /* EditTaskModulePresenter.swift in Sources */,
+				8ECEFA222896F4C20098896B /* DateExtension.swift in Sources */,
 				8EEB7EF92894D59C005D5FF1 /* FileCache.swift in Sources */,
+				8EEB84B62895D179005D5FF1 /* PriorityStackViewContainer.swift in Sources */,
+				8ECEFA1F2896D8060098896B /* EditTaskModuleBuilder.swift in Sources */,
 				8E0E44692894A7E6007B0F5E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -483,6 +543,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = K2JV594WP2;
@@ -492,7 +553,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -500,6 +561,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = kamil.khairullin.ToDoList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -511,6 +573,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = K2JV594WP2;
@@ -520,7 +583,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -528,6 +591,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = kamil.khairullin.ToDoList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
