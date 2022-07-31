@@ -68,7 +68,7 @@ final class PriorityStackViewContainer: UIView {
     func getSegmentControlValue() -> Int {
         return segmentControl.selectedSegmentIndex
     }
-    
+
     // MARK: - Private
 
     private func setupViews() {
@@ -88,9 +88,9 @@ final class PriorityStackViewContainer: UIView {
             segmentControl.rightAnchor.constraint(equalTo: rightAnchor)
         ])
     }
-    
+
     // MARK: - Selectors
-    
+
     @objc func segmentControlValueChanged(_ sender: UISegmentedControl) {
         output.prioritySelected()
     }

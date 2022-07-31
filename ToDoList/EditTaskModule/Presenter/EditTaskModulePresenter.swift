@@ -109,6 +109,9 @@ final class EditTaskModulePresenter {
     private func loadCacheFromFile() {
         fileCache.load(from: Constants.filename)
         todoItem = fileCache.todoItems.first
+        if let todoItem = todoItem {
+            view?.enableDelete()
+        }
     }
 
     private func formatDate(from date: Date?) -> String {
@@ -225,6 +228,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
                 editedAt: nil
             )
         }
+        view?.disableSave()
         saveCacheToFile()
     }
 }
