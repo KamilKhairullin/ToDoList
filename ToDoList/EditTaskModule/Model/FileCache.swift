@@ -4,17 +4,17 @@ final class FileCache {
     // MARK: - Properties
 
     var todoItems: [TodoItem] {
-        if !isDirty {
-            return Array(todoItemsDict.values)
-        } else {
-            isDirty = false
-            return Array(todoItemsDict.values.sorted {
+        if isDirty {
+            orderedTodoItems = todoItemsDict.values.sorted {
                 ($0.createdAt, $0.id) < ($1.createdAt, $1.id)
-            })
+            }
+            isDirty = false
         }
+        return orderedTodoItems
     }
 
     private var todoItemsDict: [String: TodoItem] = [:]
+    private var orderedTodoItems: [TodoItem] = []
     private var isDirty: Bool = false
 
     // MARK: - Public
@@ -26,12 +26,8 @@ final class FileCache {
 
     @discardableResult
     func deleteTask(id: String) -> TodoItem? {
-        guard let value = todoItemsDict[id] else {
-            return nil
-        }
-        todoItemsDict[id] = nil
         setNeedsSort()
-        return value
+        return todoItemsDict.removeValue(forKey: id)
     }
 
     func save(to file: String) {

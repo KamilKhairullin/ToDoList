@@ -83,13 +83,13 @@ extension TodoItem: JSONParsable {
         let deadline: Date?
         let editedAt: Date?
 
-        if let unwrappedDeadline = dict[CodingKeys.deadlineKey] as? Double {
-            deadline = Date(timeIntervalSince1970: TimeInterval(unwrappedDeadline))
-        } else { deadline = nil }
+        deadline = (dict[CodingKeys.deadlineKey] as? Double).flatMap {
+            Date(timeIntervalSince1970: TimeInterval($0))
+        }
 
-        if let unwrappedEditedAt = dict[CodingKeys.editedAtKey] as? Double {
-            editedAt = Date(timeIntervalSince1970: TimeInterval(unwrappedEditedAt))
-        } else { editedAt = nil }
+        editedAt = (dict[CodingKeys.editedAtKey] as? Double).flatMap {
+            Date(timeIntervalSince1970: TimeInterval($0))
+        }
 
         if let rawValuePriority = dict[CodingKeys.priorityKey] as? Int {
             if let unwrappedPriority = Priority(rawValue: rawValuePriority) {
