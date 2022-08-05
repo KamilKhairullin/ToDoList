@@ -18,9 +18,7 @@ final class EditTaskModuleViewController: UIViewController {
         textView.font = FontPalette.body
         textView.layer.cornerRadius = Constants.cornerRadius
         textView.backgroundColor = ColorPalette.secondaryBackgroundColor
-        textView.textContainerInset = UIEdgeInsets(
-            top: 17, left: 16, bottom: 16, right: 16
-        )
+        textView.textContainerInset = Insets.textInsets
         textView.textColor = ColorPalette.labelPrimary
         textView.isScrollEnabled = false
         textView.delegate = self
@@ -65,10 +63,10 @@ final class EditTaskModuleViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitleColor(ColorPalette.red, for: .normal)
         button.setTitleColor(ColorPalette.tertiary, for: .disabled)
-        button.layer.cornerRadius = Constants.cornerRadius
-        button.backgroundColor = ColorPalette.secondaryBackgroundColor
         button.titleLabel?.font = FontPalette.body
         button.setTitle(Constants.buttonText, for: .normal)
+        button.layer.cornerRadius = Constants.cornerRadius
+        button.backgroundColor = ColorPalette.secondaryBackgroundColor
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(deletePressed), for: .touchUpInside)
         button.isEnabled = false
@@ -156,7 +154,7 @@ final class EditTaskModuleViewController: UIViewController {
     }
 
     @objc func datePicked(sender: UIDatePicker) {
-        output.newDatePicked(date: datePicker.date)
+        output.newDatePicked(datePicker.date)
     }
 
     @objc func deletePressed(sender: UIButton) {
@@ -164,12 +162,7 @@ final class EditTaskModuleViewController: UIViewController {
     }
 
     @objc func saveButtonPressed(sender: UIBarButtonItem) {
-        output.save(
-            text: textView.text,
-            prioritySegment: priorityStackContainer.getSegmentControlValue(),
-            switchIsOn: deadlineStackContainer.getDeadlineSwitchStatus(),
-            deadlineDate: datePicker.date
-        )
+        output.savePressed()
     }
 
     @objc func textFieldDidChange(sender: UITextView) {
@@ -262,7 +255,7 @@ final class EditTaskModuleViewController: UIViewController {
                 equalTo: stackView.trailingAnchor,
                 constant: Insets.datePickerInsets.right
             ),
-            datePicker.heightAnchor.constraint(equalToConstant: 332)
+            datePicker.heightAnchor.constraint(equalToConstant: Constants.datePickerHeight)
         ])
     }
 
@@ -311,6 +304,7 @@ extension EditTaskModuleViewController {
         static let cornerRadius: CGFloat = 16
         static let textViewMinHeight: CGFloat = 120
         static let stackItemHeight: CGFloat = 66
+        static let datePickerHeight: CGFloat = 332
         static let buttonHeight: CGFloat = 56
         static let buttonText: String = "Удалить"
         static let saveButtonText: String = "Cохранить"
@@ -325,72 +319,51 @@ extension EditTaskModuleViewController {
         static let deleteButtonInsets: UIEdgeInsets = .init(top: 16, left: 16, bottom: -30, right: -16)
         static let datePickerInsets: UIEdgeInsets = .init(top: 0, left: 12, bottom: 0, right: -12)
         static let separatorInsets: UIEdgeInsets = .init(top: 0, left: 16, bottom: 0, right: -16)
+        static let textInsets: UIEdgeInsets = .init(top: 17, left: 16, bottom: 16, right: 16)
     }
 }
 
 // MARK: - EditTaskModuleViewInput extension
 
 extension EditTaskModuleViewController: EditTaskModuleViewInput {
-    func enableDelete() {
-        deleteButton.isEnabled = true
-    }
-
-    func disableDelete() {
-        deleteButton.isEnabled = false
-    }
-
-    func enableSave() {
-        saveButton.isEnabled = true
-    }
-
-    func disableSave() {
-        saveButton.isEnabled = false
-    }
-
-    func hideCalendar() {
+    // swiftlint:disable:next function_parameter_count
+    func update(
+        text: String,
+        prioritySegment: Int,
+        switchIsOn: Bool,
+        isCalendarShown: Bool,
+        deadline: Date?,
+        deadlineString: String?,
+        isDeleteEnabled: Bool,
+        isSaveEnabled: Bool
+    ) {
+        textView.text = text
+        priorityStackContainer.setSegmentControlHighlighted(
+            selectedSegmentIndex: prioritySegment)
+        deadlineStackContainer.setDeadlineSwitch(to: switchIsOn)
         UIView.animate(
-            withDuration: 0.5,
+            withDuration: 0.3,
             animations: {
-                self.datePicker.alpha = 0
+                self.datePicker.alpha = isCalendarShown ? 1 : 0
             },
             completion: { [weak self] (_: Bool) in
-                self?.datePicker.isHidden = true
-                self?.deadlineStackContainer.hideDeadlineDateLabel(isHidden: true)
+                self?.datePicker.isHidden = !isCalendarShown
+                self?.deadlineStackContainer.hideDeadlineDateLabel(isHidden: deadline == nil)
+                if let deadlineString = deadlineString, let deadline = deadline {
+                    self?.deadlineStackContainer.setDeadlineDateLabel(text: deadlineString)
+                    self?.datePicker.date = deadline
+                }
             }
         )
-    }
-
-    func showCalendar(dateString: String, date: Date) {
-        datePicker.isHidden = false
-        deadlineStackContainer.hideDeadlineDateLabel(isHidden: false)
-        deadlineStackContainer.setDeadlineDateLabel(text: dateString)
-        datePicker.date = date
-        UIView.animate(
-            withDuration: 0.5,
-            animations: {
-                self.datePicker.alpha = 1
-            },
-            completion: nil
-        )
-    }
-
-    func update(dateString: String) {
-        deadlineStackContainer.setDeadlineDateLabel(text: dateString)
-    }
-
-    func update(text: String, prioritySegment: Int, switchIsOn: Bool, deadlineDate: String?) {
-        textView.text = text
-        priorityStackContainer.setSegmentControlHighlighted(selectedSegmentIndex: prioritySegment)
-        deadlineStackContainer.setDeadlineSwitch(to: switchIsOn)
-        if switchIsOn, let deadlineDate = deadlineDate {
-            deadlineStackContainer.setDeadlineDateLabel(text: deadlineDate)
-        }
+        deleteButton.isEnabled = isDeleteEnabled
+        saveButton.isEnabled = isSaveEnabled
     }
 }
 
 // MARK: - UITextViewDelegate extension
 
 extension EditTaskModuleViewController: UITextViewDelegate {
+
     func textViewDidChange(_ textView: UITextView) {
         output.textEdited(to: textView.text)
     }

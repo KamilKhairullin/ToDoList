@@ -26,16 +26,15 @@ final class PriorityStackViewContainer: UIView {
     }()
 
     private lazy var segmentControl: UISegmentedControl = {
-        let leftItem = UIImage(named: "lowPriority")
-        let middleItem = Constants.segmentControlMiddle
-        let rightItem = UIImage(named: "highPriority")
+        let leftItemImage = UIImage(named: Constants.lowPriorityLabelName)
+        let rightItemImage = UIImage(named: Constants.highPriorityLabelName)
         let segmentControl = UISegmentedControl(items: [
-            "",
-            middleItem,
-            ""
+            Constants.segmentControlLeft,
+            Constants.segmentControlMiddle,
+            Constants.segmentControlRight
         ])
-        segmentControl.setImage(leftItem, forSegmentAt: 0)
-        segmentControl.setImage(rightItem, forSegmentAt: 2)
+        segmentControl.setImage(leftItemImage, forSegmentAt: Constants.leftSegmentId)
+        segmentControl.setImage(rightItemImage, forSegmentAt: Constants.rightSegmentId)
         segmentControl.addTarget(self, action: #selector(segmentControlValueChanged(_:)), for: .valueChanged)
         return segmentControl
     }()
@@ -80,19 +79,19 @@ final class PriorityStackViewContainer: UIView {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor),
-            stackView.leftAnchor.constraint(equalTo: leftAnchor),
-            stackView.rightAnchor.constraint(equalTo: rightAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            label.leftAnchor.constraint(equalTo: leftAnchor),
-            segmentControl.rightAnchor.constraint(equalTo: rightAnchor)
+            label.leadingAnchor.constraint(equalTo: leadingAnchor),
+            segmentControl.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
 
     // MARK: - Selectors
 
     @objc func segmentControlValueChanged(_ sender: UISegmentedControl) {
-        output.prioritySelected()
+        output.prioritySet(to: sender.selectedSegmentIndex)
     }
 }
 
@@ -103,5 +102,11 @@ extension PriorityStackViewContainer {
         static let labelText: String = "Важность"
         static let cornerRadius: CGFloat = 16
         static let segmentControlMiddle = "нет"
+        static let segmentControlLeft = ""
+        static let segmentControlRight = ""
+        static let lowPriorityLabelName: String = "lowPriority"
+        static let highPriorityLabelName: String = "highPriority"
+        static let leftSegmentId: Int = 0
+        static let rightSegmentId: Int = 2
     }
 }

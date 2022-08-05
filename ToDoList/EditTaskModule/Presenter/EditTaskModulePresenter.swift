@@ -1,42 +1,31 @@
 import Foundation
 
 protocol EditTaskModuleViewInput: AnyObject {
+    // swiftlint:disable:next function_parameter_count
     func update(
         text: String,
         prioritySegment: Int,
         switchIsOn: Bool,
-        deadlineDate: String?
+        isCalendarShown: Bool,
+        deadline: Date?,
+        deadlineString: String?,
+        isDeleteEnabled: Bool,
+        isSaveEnabled: Bool
     )
-
-    func update(dateString: String)
-
-    func hideCalendar()
-    func showCalendar(dateString: String, date: Date)
-
-    func enableDelete()
-    func disableDelete()
-
-    func enableSave()
-    func disableSave()
 }
 
 protocol EditTaskModuleViewOutput: AnyObject {
-    func save(
-        text: String,
-        prioritySegment: Int,
-        switchIsOn: Bool,
-        deadlineDate: Date?
-    )
-
     func switchTapped(isOn: Bool)
 
-    func newDatePicked(date: Date)
+    func newDatePicked(_ date: Date)
 
     func textEdited(to text: String)
 
-    func prioritySelected()
+    func prioritySet(to segment: Int)
 
     func deletePressed()
+
+    func savePressed()
 }
 
 final class EditTaskModulePresenter {
@@ -48,73 +37,35 @@ final class EditTaskModulePresenter {
         }
     }
 
-    private var todoItem: TodoItem? {
+    private var todoItem: TodoItem {
         didSet {
-            if let todoItem = todoItem {
-                view?.update(
-                    text: todoItem.text,
-                    prioritySegment: toSegment(fromPriority: todoItem.priority),
-                    switchIsOn: todoItem.deadline != nil,
-                    deadlineDate: formatDate(from: todoItem.deadline)
-                )
-            } else {
-                view?.update(
-                    text: Constants.defaultText,
-                    prioritySegment: Constants.defaultPrioritySegmentId,
-                    switchIsOn: Constants.defaultSwitchStatus,
-                    deadlineDate: Constants.defaultDeadline
-                )
-            }
+            let hasDeadline = todoItem.deadline != nil
+            let isTextEmpty = todoItem.text == ""
+            view?.update(
+                text: todoItem.text,
+                prioritySegment: EditTaskModulePresenter.toSegment(todoItem.priority),
+                switchIsOn: hasDeadline,
+                isCalendarShown: hasDeadline,
+                deadline: todoItem.deadline,
+                deadlineString: EditTaskModulePresenter.formatDate(todoItem.deadline),
+                isDeleteEnabled: true,
+                isSaveEnabled: !isTextEmpty
+            )
         }
     }
 
-    private var fileCache: FileCache
-
-    private var isTextEdited: Bool {
-        didSet {
-            checkIfUpdateButtonsStatus()
-        }
-    }
-
-    private var isPrioritySelected: Bool {
-        didSet {
-            checkIfUpdateButtonsStatus()
-        }
-    }
-
-    private var isDateSelected: Bool {
-        didSet {
-            checkIfUpdateButtonsStatus()
-        }
-    }
+    private let fileCache: FileCache
 
     // MARK: - Lifecycle
 
     init(fileCache: FileCache) {
         self.fileCache = fileCache
-        isTextEdited = false
-        isDateSelected = false
-        isPrioritySelected = false
+        self.todoItem = Constants.defaultItem
     }
 
-    // MARK: - Private
+    // MARK: - Public
 
-    private func saveCacheToFile() {
-        if let todoItem = todoItem {
-            fileCache.addTask(todoItem)
-            fileCache.save(to: Constants.filename)
-        }
-    }
-
-    private func loadCacheFromFile() {
-        fileCache.load(from: Constants.filename)
-        todoItem = fileCache.todoItems.first
-        if let todoItem = todoItem {
-            view?.enableDelete()
-        }
-    }
-
-    private func formatDate(from date: Date?) -> String {
+    static func formatDate(_ date: Date?) -> String {
         guard let date = date else {
             return ""
         }
@@ -123,20 +74,18 @@ final class EditTaskModulePresenter {
         return dateFormatterPrint.string(from: date)
     }
 
-    private func toPriority(fromSegment segment: Int) -> TodoItem.Priority? {
+    static func toPriority(_ segment: Int) -> TodoItem.Priority {
         switch segment {
         case 0:
             return .unimportant
-        case 1:
-            return .ordinary
         case 2:
             return .important
         default:
-            return nil
+            return .ordinary
         }
     }
 
-    private func toSegment(fromPriority priority: TodoItem.Priority) -> Int {
+    static func toSegment(_ priority: TodoItem.Priority) -> Int {
         switch priority {
         case .unimportant:
             return 0
@@ -147,88 +96,81 @@ final class EditTaskModulePresenter {
         }
     }
 
-    private func checkIfUpdateButtonsStatus() {
-        if isPrioritySelected || isTextEdited || isDateSelected {
-            view?.enableDelete()
+    // MARK: - Private
+
+    private func loadCacheFromFile() {
+        fileCache.load(from: Constants.filename)
+        if let loadedItem = fileCache.todoItems.first {
+            todoItem = loadedItem
         } else {
-            view?.disableDelete()
+            todoItem = Constants.defaultItem
         }
-        if isPrioritySelected, isTextEdited {
-            view?.enableSave()
-        } else {
-            view?.disableSave()
-        }
+    }
+
+    private func saveCacheToFile() {
+        fileCache.addTask(todoItem)
+        fileCache.save(to: Constants.filename)
     }
 }
 
 extension EditTaskModulePresenter: EditTaskModuleViewOutput {
     func textEdited(to text: String) {
-        if text == Constants.defaultText {
-            isTextEdited = false
-        } else {
-            isTextEdited = true
-        }
+        todoItem = TodoItem(
+            id: todoItem.id,
+            text: text,
+            priority: todoItem.priority,
+            deadline: todoItem.deadline,
+            isDone: todoItem.isDone,
+            createdAt: todoItem.createdAt,
+            editedAt: todoItem.editedAt
+        )
     }
 
-    func prioritySelected() {
-        isPrioritySelected = true
+    func prioritySet(to segment: Int) {
+        let priority = EditTaskModulePresenter.toPriority(segment)
+        todoItem = TodoItem(
+            id: todoItem.id,
+            text: todoItem.text,
+            priority: priority,
+            deadline: todoItem.deadline,
+            isDone: todoItem.isDone,
+            createdAt: todoItem.createdAt,
+            editedAt: todoItem.editedAt
+        )
     }
 
     func deletePressed() {
-        if let todoItem = todoItem {
-            _ = fileCache.deleteTask(id: todoItem.id)
-            fileCache.deleteCacheFile(file: Constants.filename)
-        }
-        view?.hideCalendar()
-        todoItem = nil
-        isTextEdited = false
-        isDateSelected = false
-        isPrioritySelected = false
+        _ = fileCache.deleteTask(id: todoItem.id)
+        fileCache.deleteCacheFile(file: Constants.filename)
+        todoItem = Constants.defaultItem
     }
 
-    func newDatePicked(date: Date) {
-        isDateSelected = true
-        view?.update(dateString: formatDate(from: date))
+    func newDatePicked(_ date: Date) {
+        todoItem = TodoItem(
+            id: todoItem.id,
+            text: todoItem.text,
+            priority: todoItem.priority,
+            deadline: date,
+            isDone: todoItem.isDone,
+            createdAt: todoItem.createdAt,
+            editedAt: todoItem.editedAt
+        )
     }
 
     func switchTapped(isOn: Bool) {
-        if isOn {
-            let tomorrow = Date.tomorrow
-            view?.showCalendar(dateString: formatDate(from: tomorrow), date: tomorrow)
-        } else {
-            isDateSelected = false
-            view?.hideCalendar()
-        }
+        let deadline = isOn ? Date.tomorrow : nil
+        todoItem = TodoItem(
+            id: todoItem.id,
+            text: todoItem.text,
+            priority: todoItem.priority,
+            deadline: deadline,
+            isDone: todoItem.isDone,
+            createdAt: todoItem.createdAt,
+            editedAt: todoItem.editedAt
+        )
     }
 
-    func save(text: String, prioritySegment: Int, switchIsOn: Bool, deadlineDate: Date?) {
-        guard let priority: TodoItem.Priority = toPriority(fromSegment: prioritySegment)
-        else { return }
-        let deadline: Date?
-
-        deadline = switchIsOn ? deadlineDate : nil
-
-        if let currentItem = todoItem {
-            todoItem = TodoItem(
-                id: currentItem.id,
-                text: text,
-                priority: priority,
-                deadline: deadline,
-                isDone: false,
-                createdAt: currentItem.createdAt,
-                editedAt: Date()
-            )
-        } else {
-            todoItem = TodoItem(
-                text: text,
-                priority: priority,
-                deadline: deadline,
-                isDone: false,
-                createdAt: Date(),
-                editedAt: nil
-            )
-        }
-        view?.disableSave()
+    func savePressed() {
         saveCacheToFile()
     }
 }
@@ -239,8 +181,14 @@ extension EditTaskModulePresenter {
     enum Constants {
         static let filename: String = "savedCache.json"
         static let defaultText: String = "Что будем делать?"
-        static let defaultPrioritySegmentId: Int = -1
-        static let defaultSwitchStatus: Bool = false
-        static let defaultDeadline: String? = nil
+        static let defaultPriority: TodoItem.Priority = .ordinary
+        static let defaultDeadline: Date? = nil
+        static let defaultItem: TodoItem = .init(
+            text: Constants.defaultText,
+            priority: Constants.defaultPriority,
+            deadline: Constants.defaultDeadline,
+            isDone: false,
+            editedAt: nil
+        )
     }
 }

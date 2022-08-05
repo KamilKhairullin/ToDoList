@@ -37,7 +37,6 @@ final class DeadlineStackViewContainer: UIView {
 
     private lazy var deadlineDateLabel: UILabel = {
         let label = UILabel()
-        label.text = "2 июня 2021"
         label.font = FontPalette.footnote
         label.textColor = ColorPalette.blue
         label.textAlignment = .left
@@ -92,12 +91,12 @@ final class DeadlineStackViewContainer: UIView {
         addSubview(stackView)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor),
-            stackView.leftAnchor.constraint(equalTo: leftAnchor),
-            stackView.rightAnchor.constraint(equalTo: rightAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            labelsStackView.leftAnchor.constraint(equalTo: leftAnchor),
-            deadlineSwitch.rightAnchor.constraint(equalTo: rightAnchor)
+            labelsStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            deadlineSwitch.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
 
