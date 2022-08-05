@@ -24,6 +24,7 @@ final class FileCache {
         setNeedsSort()
     }
 
+    @discardableResult
     func deleteTask(id: String) -> TodoItem? {
         guard let value = todoItemsDict[id] else {
             return nil
