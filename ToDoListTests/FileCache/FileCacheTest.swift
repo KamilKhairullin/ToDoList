@@ -13,7 +13,7 @@ class FileCacheTest: XCTestCase {
         cache.addTask(task1)
         cache.addTask(task2)
         cache.addTask(task3)
-        _ = cache.deleteTask(id: task1.id)
+        cache.deleteTask(id: task1.id)
         XCTAssertEqual(cache.todoItems.map { $0.id }, [task2.id, task3.id])
         XCTAssertNil(cache.deleteTask(id: task4.id))
     }
@@ -60,7 +60,6 @@ extension FileCacheTest {
             print("Unable to find cache directory")
             return nil
         }
-        print(cachePath.appendingPathComponent(file))
         return cachePath.appendingPathComponent(file)
     }
 }

@@ -1,5 +1,4 @@
 import UIKit
-
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
@@ -9,7 +8,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
 
         guard let window = window else { return false }
-        window.rootViewController = ViewController()
+        let fileCache = FileCache()
+        let builder = EditTaskModuleBuilder(fileCache: fileCache)
+        window.rootViewController = UINavigationController(rootViewController: builder.viewController)
         window.makeKeyAndVisible()
         return true
     }

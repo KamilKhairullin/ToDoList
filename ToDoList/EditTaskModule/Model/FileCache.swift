@@ -24,6 +24,7 @@ final class FileCache {
         setNeedsSort()
     }
 
+    @discardableResult
     func deleteTask(id: String) -> TodoItem? {
         setNeedsSort()
         return todoItemsDict.removeValue(forKey: id)
@@ -62,6 +63,17 @@ final class FileCache {
             }
         } catch let jsonError as NSError {
             print("Error while converting from json: \(jsonError)")
+        }
+    }
+
+    func deleteCacheFile(file: String) {
+        guard let path = getCachePath(for: file)
+        else { return }
+        do {
+            print(path.absoluteString)
+            try FileManager.default.removeItem(atPath: path.path)
+        } catch {
+            print("Unable to delete file. \(error)")
         }
     }
 
