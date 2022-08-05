@@ -56,6 +56,7 @@ final class EditTaskModuleViewController: UIViewController {
         datePicker.calendar = .autoupdatingCurrent
         datePicker.isHidden = true
         datePicker.addTarget(self, action: #selector(datePicked), for: .allEvents)
+        datePicker.becomeFirstResponder()
         return datePicker
     }()
 
@@ -73,7 +74,13 @@ final class EditTaskModuleViewController: UIViewController {
         return button
     }()
 
-    private lazy var separator: UIView = {
+    private lazy var firstSeparator: UIView = {
+        let separator = UIView()
+        separator.backgroundColor = ColorPalette.separator
+        return separator
+    }()
+
+    private lazy var secondSeparator: UIView = {
         let separator = UIView()
         separator.backgroundColor = ColorPalette.separator
         return separator
@@ -117,6 +124,9 @@ final class EditTaskModuleViewController: UIViewController {
             name: UIResponder.keyboardWillHideNotification,
             object: nil
         )
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
 
     override func viewDidLoad() {
@@ -128,8 +138,9 @@ final class EditTaskModuleViewController: UIViewController {
         setupStackView()
         setupDeleteButton()
         setupPriorityStackContainer()
-        setupSeparator()
+        setupFirstSeparator()
         setupDeadlineStackContainer()
+        setupSecondSeparator()
         setupDatePicker()
     }
 
@@ -153,7 +164,11 @@ final class EditTaskModuleViewController: UIViewController {
         scrollView.scrollIndicatorInsets = scrollView.contentInset
     }
 
-    @objc func datePicked(sender: UIDatePicker) {
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+
+    @objc func datePicked() {
         output.newDatePicked(datePicker.date)
     }
 
@@ -279,12 +294,27 @@ final class EditTaskModuleViewController: UIViewController {
         ])
     }
 
-    private func setupSeparator() {
-        stackView.addArrangedSubview(separator)
+    private func setupFirstSeparator() {
+        stackView.addArrangedSubview(firstSeparator)
         NSLayoutConstraint.activate([
-            separator.heightAnchor.constraint(equalToConstant: Constants.separatorHeight),
-            separator.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Insets.separatorInsets.left),
-            separator.trailingAnchor.constraint(
+            firstSeparator.heightAnchor.constraint(equalToConstant: Constants.separatorHeight),
+            firstSeparator.leadingAnchor.constraint(
+                equalTo: stackView.leadingAnchor,
+                constant: Insets.separatorInsets.left
+            ),
+            firstSeparator.trailingAnchor.constraint(
+                equalTo: stackView.trailingAnchor,
+                constant: Insets.separatorInsets.right
+            )
+        ])
+    }
+
+    private func setupSecondSeparator() {
+        stackView.addArrangedSubview(secondSeparator)
+        NSLayoutConstraint.activate([
+            secondSeparator.heightAnchor.constraint(equalToConstant: Constants.separatorHeight),
+            secondSeparator.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Insets.separatorInsets.left),
+            secondSeparator.trailingAnchor.constraint(
                 equalTo: stackView.trailingAnchor,
                 constant: Insets.separatorInsets.right
             )
@@ -329,6 +359,7 @@ extension EditTaskModuleViewController: EditTaskModuleViewInput {
     // swiftlint:disable:next function_parameter_count
     func update(
         text: String,
+        showPlaceholder: Bool,
         prioritySegment: Int,
         switchIsOn: Bool,
         isCalendarShown: Bool,
@@ -338,6 +369,7 @@ extension EditTaskModuleViewController: EditTaskModuleViewInput {
         isSaveEnabled: Bool
     ) {
         textView.text = text
+        textView.textColor = showPlaceholder ? ColorPalette.tertiary : ColorPalette.labelPrimary
         priorityStackContainer.setSegmentControlHighlighted(
             selectedSegmentIndex: prioritySegment)
         deadlineStackContainer.setDeadlineSwitch(to: switchIsOn)
@@ -347,6 +379,7 @@ extension EditTaskModuleViewController: EditTaskModuleViewInput {
                 self.datePicker.alpha = isCalendarShown ? 1 : 0
             },
             completion: { [weak self] (_: Bool) in
+                self?.secondSeparator.isHidden = !isCalendarShown
                 self?.datePicker.isHidden = !isCalendarShown
                 self?.deadlineStackContainer.hideDeadlineDateLabel(isHidden: deadline == nil)
                 if let deadlineString = deadlineString, let deadline = deadline {
@@ -363,7 +396,6 @@ extension EditTaskModuleViewController: EditTaskModuleViewInput {
 // MARK: - UITextViewDelegate extension
 
 extension EditTaskModuleViewController: UITextViewDelegate {
-
     func textViewDidChange(_ textView: UITextView) {
         output.textEdited(to: textView.text)
     }

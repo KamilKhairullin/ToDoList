@@ -4,6 +4,7 @@ protocol EditTaskModuleViewInput: AnyObject {
     // swiftlint:disable:next function_parameter_count
     func update(
         text: String,
+        showPlaceholder: Bool,
         prioritySegment: Int,
         switchIsOn: Bool,
         isCalendarShown: Bool,
@@ -40,22 +41,24 @@ final class EditTaskModulePresenter {
     private var todoItem: TodoItem {
         didSet {
             let hasDeadline = todoItem.deadline != nil
-            let isTextEmpty = todoItem.text == ""
+            let saveEnabled = todoItem.text != Constants.emptyText && !showPlaceholder
+            
             view?.update(
                 text: todoItem.text,
+                showPlaceholder: showPlaceholder,
                 prioritySegment: EditTaskModulePresenter.toSegment(todoItem.priority),
                 switchIsOn: hasDeadline,
                 isCalendarShown: hasDeadline,
                 deadline: todoItem.deadline,
                 deadlineString: EditTaskModulePresenter.formatDate(todoItem.deadline),
                 isDeleteEnabled: true,
-                isSaveEnabled: !isTextEmpty
+                isSaveEnabled: saveEnabled
             )
         }
     }
 
     private let fileCache: FileCache
-
+    private var showPlaceholder = true
     // MARK: - Lifecycle
 
     init(fileCache: FileCache) {
@@ -115,6 +118,7 @@ final class EditTaskModulePresenter {
 
 extension EditTaskModulePresenter: EditTaskModuleViewOutput {
     func textEdited(to text: String) {
+        showPlaceholder = false
         todoItem = TodoItem(
             id: todoItem.id,
             text: text,
@@ -140,7 +144,8 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
     }
 
     func deletePressed() {
-        _ = fileCache.deleteTask(id: todoItem.id)
+        showPlaceholder = true
+        fileCache.deleteTask(id: todoItem.id)
         fileCache.deleteCacheFile(file: Constants.filename)
         todoItem = Constants.defaultItem
     }
@@ -190,5 +195,6 @@ extension EditTaskModulePresenter {
             isDone: false,
             editedAt: nil
         )
+        static let emptyText: String = ""
     }
 }
