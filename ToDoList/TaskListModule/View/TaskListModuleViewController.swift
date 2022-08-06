@@ -63,6 +63,42 @@ final class TaskListModuleViewController: UIViewController {
             )
         ])
     }
+
+    private func makeDoneAction(indexPath: IndexPath) -> UIContextualAction {
+        let doneAction = UIContextualAction(
+            style: .normal,
+            title: nil
+        ) { _, _, completion in
+            completion(true)
+        }
+        doneAction.image = UIImage(named: Constants.doneSwipeImageName)
+        doneAction.backgroundColor = ColorPalette.green
+        return doneAction
+    }
+    
+    private func makeInfoAction(indexPath: IndexPath) -> UIContextualAction {
+        let doneAction = UIContextualAction(
+            style: .normal,
+            title: nil
+        ) { _, _, completion in
+            completion(true)
+        }
+        doneAction.image = UIImage(named: Constants.infoSwipeImageName)
+        doneAction.backgroundColor = ColorPalette.grayLight
+        return doneAction
+    }
+    
+    private func makeDeleteAction(indexPath: IndexPath) -> UIContextualAction {
+        let doneAction = UIContextualAction(
+            style: .normal,
+            title: nil
+        ) { _, _, completion in
+            completion(true)
+        }
+        doneAction.image = UIImage(named: Constants.deleteSwipeImageName)
+        doneAction.backgroundColor = ColorPalette.red
+        return doneAction
+    }
 }
 
 // MARK: - UITableViewDataSource extension
@@ -96,6 +132,26 @@ extension TaskListModuleViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return Constants.sectionHeaderHeight
     }
+
+    func tableView(
+        _ tableView: UITableView,
+        leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let doneAction = makeDoneAction(indexPath: indexPath)
+        return UISwipeActionsConfiguration(actions: [doneAction])
+    }
+    
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let infoAction = makeInfoAction(indexPath: indexPath)
+        let deleteAction = makeDeleteAction(indexPath: indexPath)
+
+        let swipeConfiguration = UISwipeActionsConfiguration(actions: [deleteAction, infoAction])
+        swipeConfiguration.performsFirstActionWithFullSwipe = true
+        return swipeConfiguration
+    }
 }
 
 // MARK: - TaskListModuleViewInput extension
@@ -108,6 +164,9 @@ extension TaskListModuleViewController {
     enum Constants {
         static let rowHeight: CGFloat = 66
         static let sectionHeaderHeight: CGFloat = 32
+        static let doneSwipeImageName: String = "doneSwipeImage"
+        static let infoSwipeImageName: String = "infoSwipeImage"
+        static let deleteSwipeImageName: String = "deleteSwipeImage"
     }
 
     enum Insets {
