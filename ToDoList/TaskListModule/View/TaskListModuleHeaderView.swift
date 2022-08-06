@@ -48,6 +48,7 @@ final class TaskListModuleHeaderView: UIView {
                 equalTo: leadingAnchor,
                 constant: Insets.doneAmountLabelInsets.left
             ),
+            doneAmountLabel.topAnchor.constraint(equalTo: topAnchor),
             doneAmountLabel.heightAnchor.constraint(equalToConstant: 20)
         ])
     }
@@ -60,6 +61,7 @@ final class TaskListModuleHeaderView: UIView {
                 equalTo: trailingAnchor,
                 constant: Insets.hideDoneButtonInsets.right
             ),
+            hideDoneButton.topAnchor.constraint(equalTo: topAnchor),
             hideDoneButton.heightAnchor.constraint(equalToConstant: 20)
         ])
     }

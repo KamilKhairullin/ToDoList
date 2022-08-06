@@ -39,9 +39,7 @@ final class TaskListModuleCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.accessoryView = cellAccessoryImageView
-        contentView.clipsToBounds = true
-        self.backgroundColor = ColorPalette.secondaryBackgroundColor
+        setupView()
         setupStackView()
     }
 
@@ -51,6 +49,12 @@ final class TaskListModuleCell: UITableViewCell {
     }
 
     // MARK: - Private
+
+    private func setupView() {
+        self.accessoryView = cellAccessoryImageView
+        contentView.clipsToBounds = true
+        self.backgroundColor = ColorPalette.secondaryBackgroundColor
+    }
 
     private func setupStackView() {
         contentView.addSubview(stackView)

@@ -12,6 +12,7 @@
 		8E0E44752894A7E7007B0F5E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E44732894A7E7007B0F5E /* LaunchScreen.storyboard */; };
 		8E0E448A2894A7E7007B0F5E /* ToDoListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E44892894A7E7007B0F5E /* ToDoListUITests.swift */; };
 		8E0E448C2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E448B2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift */; };
+		8E398F2B289EF7450026ADC4 /* TaskListCreateNewTaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E398F2A289EF7450026ADC4 /* TaskListCreateNewTaskCell.swift */; };
 		8E66C36F2894AF6B00632D85 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E66C36E2894AF6B00632D85 /* TodoItem.swift */; };
 		8ECEFA1F2896D8060098896B /* EditTaskModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECEFA1E2896D8060098896B /* EditTaskModuleBuilder.swift */; };
 		8ECEFA222896F4C20098896B /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECEFA212896F4C20098896B /* DateExtension.swift */; };
@@ -65,6 +66,7 @@
 		8E0E44852894A7E7007B0F5E /* ToDoListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0E44892894A7E7007B0F5E /* ToDoListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListUITests.swift; sourceTree = "<group>"; };
 		8E0E448B2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		8E398F2A289EF7450026ADC4 /* TaskListCreateNewTaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListCreateNewTaskCell.swift; sourceTree = "<group>"; };
 		8E66C36E2894AF6B00632D85 /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		8ECEFA1E2896D8060098896B /* EditTaskModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskModuleBuilder.swift; sourceTree = "<group>"; };
 		8ECEFA212896F4C20098896B /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				8EE74A86289DA74F0053BF61 /* TaskListModuleViewController.swift */,
 				8EE74D5F289DB53E0053BF61 /* TaskListModuleHeaderView.swift */,
 				8EE74D66289DE7A60053BF61 /* TaskListModuleCell */,
+				8E398F2A289EF7450026ADC4 /* TaskListCreateNewTaskCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -453,6 +456,7 @@
 				8EEB84B62895D179005D5FF1 /* PriorityStackViewContainer.swift in Sources */,
 				8EE74A89289DA7660053BF61 /* TaskListModulePresenter.swift in Sources */,
 				8EE74D60289DB53E0053BF61 /* TaskListModuleHeaderView.swift in Sources */,
+				8E398F2B289EF7450026ADC4 /* TaskListCreateNewTaskCell.swift in Sources */,
 				8EE74D6C289DE8690053BF61 /* CellContentSubtitleStackView.swift in Sources */,
 				8ECEFA1F2896D8060098896B /* EditTaskModuleBuilder.swift in Sources */,
 				8EE74D64289DD55F0053BF61 /* CustomNavigationController.swift in Sources */,
