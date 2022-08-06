@@ -16,6 +16,16 @@
 		8ECEFA1F2896D8060098896B /* EditTaskModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECEFA1E2896D8060098896B /* EditTaskModuleBuilder.swift */; };
 		8ECEFA222896F4C20098896B /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECEFA212896F4C20098896B /* DateExtension.swift */; };
 		8ECEFA242896FF5B0098896B /* UIBarButtonItemExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECEFA232896FF5B0098896B /* UIBarButtonItemExtension.swift */; };
+		8EE74A87289DA74F0053BF61 /* TaskListModuleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74A86289DA74F0053BF61 /* TaskListModuleViewController.swift */; };
+		8EE74A89289DA7660053BF61 /* TaskListModulePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74A88289DA7660053BF61 /* TaskListModulePresenter.swift */; };
+		8EE74D5C289DAA7E0053BF61 /* TaskListModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74D5B289DAA7E0053BF61 /* TaskListModuleBuilder.swift */; };
+		8EE74D5E289DAE800053BF61 /* TaskListModuleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74D5D289DAE800053BF61 /* TaskListModuleCell.swift */; };
+		8EE74D60289DB53E0053BF61 /* TaskListModuleHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74D5F289DB53E0053BF61 /* TaskListModuleHeaderView.swift */; };
+		8EE74D62289DD35F0053BF61 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74D61289DD35F0053BF61 /* AppCoordinator.swift */; };
+		8EE74D64289DD55F0053BF61 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74D63289DD55F0053BF61 /* CustomNavigationController.swift */; };
+		8EE74D68289DE84E0053BF61 /* CellContentStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74D67289DE84E0053BF61 /* CellContentStackView.swift */; };
+		8EE74D6A289DE8600053BF61 /* CellContentTitleStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74D69289DE8600053BF61 /* CellContentTitleStackView.swift */; };
+		8EE74D6C289DE8690053BF61 /* CellContentSubtitleStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE74D6B289DE8690053BF61 /* CellContentSubtitleStackView.swift */; };
 		8EEB7C242894C095005D5FF1 /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7C232894C095005D5FF1 /* TodoItemTests.swift */; };
 		8EEB7EF72894C855005D5FF1 /* TodoItemParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7EF62894C855005D5FF1 /* TodoItemParsingTests.swift */; };
 		8EEB7EF92894D59C005D5FF1 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB7EF82894D59C005D5FF1 /* FileCache.swift */; };
@@ -59,6 +69,16 @@
 		8ECEFA1E2896D8060098896B /* EditTaskModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskModuleBuilder.swift; sourceTree = "<group>"; };
 		8ECEFA212896F4C20098896B /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		8ECEFA232896FF5B0098896B /* UIBarButtonItemExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItemExtension.swift; sourceTree = "<group>"; };
+		8EE74A86289DA74F0053BF61 /* TaskListModuleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListModuleViewController.swift; sourceTree = "<group>"; };
+		8EE74A88289DA7660053BF61 /* TaskListModulePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListModulePresenter.swift; sourceTree = "<group>"; };
+		8EE74D5B289DAA7E0053BF61 /* TaskListModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListModuleBuilder.swift; sourceTree = "<group>"; };
+		8EE74D5D289DAE800053BF61 /* TaskListModuleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListModuleCell.swift; sourceTree = "<group>"; };
+		8EE74D5F289DB53E0053BF61 /* TaskListModuleHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListModuleHeaderView.swift; sourceTree = "<group>"; };
+		8EE74D61289DD35F0053BF61 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		8EE74D63289DD55F0053BF61 /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
+		8EE74D67289DE84E0053BF61 /* CellContentStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellContentStackView.swift; sourceTree = "<group>"; };
+		8EE74D69289DE8600053BF61 /* CellContentTitleStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellContentTitleStackView.swift; sourceTree = "<group>"; };
+		8EE74D6B289DE8690053BF61 /* CellContentSubtitleStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellContentSubtitleStackView.swift; sourceTree = "<group>"; };
 		8EEB7C232894C095005D5FF1 /* TodoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
 		8EEB7EF62894C855005D5FF1 /* TodoItemParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemParsingTests.swift; sourceTree = "<group>"; };
 		8EEB7EF82894D59C005D5FF1 /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
@@ -122,8 +142,10 @@
 				8E0E44682894A7E6007B0F5E /* AppDelegate.swift */,
 				8EEB84B12895C3ED005D5FF1 /* ColorPalette.swift */,
 				8EEB84B32895CC2C005D5FF1 /* FontPalette.swift */,
+				8EE74D61289DD35F0053BF61 /* AppCoordinator.swift */,
 				8ECEFA202896F4B20098896B /* Common */,
 				8EEB81D128957C6F005D5FF1 /* EditTaskModule */,
+				8EE74A83289DA6A20053BF61 /* TaskListModule */,
 				8E0E44712894A7E7007B0F5E /* Assets.xcassets */,
 				8E0E44732894A7E7007B0F5E /* LaunchScreen.storyboard */,
 				8E0E44762894A7E7007B0F5E /* Info.plist */,
@@ -161,10 +183,58 @@
 		8ECEFA202896F4B20098896B /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				8EE74D63289DD55F0053BF61 /* CustomNavigationController.swift */,
+				8EE74D65289DD6360053BF61 /* Extensions */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		8EE74A83289DA6A20053BF61 /* TaskListModule */ = {
+			isa = PBXGroup;
+			children = (
+				8EE74A85289DA6C90053BF61 /* Presenter */,
+				8EE74A84289DA6C20053BF61 /* View */,
+				8EE74D5B289DAA7E0053BF61 /* TaskListModuleBuilder.swift */,
+			);
+			path = TaskListModule;
+			sourceTree = "<group>";
+		};
+		8EE74A84289DA6C20053BF61 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8EE74A86289DA74F0053BF61 /* TaskListModuleViewController.swift */,
+				8EE74D5F289DB53E0053BF61 /* TaskListModuleHeaderView.swift */,
+				8EE74D66289DE7A60053BF61 /* TaskListModuleCell */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8EE74A85289DA6C90053BF61 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				8EE74A88289DA7660053BF61 /* TaskListModulePresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		8EE74D65289DD6360053BF61 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
 				8ECEFA212896F4C20098896B /* DateExtension.swift */,
 				8ECEFA232896FF5B0098896B /* UIBarButtonItemExtension.swift */,
 			);
-			path = Common;
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		8EE74D66289DE7A60053BF61 /* TaskListModuleCell */ = {
+			isa = PBXGroup;
+			children = (
+				8EE74D5D289DAE800053BF61 /* TaskListModuleCell.swift */,
+				8EE74D67289DE84E0053BF61 /* CellContentStackView.swift */,
+				8EE74D69289DE8600053BF61 /* CellContentTitleStackView.swift */,
+				8EE74D6B289DE8690053BF61 /* CellContentSubtitleStackView.swift */,
+			);
+			path = TaskListModuleCell;
 			sourceTree = "<group>";
 		};
 		8EEB7C222894C07C005D5FF1 /* TodoItem */ = {
@@ -369,13 +439,23 @@
 				8EEB81D528957D31005D5FF1 /* EditTaskModuleViewController.swift in Sources */,
 				8EEB84B8289669AF005D5FF1 /* DeadlineStackViewContainer.swift in Sources */,
 				8EEB84B42895CC2C005D5FF1 /* FontPalette.swift in Sources */,
+				8EE74A87289DA74F0053BF61 /* TaskListModuleViewController.swift in Sources */,
 				8E66C36F2894AF6B00632D85 /* TodoItem.swift in Sources */,
+				8EE74D68289DE84E0053BF61 /* CellContentStackView.swift in Sources */,
+				8EE74D62289DD35F0053BF61 /* AppCoordinator.swift in Sources */,
 				8EEB81D728957D3C005D5FF1 /* EditTaskModulePresenter.swift in Sources */,
 				8ECEFA222896F4C20098896B /* DateExtension.swift in Sources */,
+				8EE74D5E289DAE800053BF61 /* TaskListModuleCell.swift in Sources */,
+				8EE74D5C289DAA7E0053BF61 /* TaskListModuleBuilder.swift in Sources */,
 				8EEB7EF92894D59C005D5FF1 /* FileCache.swift in Sources */,
+				8EE74D6A289DE8600053BF61 /* CellContentTitleStackView.swift in Sources */,
 				8ECEFA242896FF5B0098896B /* UIBarButtonItemExtension.swift in Sources */,
 				8EEB84B62895D179005D5FF1 /* PriorityStackViewContainer.swift in Sources */,
+				8EE74A89289DA7660053BF61 /* TaskListModulePresenter.swift in Sources */,
+				8EE74D60289DB53E0053BF61 /* TaskListModuleHeaderView.swift in Sources */,
+				8EE74D6C289DE8690053BF61 /* CellContentSubtitleStackView.swift in Sources */,
 				8ECEFA1F2896D8060098896B /* EditTaskModuleBuilder.swift in Sources */,
+				8EE74D64289DD55F0053BF61 /* CustomNavigationController.swift in Sources */,
 				8E0E44692894A7E6007B0F5E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

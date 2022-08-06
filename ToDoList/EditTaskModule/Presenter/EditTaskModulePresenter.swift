@@ -106,6 +106,7 @@ final class EditTaskModulePresenter {
         fileCache.load(from: Constants.filename)
         if let loadedItem = fileCache.todoItems.first {
             todoItem = loadedItem
+            showPlaceholder = false
         } else {
             todoItem = Constants.defaultItem
         }

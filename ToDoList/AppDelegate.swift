@@ -8,9 +8,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
 
         guard let window = window else { return false }
-        let fileCache = FileCache()
-        let builder = EditTaskModuleBuilder(fileCache: fileCache)
-        window.rootViewController = UINavigationController(rootViewController: builder.viewController)
+        let appCoordinator = AppCoordinator()
+        window.rootViewController = appCoordinator.rootViewController
         window.makeKeyAndVisible()
         return true
     }

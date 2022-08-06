@@ -9,4 +9,5 @@ final class ColorPalette {
     static var blue: UIColor { UIColor(named: #function)! }
     static var red: UIColor { UIColor(named: #function)! }
     static var tertiary: UIColor { UIColor(named: #function)! }
+    static var navbarBlur: UIColor { UIColor(named: #function)! }
 }
