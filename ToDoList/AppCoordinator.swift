@@ -49,7 +49,6 @@ extension AppCoordinator: TaskListModuleOutput {
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController) {
         let todoItem = fileCache.todoItems[indexPath.row]
         let builder = EditTaskModuleBuilder(output: self, fileCache: fileCache, with: todoItem)
-//        viewController.navigationItem.largeTitleDisplayMode = .never
         viewController.navigationController?.pushViewController(builder.viewController, animated: true)
     }
 
