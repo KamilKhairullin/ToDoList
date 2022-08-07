@@ -9,6 +9,7 @@ protocol TaskListModuleOutput: AnyObject {
     func showCreateNewTask()
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
     func deleteItem(item: TodoItem)
+    func getPreview(indexPath: IndexPath) -> UIViewController
 }
 
 final class TaskListModulePresenter {
@@ -68,6 +69,10 @@ final class TaskListModulePresenter {
 // MARK: - TaskListModuleViewOutput extension
 
 extension TaskListModulePresenter: TaskListModuleViewOutput {
+    func getPreview(indexPath: IndexPath) -> UIViewController {
+        return output.getPreview(indexPath: indexPath)
+    }
+
     func getHideDoneButtonState() -> Bool {
         doneIsHidden
     }

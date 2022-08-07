@@ -16,6 +16,7 @@ protocol TaskListModuleViewOutput: AnyObject {
     func hideDonePressed()
     func getHideDoneButtonState() -> Bool
     func getNumberOfDoneItems() -> Int
+    func getPreview(indexPath: IndexPath) -> UIViewController
 }
 
 final class TaskListModuleViewController: UIViewController {
@@ -162,7 +163,6 @@ extension TaskListModuleViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         guard
             let data = output?.getCellData(indexPath),
             let cell = tableView.dequeueReusableCell(
@@ -182,7 +182,7 @@ extension TaskListModuleViewController: UITableViewDataSource {
         let lineWidth = Int(tableView.bounds.width - Insets.cellSeparatorInsets.left)
         return CGFloat(
             output?.getRowHeight(forIndexPath: indexPath, lineWidth: lineWidth)
-            ?? Constants.defaultRowHeight
+                ?? Constants.defaultRowHeight
         )
     }
 }
@@ -221,12 +221,40 @@ extension TaskListModuleViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         output?.selectRowAt(indexPath: indexPath, on: self)
     }
+
+    func tableView(
+        _ tableView: UITableView,
+        contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        let configuration = UIContextMenuConfiguration(
+            identifier: indexPath as NSCopying,
+            previewProvider: {
+                return self.output?.getPreview(indexPath: indexPath) ?? UIViewController()
+            }, actionProvider: { _ in
+                return nil
+            }
+        )
+
+        return configuration
+    }
+
+    func tableView(
+        _ tableView: UITableView,
+        willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration,
+        animator: UIContextMenuInteractionCommitAnimating
+    ) {
+        guard let indexPath = configuration.identifier as? IndexPath
+        else { return }
+        animator.addCompletion {
+            self.output?.selectRowAt(indexPath: indexPath, on: self)
+        }
+    }
 }
 
 // MARK: - TaskListModuleViewInput extension
 
 extension TaskListModuleViewController: TaskListModuleViewInput {
-
     func reloadData() {
         guard let output = output else {
             return
