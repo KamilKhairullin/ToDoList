@@ -6,7 +6,7 @@ protocol EditTaskModuleInput: AnyObject {}
 protocol EditTaskModuleOutput: AnyObject {
     func dismissPresented(on viewController: UIViewController)
     func deleteItem(item: TodoItem)
-    func saveFileCache()
+    func saveCacheToFile()
 }
 
 final class EditTaskModulePresenter {
@@ -74,7 +74,7 @@ final class EditTaskModulePresenter {
             createdAt: todoItem.createdAt,
             editedAt: Date())
         )
-        output.saveFileCache()
+        output.saveCacheToFile()
     }
 
     private static func makeDefaultItem() -> TodoItem {
@@ -113,7 +113,9 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
     }
 
     func textEdited(to text: String) {
+        let text = showPlaceholder ? Constants.emptyText : text
         showPlaceholder = false
+
         todoItem = TodoItem(
             id: todoItem.id,
             text: text,

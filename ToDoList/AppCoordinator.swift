@@ -21,7 +21,7 @@ final class AppCoordinator {
         fileCache.save(to: Constants.filename)
     }
 
-    func saveFileCache() {
+    func saveCacheToFile() {
         fileCache.save(to: Constants.filename)
     }
 }
