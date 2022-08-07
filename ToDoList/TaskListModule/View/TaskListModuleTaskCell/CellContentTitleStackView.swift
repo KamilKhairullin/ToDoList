@@ -32,8 +32,12 @@ final class CellContentTitleStackView: UIStackView {
 
     // MARK: - Public
 
-    func setLabelText(_ text: String) {
-        label.text = text
+    func setLabelText(_ text: String, isStrikethrough: Bool) {
+        let attributedText = NSAttributedString(
+            string: text,
+            attributes: isStrikethrough ? [.strikethroughStyle: NSUnderlineStyle.single.rawValue] : [:]
+        )
+        label.attributedText = attributedText
     }
 
     func setPriorityImage(name: String) {

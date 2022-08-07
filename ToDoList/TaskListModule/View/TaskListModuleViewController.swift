@@ -6,11 +6,12 @@ protocol TaskListModuleViewInput: AnyObject {
 }
 
 protocol TaskListModuleViewOutput: AnyObject {
-    func getCellData(forIndexPath indexPath: IndexPath) -> TaskListTableViewCellData
+    func getCellData(_ indexPath: IndexPath) -> TaskListTableViewCellData
     func plusButtonPressed()
     func getRowsNumber() -> Int
     func getRowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
+    func completeButtonPressed(indexPath: IndexPath?)
 }
 
 final class TaskListModuleViewController: UIViewController {
@@ -157,7 +158,7 @@ extension TaskListModuleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         guard
-            let data = output?.getCellData(forIndexPath: indexPath),
+            let data = output?.getCellData(indexPath),
             let cell = tableView.dequeueReusableCell(
                 withIdentifier: data.reuseIdentifier,
                 for: indexPath

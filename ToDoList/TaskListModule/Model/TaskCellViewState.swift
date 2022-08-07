@@ -7,4 +7,5 @@ struct TaskCellViewState {
     let isOverdue: Bool
     let deadlineString: String?
     let priorityImageName: String?
+    let output: TaskListModuleViewOutput
 }

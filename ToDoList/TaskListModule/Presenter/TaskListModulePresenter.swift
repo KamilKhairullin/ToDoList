@@ -44,11 +44,35 @@ final class TaskListModulePresenter {
 
         return min(Constants.maxNumberOfLines, (size / lineWidth) + 1)
     }
+
+    private func isOverdue(deadline: Date?) -> Bool {
+        guard let deadline = deadline else {
+            return false
+        }
+        return Date() > deadline
+    }
 }
 
 // MARK: - TaskListModuleViewOutput extension
 
 extension TaskListModulePresenter: TaskListModuleViewOutput {
+    func completeButtonPressed(indexPath: IndexPath?) {
+        guard let indexPath = indexPath else {
+            return
+        }
+        let item = fileCache.todoItems[indexPath.row]
+        fileCache.addTask(TodoItem(
+            id: item.id,
+            text: item.text,
+            priority: item.priority,
+            deadline: item.deadline,
+            isDone: !item.isDone,
+            createdAt: item.createdAt,
+            editedAt: Date())
+        )
+        view?.reloadData()
+    }
+
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController) {
         if indexPath.row == fileCache.todoItems.count {
             output.showCreateNewTask()
@@ -61,20 +85,22 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
         output.showCreateNewTask()
     }
 
-    func getCellData(forIndexPath indexPath: IndexPath) -> TaskListTableViewCellData {
+    func getCellData(_ indexPath: IndexPath) -> TaskListTableViewCellData {
         switch indexPath.row {
         case fileCache.todoItems.count:
             return TaskListTableViewCellData.createNewTaskCell
         default:
             let item = fileCache.todoItems[indexPath.row]
+
             return TaskListTableViewCellData.taskCell(
                 TaskCellViewState(
                     text: item.text,
                     hideSubtitle: item.deadline == nil,
                     isDone: item.isDone,
-                    isOverdue: false, // TODO:
+                    isOverdue: isOverdue(deadline: item.deadline),
                     deadlineString: item.deadline?.taskListFormat,
-                    priorityImageName: priorityToImageName(item.priority)
+                    priorityImageName: priorityToImageName(item.priority),
+                    output: self
                 )
             )
         }

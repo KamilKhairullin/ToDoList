@@ -6,6 +6,8 @@ final class TaskListModuleTaskCell: UITableViewCell {
 
     static let reuseIdentifier = "TaskListModuleTaskCell"
 
+    private var output: TaskListModuleViewOutput?
+
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -18,8 +20,7 @@ final class TaskListModuleTaskCell: UITableViewCell {
 
     private lazy var completeButton: UIButton = {
         let button = UIButton()
-        let image = UIImage(named: Constants.buttonImageName)
-        button.setImage(image, for: .normal)
+        button.addTarget(self, action: #selector(completeButtonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -46,6 +47,14 @@ final class TaskListModuleTaskCell: UITableViewCell {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Selectors
+
+    @objc private func completeButtonPressed() {
+        // Мне кажется, так делать плохо. Но, я не придумал как сделать по-другому.
+        let tableView = superview?.superview as? UITableView
+        output?.completeButtonPressed(indexPath: tableView?.indexPath(for: self))
     }
 
     // MARK: - Private
@@ -75,7 +84,9 @@ extension TaskListModuleTaskCell {
     enum Constants {
         static let stackSpacing: CGFloat = 12
         static let accessoryImageName: String = "CellAccessory"
-        static let buttonImageName: String = "taskButtonNormalState"
+        static let taskButtonCompletedImageName = "taskButtonCompletedState"
+        static let taskButtonNormalImageName = "taskButtonNormalState"
+        static let taskButtonOverdueImageName = "taskButtonOverdueState"
     }
 
     enum Insets {
@@ -89,7 +100,8 @@ extension TaskListModuleTaskCell: TaskListModuleTaskCellConfigurable {
     func configure(with data: TaskListTableViewCellData) {
         switch data {
         case .taskCell(let data):
-            cellContentStackView.contentTitleStack.setLabelText(data.text)
+            output = data.output
+            cellContentStackView.contentTitleStack.setLabelText(data.text, isStrikethrough: data.isDone)
             cellContentStackView.contentSubtitleStack.isHidden = data.hideSubtitle
             data.deadlineString.flatMap {
                 cellContentStackView.contentSubtitleStack.setDateLabel(text: $0.description)
@@ -100,6 +112,15 @@ extension TaskListModuleTaskCell: TaskListModuleTaskCellConfigurable {
             } else {
                 cellContentStackView.contentTitleStack.setPriorityImageVisibility(isHidden: true)
             }
+            let image: UIImage?
+            if data.isDone {
+                image = UIImage(named: Constants.taskButtonCompletedImageName)
+            } else if data.isOverdue {
+                image = UIImage(named: Constants.taskButtonOverdueImageName)
+            } else {
+                image = UIImage(named: Constants.taskButtonNormalImageName)
+            }
+            completeButton.setImage(image, for: .normal)
         case .createNewTaskCell:
             break
         }
