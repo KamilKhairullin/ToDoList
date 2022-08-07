@@ -49,7 +49,7 @@ final class TaskListModuleHeaderView: UIView {
                 constant: Insets.doneAmountLabelInsets.left
             ),
             doneAmountLabel.topAnchor.constraint(equalTo: topAnchor),
-            doneAmountLabel.heightAnchor.constraint(equalToConstant: 20)
+            doneAmountLabel.heightAnchor.constraint(equalToConstant: Constants.doneAmountLabelHeight)
         ])
     }
 
@@ -62,7 +62,7 @@ final class TaskListModuleHeaderView: UIView {
                 constant: Insets.hideDoneButtonInsets.right
             ),
             hideDoneButton.topAnchor.constraint(equalTo: topAnchor),
-            hideDoneButton.heightAnchor.constraint(equalToConstant: 20)
+            hideDoneButton.heightAnchor.constraint(equalToConstant: Constants.hideDoneButtonHeight)
         ])
     }
 }
@@ -76,6 +76,8 @@ extension TaskListModuleHeaderView {
     }
 
     enum Constants {
+        static let doneAmountLabelHeight: CGFloat = 20
+        static let hideDoneButtonHeight: CGFloat = 20
         static let doneAmountLabelTitle: String = "Выполнено - 5"
         static let hideDoneButtonTitle: String = "Показать"
     }

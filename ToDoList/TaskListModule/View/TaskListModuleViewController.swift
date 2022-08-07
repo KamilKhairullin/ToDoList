@@ -1,14 +1,24 @@
 import Foundation
 import UIKit
 
+protocol TaskListModuleViewInput: AnyObject {
+    func reloadData()
+}
+
+protocol TaskListModuleViewOutput: AnyObject {
+    func getCellData(forIndexPath indexPath: IndexPath) -> TaskListTableViewCellData
+    func plusButtonPressed()
+    func getRowsNumber() -> Int
+}
+
 final class TaskListModuleViewController: UIViewController {
     // MARK: - Properties
 
-    private var output: TaskListModuleViewOutput
+    private var output: TaskListModuleViewOutput?
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.register(TaskListModuleCell.self, forCellReuseIdentifier: TaskListModuleCell.reuseIdentifier)
+        tableView.register(TaskListModuleTaskCell.self, forCellReuseIdentifier: TaskListModuleTaskCell.reuseIdentifier)
         tableView.register(
             TaskListCreateNewTaskCell.self,
             forCellReuseIdentifier: TaskListCreateNewTaskCell.reuseIdentifier
@@ -31,12 +41,11 @@ final class TaskListModuleViewController: UIViewController {
         let image = UIImage(named: Constants.plusButtonImageName)
         button.setImage(image, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-
         button.layer.shadowColor = ColorPalette.buttonShadow.cgColor
         button.layer.shadowRadius = PlusButtonStyle.shadowRadius
         button.layer.shadowOpacity = PlusButtonStyle.opacity
         button.layer.shadowOffset = PlusButtonStyle.shadowOffset
-//        button.addTarget(self, action: #selector(plusButtonTriggered), for: .touchUpInside)
+        button.addTarget(self, action: #selector(plusButtonPressed), for: .touchUpInside)
         return button
     }()
 
@@ -56,6 +65,12 @@ final class TaskListModuleViewController: UIViewController {
         super.viewDidLoad()
         setupTableView()
         setupPlusButton()
+    }
+
+    // MARK: - Selectors
+
+    @objc private func plusButtonPressed() {
+        output?.plusButtonPressed()
     }
 
     // MARK: - Private
@@ -135,19 +150,23 @@ final class TaskListModuleViewController: UIViewController {
 
 extension TaskListModuleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        output?.getRowsNumber() ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier: String
-        switch indexPath.row {
-        case 9:
-            identifier = TaskListCreateNewTaskCell.reuseIdentifier
-        default:
-            identifier = TaskListModuleCell.reuseIdentifier
+
+        guard
+            let data = output?.getCellData(forIndexPath: indexPath),
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: data.reuseIdentifier,
+                for: indexPath
+            ) as? UITableViewCell & TaskListModuleTaskCellConfigurable
+        else {
+            return UITableViewCell()
         }
-        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+
         cell.separatorInset = Insets.cellSeparatorInsets
+        cell.configure(with: data)
         return cell
     }
 }
@@ -186,7 +205,11 @@ extension TaskListModuleViewController: UITableViewDelegate {
 
 // MARK: - TaskListModuleViewInput extension
 
-extension TaskListModuleViewController: TaskListModuleViewInput {}
+extension TaskListModuleViewController: TaskListModuleViewInput {
+    func reloadData() {
+        tableView.reloadData()
+    }
+}
 
 // MARK: - Nested types
 

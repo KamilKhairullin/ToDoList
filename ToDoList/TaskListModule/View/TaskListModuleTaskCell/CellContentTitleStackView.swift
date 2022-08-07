@@ -5,7 +5,6 @@ final class CellContentTitleStackView: UIStackView {
 
     private lazy var priorityImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: Constatns.priorityImageName)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -22,7 +21,7 @@ final class CellContentTitleStackView: UIStackView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews()
+        setupView()
     }
 
     @available(*, unavailable)
@@ -30,9 +29,22 @@ final class CellContentTitleStackView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Public
+
+    func setLabelText(_ text: String) {
+        label.text = text
+    }
+
+    func setPriorityImage(name: String) {
+        priorityImageView.image = UIImage(named: name)
+    }
+    
+    func setPriorityImageVisibility(isHidden: Bool) {
+        priorityImageView.isHidden = isHidden
+    }
     // MARK: - Private
 
-    private func setupViews() {
+    private func setupView() {
         axis = .horizontal
         alignment = .center
         distribution = .fill
@@ -48,6 +60,5 @@ extension CellContentTitleStackView {
     enum Constatns {
         static let stackSpacing: CGFloat = 5
         static let labelText: String = "Купить что-то"
-        static let priorityImageName: String = "highPriority"
     }
 }

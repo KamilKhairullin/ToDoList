@@ -1,10 +1,11 @@
 import UIKit
 
 final class CustomNavigationController: UINavigationController {
-    init(rootViewController: UIViewController, title: String) {
-        super.init(rootViewController: rootViewController)
-        rootViewController.title = title
-        rootViewController.view?.backgroundColor = ColorPalette.backgroundColor
+    init(rootViewController: UIViewController?, title: String) {
+        let viewController: UIViewController = rootViewController ?? UIViewController()
+        super.init(rootViewController: viewController)
+        viewController.title = title
+        viewController.view?.backgroundColor = ColorPalette.backgroundColor
         setupNavigationBarAppearance()
     }
 

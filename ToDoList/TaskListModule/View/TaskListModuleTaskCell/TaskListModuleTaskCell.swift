@@ -1,10 +1,10 @@
 import Foundation
 import UIKit
 
-final class TaskListModuleCell: UITableViewCell {
+final class TaskListModuleTaskCell: UITableViewCell {
     // MARK: - Properties
 
-    static let reuseIdentifier = "TaskListModuleCell"
+    static let reuseIdentifier = "TaskListModuleTaskCell"
 
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
@@ -12,7 +12,7 @@ final class TaskListModuleCell: UITableViewCell {
         stackView.alignment = .center
         stackView.distribution = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.spacing = 12
+        stackView.spacing = Constants.stackSpacing
         return stackView
     }()
 
@@ -71,13 +71,37 @@ final class TaskListModuleCell: UITableViewCell {
 
 // MARK: - Nested types
 
-extension TaskListModuleCell {
+extension TaskListModuleTaskCell {
     enum Constants {
+        static let stackSpacing: CGFloat = 12
         static let accessoryImageName: String = "CellAccessory"
         static let buttonImageName: String = "taskButtonNormalState"
     }
 
     enum Insets {
         static let stackInsets: UIEdgeInsets = .init(top: 0, left: 16, bottom: 0, right: 0)
+    }
+}
+
+// MARK: - TaskListModuleTaskCellConfigurable extension
+
+extension TaskListModuleTaskCell: TaskListModuleTaskCellConfigurable {
+    func configure(with data: TaskListTableViewCellData) {
+        switch data {
+        case .taskCell(let data):
+            cellContentStackView.contentTitleStack.setLabelText(data.text)
+            cellContentStackView.contentSubtitleStack.isHidden = data.hideSubtitle
+            data.deadlineString.flatMap {
+                cellContentStackView.contentSubtitleStack.setDateLabel(text: $0.description)
+            }
+            if let priorityImageName = data.priorityImageName {
+                cellContentStackView.contentTitleStack.setPriorityImage(name: priorityImageName)
+                cellContentStackView.contentTitleStack.setPriorityImageVisibility(isHidden: false)
+            } else {
+                cellContentStackView.contentTitleStack.setPriorityImageVisibility(isHidden: true)
+            }
+        case .createNewTaskCell:
+            break
+        }
     }
 }

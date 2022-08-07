@@ -3,13 +3,13 @@ import UIKit
 final class CellContentStackView: UIStackView {
     // MARK: - Properties
 
-    private lazy var contentTitleStack: CellContentTitleStackView = {
+    lazy var contentTitleStack: CellContentTitleStackView = {
         let contentTitleStackView = CellContentTitleStackView()
         contentTitleStackView.translatesAutoresizingMaskIntoConstraints = false
         return contentTitleStackView
     }()
 
-    private lazy var contentSubtitleStack: CellContentSubtitleStackView = {
+    lazy var contentSubtitleStack: CellContentSubtitleStackView = {
         let contentSubtitleStackView = CellContentSubtitleStackView()
         contentSubtitleStackView.translatesAutoresizingMaskIntoConstraints = false
         return contentSubtitleStackView
@@ -19,6 +19,12 @@ final class CellContentStackView: UIStackView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupView()
+    }
+
+    // MARK: - Private
+
+    private func setupView() {
         axis = .vertical
         alignment = .leading
         distribution = .fill

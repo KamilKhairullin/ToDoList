@@ -13,6 +13,7 @@ final class CellContentSubtitleStackView: UIStackView {
         let label = UILabel()
         label.text = Constatns.labelText
         label.font = FontPalette.subhead
+        label.textColor = ColorPalette.tertiary
         return label
     }()
 
@@ -20,7 +21,7 @@ final class CellContentSubtitleStackView: UIStackView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews()
+        setupView()
     }
 
     @available(*, unavailable)
@@ -28,9 +29,14 @@ final class CellContentSubtitleStackView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Public
+
+    func setDateLabel(text: String) {
+        dateLabel.text = text
+    }
     // MARK: - Private
 
-    private func setupViews() {
+    private func setupView() {
         axis = .horizontal
         alignment = .center
         distribution = .fill

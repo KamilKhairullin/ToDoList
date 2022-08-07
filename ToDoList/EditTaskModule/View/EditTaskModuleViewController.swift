@@ -1,6 +1,37 @@
 import Foundation
 import UIKit
 
+protocol EditTaskModuleViewInput: AnyObject {
+    // swiftlint:disable:next function_parameter_count
+    func update(
+        text: String,
+        showPlaceholder: Bool,
+        prioritySegment: Int,
+        switchIsOn: Bool,
+        isCalendarShown: Bool,
+        deadline: Date?,
+        deadlineString: String?,
+        isDeleteEnabled: Bool,
+        isSaveEnabled: Bool
+    )
+}
+
+protocol EditTaskModuleViewOutput: AnyObject {
+    func switchTapped(isOn: Bool)
+
+    func newDatePicked(_ date: Date)
+
+    func textEdited(to text: String)
+
+    func prioritySet(to segment: Int)
+
+    func deletePressed()
+
+    func savePressed()
+
+    func cancelPressed()
+}
+
 // swiftlint:disable file_length
 final class EditTaskModuleViewController: UIViewController {
     // MARK: - Properties
@@ -99,6 +130,18 @@ final class EditTaskModuleViewController: UIViewController {
         return saveButton
     }()
 
+    private lazy var cancelButton: UIBarButtonItem = {
+        let cancelButton = UIBarButtonItem(
+            title: Constants.cancelButtonText,
+            style: .plain,
+            target: self,
+            action: nil
+        )
+        cancelButton.isEnabled = true
+        cancelButton.addTargetForAction(target: self, action: #selector(cancelButtonPressed))
+        return cancelButton
+    }()
+
     // MARK: - Lifecycle
 
     init(output: EditTaskModuleViewOutput) {
@@ -179,6 +222,10 @@ final class EditTaskModuleViewController: UIViewController {
 
     @objc func saveButtonPressed(sender: UIBarButtonItem) {
         output.savePressed()
+    }
+
+    @objc func cancelButtonPressed(sender: UIBarButtonItem) {
+        output.cancelPressed()
     }
 
     @objc func textFieldDidChange(sender: UITextView) {
@@ -327,6 +374,7 @@ final class EditTaskModuleViewController: UIViewController {
 
     private func setupNavigationItem() {
         navigationItem.rightBarButtonItem = saveButton
+        navigationItem.leftBarButtonItem = cancelButton
         navigationItem.title = Constants.navigationItemTitle
     }
 }
@@ -341,6 +389,7 @@ extension EditTaskModuleViewController {
         static let datePickerHeight: CGFloat = 338
         static let buttonHeight: CGFloat = 56
         static let buttonText: String = "Удалить"
+        static let cancelButtonText: String = "Отменить"
         static let saveButtonText: String = "Cохранить"
         static let navigationItemTitle: String = "Дело"
         static let separatorHeight: CGFloat = 0.5
