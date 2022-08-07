@@ -10,6 +10,7 @@ protocol TaskListModuleViewOutput: AnyObject {
     func plusButtonPressed()
     func getRowsNumber() -> Int
     func getRowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int
+    func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
 }
 
 final class TaskListModuleViewController: UIViewController {
@@ -208,6 +209,10 @@ extension TaskListModuleViewController: UITableViewDelegate {
         let swipeConfiguration = UISwipeActionsConfiguration(actions: [deleteAction, infoAction])
         swipeConfiguration.performsFirstActionWithFullSwipe = true
         return swipeConfiguration
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        output?.selectRowAt(indexPath: indexPath, on: self)
     }
 }
 

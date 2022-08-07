@@ -66,17 +66,6 @@ final class FileCache {
         }
     }
 
-    func deleteCacheFile(file: String) {
-        guard let path = getCachePath(for: file)
-        else { return }
-        do {
-            print(path.absoluteString)
-            try FileManager.default.removeItem(atPath: path.path)
-        } catch {
-            print("Unable to delete file. \(error)")
-        }
-    }
-
     // MARK: - Private
 
     private func getCachePath(for file: String) -> URL? {

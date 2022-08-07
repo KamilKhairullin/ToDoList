@@ -1,11 +1,12 @@
 import Foundation
+import UIKit
 
 protocol EditTaskModuleInput: AnyObject {
     func loadItemFromCache(id: String)
 }
 
 protocol EditTaskModuleOutput: AnyObject {
-    func dismissPresented()
+    func dismissPresented(on viewController: UIViewController)
 }
 
 final class EditTaskModulePresenter {
@@ -13,8 +14,7 @@ final class EditTaskModulePresenter {
 
     weak var view: EditTaskModuleViewInput? {
         didSet {
-            todoItem = EditTaskModulePresenter.makeDefaultItem()
-//            loadCacheFromFile()
+            updateView()
         }
     }
 
@@ -22,32 +22,20 @@ final class EditTaskModulePresenter {
 
     private var todoItem: TodoItem {
         didSet {
-            let hasDeadline = todoItem.deadline != nil
-            let saveEnabled = todoItem.text != Constants.emptyText && !showPlaceholder
-
-            view?.update(
-                text: todoItem.text,
-                showPlaceholder: showPlaceholder,
-                prioritySegment: EditTaskModulePresenter.toSegment(todoItem.priority),
-                switchIsOn: hasDeadline,
-                isCalendarShown: hasDeadline,
-                deadline: todoItem.deadline,
-                deadlineString: todoItem.deadline?.editTaskFormat,
-                isDeleteEnabled: true,
-                isSaveEnabled: saveEnabled
-            )
+            updateView()
         }
     }
 
     private let fileCache: FileCache
-    private var showPlaceholder = true
+    private var showPlaceholder: Bool
 
     // MARK: - Lifecycle
 
-    init(output: EditTaskModuleOutput, fileCache: FileCache) {
+    init(output: EditTaskModuleOutput, fileCache: FileCache, with todoItem: TodoItem?) {
         self.output = output
         self.fileCache = fileCache
-        self.todoItem = EditTaskModulePresenter.makeDefaultItem()
+        self.showPlaceholder = todoItem != nil ? false : true
+        self.todoItem = todoItem ?? EditTaskModulePresenter.makeDefaultItem()
     }
 
     // MARK: - Public
@@ -76,19 +64,8 @@ final class EditTaskModulePresenter {
 
     // MARK: - Private
 
-    private func loadCacheFromFile() {
-        fileCache.load(from: Constants.filename)
-        if let loadedItem = fileCache.todoItems.first {
-            todoItem = loadedItem
-            showPlaceholder = false
-        } else {
-            todoItem = EditTaskModulePresenter.makeDefaultItem()
-        }
-    }// TODO
-
     private func saveCacheToFile() {
         fileCache.addTask(todoItem)
-        print(fileCache.todoItems)
         fileCache.save(to: Constants.filename)
     }
 
@@ -101,11 +78,28 @@ final class EditTaskModulePresenter {
             editedAt: nil
         )
     }
+
+    private func updateView() {
+        let hasDeadline = todoItem.deadline != nil
+        let saveEnabled = todoItem.text != Constants.emptyText && !showPlaceholder
+
+        view?.update(
+            text: todoItem.text,
+            showPlaceholder: showPlaceholder,
+            prioritySegment: EditTaskModulePresenter.toSegment(todoItem.priority),
+            switchIsOn: hasDeadline,
+            isCalendarShown: hasDeadline,
+            deadline: todoItem.deadline,
+            deadlineString: todoItem.deadline?.editTaskFormat,
+            isDeleteEnabled: true,
+            isSaveEnabled: saveEnabled
+        )
+    }
 }
 
 extension EditTaskModulePresenter: EditTaskModuleViewOutput {
-    func cancelPressed() {
-        output.dismissPresented()
+    func cancelPressed(on viewController: UIViewController) {
+        output.dismissPresented(on: viewController)
     }
 
     func textEdited(to text: String) {
@@ -134,12 +128,11 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
         )
     }
 
-    func deletePressed() {
+    func deletePressed(on viewController: UIViewController) {
         showPlaceholder = true
         fileCache.deleteTask(id: todoItem.id)
         fileCache.save(to: Constants.filename)
-//        fileCache.deleteCacheFile(file: Constants.filename)
-        todoItem = EditTaskModulePresenter.makeDefaultItem()
+        output.dismissPresented(on: viewController)
     }
 
     func newDatePicked(_ date: Date) {
@@ -167,9 +160,9 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
         )
     }
 
-    func savePressed() {
+    func savePressed(on viewController: UIViewController) {
         saveCacheToFile()
-        output.dismissPresented()
+        output.dismissPresented(on: viewController)
     }
 }
 

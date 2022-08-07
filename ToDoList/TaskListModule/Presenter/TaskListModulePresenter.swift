@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 protocol TaskListModuleInput: AnyObject {
     func reloadData()
@@ -6,6 +7,7 @@ protocol TaskListModuleInput: AnyObject {
 
 protocol TaskListModuleOutput: AnyObject {
     func showCreateNewTask()
+    func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
 }
 
 final class TaskListModulePresenter {
@@ -47,6 +49,14 @@ final class TaskListModulePresenter {
 // MARK: - TaskListModuleViewOutput extension
 
 extension TaskListModulePresenter: TaskListModuleViewOutput {
+    func selectRowAt(indexPath: IndexPath, on viewController: UIViewController) {
+        if indexPath.row == fileCache.todoItems.count {
+            output.showCreateNewTask()
+        } else {
+            output.selectRowAt(indexPath: indexPath, on: viewController)
+        }
+    }
+
     func plusButtonPressed() {
         output.showCreateNewTask()
     }

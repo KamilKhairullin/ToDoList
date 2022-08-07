@@ -25,11 +25,11 @@ protocol EditTaskModuleViewOutput: AnyObject {
 
     func prioritySet(to segment: Int)
 
-    func deletePressed()
+    func deletePressed(on viewController: UIViewController)
 
-    func savePressed()
+    func savePressed(on viewController: UIViewController)
 
-    func cancelPressed()
+    func cancelPressed(on viewController: UIViewController)
 }
 
 // swiftlint:disable file_length
@@ -147,6 +147,7 @@ final class EditTaskModuleViewController: UIViewController {
     init(output: EditTaskModuleViewOutput) {
         self.output = output
         super.init(nibName: nil, bundle: nil)
+        self.navigationItem.largeTitleDisplayMode = .never
     }
 
     @available(*, unavailable)
@@ -217,15 +218,15 @@ final class EditTaskModuleViewController: UIViewController {
     }
 
     @objc func deletePressed(sender: UIButton) {
-        output.deletePressed()
+        output.deletePressed(on: self)
     }
 
     @objc func saveButtonPressed(sender: UIBarButtonItem) {
-        output.savePressed()
+        output.savePressed(on: self)
     }
 
     @objc func cancelButtonPressed(sender: UIBarButtonItem) {
-        output.cancelPressed()
+        output.cancelPressed(on: self)
     }
 
     @objc func textFieldDidChange(sender: UITextView) {
