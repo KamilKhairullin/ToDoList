@@ -9,6 +9,7 @@ final class AppCoordinator {
     init() {
         fileCache = FileCache()
         fileCache.load(from: "savedCache.json")
+        print(fileCache.todoItems)
         taskListModule = taskListModuleBuilder()
         rootViewController = CustomNavigationController(
             rootViewController: taskListModule?.viewController,

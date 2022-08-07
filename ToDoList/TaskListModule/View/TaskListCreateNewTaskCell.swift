@@ -4,13 +4,13 @@ import UIKit
 final class TaskListCreateNewTaskCell: UITableViewCell {
     // MARK: - Properties
 
-    static let reuseIdentifier = "TaskListCreateNewCell"
+    static let reuseIdentifier = "TaskListCreateNewTaskCell"
 
     private lazy var label: UILabel = {
         let label = UILabel()
-        label.text = Constants.labelText
         label.textColor = ColorPalette.tertiary
         label.font = FontPalette.body
+        label.text = Constants.labelText
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -51,5 +51,13 @@ extension TaskListCreateNewTaskCell {
 
     enum Insets {
         static let labelInsets: UIEdgeInsets = .init(top: 17, left: 53, bottom: -17, right: 0)
+    }
+}
+
+// MARK: - TaskListModuleTaskCellConfigurable extension
+
+extension TaskListCreateNewTaskCell: TaskListModuleTaskCellConfigurable {
+    func configure(with data: TaskListTableViewCellData) {
+        return
     }
 }

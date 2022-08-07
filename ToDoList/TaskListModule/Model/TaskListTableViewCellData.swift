@@ -7,6 +7,11 @@ enum TaskListTableViewCellData {
 
 extension TaskListTableViewCellData {
     var reuseIdentifier: String {
-        TaskListModuleTaskCell.reuseIdentifier
+        switch self {
+        case .createNewTaskCell:
+            return TaskListCreateNewTaskCell.reuseIdentifier
+        case .taskCell:
+            return TaskListModuleTaskCell.reuseIdentifier
+        }
     }
 }

@@ -9,6 +9,7 @@ protocol TaskListModuleViewOutput: AnyObject {
     func getCellData(forIndexPath indexPath: IndexPath) -> TaskListTableViewCellData
     func plusButtonPressed()
     func getRowsNumber() -> Int
+    func getRowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int
 }
 
 final class TaskListModuleViewController: UIViewController {
@@ -26,7 +27,6 @@ final class TaskListModuleViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = Constants.rowHeight
         tableView.backgroundColor = ColorPalette.backgroundColor
         return tableView
     }()
@@ -169,6 +169,14 @@ extension TaskListModuleViewController: UITableViewDataSource {
         cell.configure(with: data)
         return cell
     }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let lineWidth = Int(tableView.bounds.width - Insets.cellSeparatorInsets.left)
+        return CGFloat(
+            output?.getRowHeight(forIndexPath: indexPath, lineWidth: lineWidth)
+            ?? Constants.defaultRowHeight
+        )
+    }
 }
 
 // MARK: - UITableViewDelegate extension
@@ -215,7 +223,7 @@ extension TaskListModuleViewController: TaskListModuleViewInput {
 
 extension TaskListModuleViewController {
     enum Constants {
-        static let rowHeight: CGFloat = 66
+        static let defaultRowHeight: Int = 56
         static let sectionHeaderHeight: CGFloat = 32
         static let doneSwipeImageName: String = "doneSwipeImage"
         static let infoSwipeImageName: String = "infoSwipeImage"

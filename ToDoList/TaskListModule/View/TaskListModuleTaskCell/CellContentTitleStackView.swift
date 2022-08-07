@@ -13,7 +13,8 @@ final class CellContentTitleStackView: UIStackView {
         let label = UILabel()
         label.font = FontPalette.body
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = Constatns.labelText
+        label.lineBreakMode = .byTruncatingTail
+        label.numberOfLines = Constatns.numberOfLines
         return label
     }()
 
@@ -38,7 +39,7 @@ final class CellContentTitleStackView: UIStackView {
     func setPriorityImage(name: String) {
         priorityImageView.image = UIImage(named: name)
     }
-    
+
     func setPriorityImageVisibility(isHidden: Bool) {
         priorityImageView.isHidden = isHidden
     }
@@ -60,5 +61,6 @@ extension CellContentTitleStackView {
     enum Constatns {
         static let stackSpacing: CGFloat = 5
         static let labelText: String = "Купить что-то"
+        static let numberOfLines = 3
     }
 }

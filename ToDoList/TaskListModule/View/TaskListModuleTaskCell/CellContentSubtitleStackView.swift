@@ -11,7 +11,6 @@ final class CellContentSubtitleStackView: UIStackView {
 
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
-        label.text = Constatns.labelText
         label.font = FontPalette.subhead
         label.textColor = ColorPalette.tertiary
         return label
@@ -51,7 +50,6 @@ final class CellContentSubtitleStackView: UIStackView {
 extension CellContentSubtitleStackView {
     enum Constatns {
         static let stackSpacing: CGFloat = 3.5
-        static let labelText: String = "14 июня"
         static let calendarImageName: String = "calendarImage"
     }
 }

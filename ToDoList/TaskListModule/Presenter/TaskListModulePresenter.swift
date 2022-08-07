@@ -35,6 +35,13 @@ final class TaskListModulePresenter {
             return nil
         }
     }
+
+    private func calculateNumberOfLinesForText(item: TodoItem, lineWidth: Int) -> Int {
+        let fontAttributes = [NSAttributedString.Key.font: FontPalette.body]
+        let size = Int((item.text as NSString).size(withAttributes: fontAttributes).width)
+
+        return min(Constants.maxNumberOfLines, (size / lineWidth) + 1)
+    }
 }
 
 // MARK: - TaskListModuleViewOutput extension
@@ -55,7 +62,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
                     text: item.text,
                     hideSubtitle: item.deadline == nil,
                     isDone: item.isDone,
-                    isOverdue: false, // TODO
+                    isOverdue: false, // TODO:
                     deadlineString: item.deadline?.taskListFormat,
                     priorityImageName: priorityToImageName(item.priority)
                 )
@@ -64,10 +71,39 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
     }
 
     func getRowsNumber() -> Int {
-        return fileCache.todoItems.count
+        return fileCache.todoItems.count + 1
+    }
+
+    func getRowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int {
+        switch indexPath.row {
+        case fileCache.todoItems.count:
+            return Constants.defaultCellHeight
+        default:
+            let item = fileCache.todoItems[indexPath.row]
+            var rowHeight = Constants.defaultCellHeight
+            if item.deadline != nil {
+                rowHeight += Constants.subtitleHeight
+            }
+            let numberOfTextLines = calculateNumberOfLinesForText(item: item, lineWidth: lineWidth)
+            for _ in 1 ..< numberOfTextLines {
+                rowHeight += Constants.textRowHeight
+            }
+            return rowHeight
+        }
     }
 }
 
+// MARK: - Nested types
+
+extension TaskListModulePresenter {
+    enum Constants {
+        static let defaultCellHeight = 56
+        static let subtitleHeight = 10
+        static let textRowHeight = 22
+        static let maxNumberOfLines = 3
+    }
+}
+// MARK: - TaskListModuleInput extension
 extension TaskListModulePresenter: TaskListModuleInput {
     func reloadData() {
         view?.reloadData()
