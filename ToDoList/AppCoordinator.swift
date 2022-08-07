@@ -8,13 +8,21 @@ final class AppCoordinator {
 
     init() {
         fileCache = FileCache()
-        fileCache.load(from: "savedCache.json")
-        print(fileCache.todoItems)
+        fileCache.load(from: Constants.filename)
         taskListModule = taskListModuleBuilder()
         rootViewController = CustomNavigationController(
             rootViewController: taskListModule?.viewController,
             title: "Мои дела"
         )
+    }
+
+    func deleteItem(item: TodoItem) {
+        fileCache.deleteTask(id: item.id)
+        fileCache.save(to: Constants.filename)
+    }
+
+    func saveFileCache() {
+        fileCache.save(to: Constants.filename)
     }
 }
 
@@ -27,6 +35,7 @@ extension AppCoordinator {
 // MARK: - EditTaskModuleOutput extension
 
 extension AppCoordinator: EditTaskModuleOutput {
+
     func dismissPresented(on viewController: UIViewController) {
         viewController.dismiss(animated: true)
         viewController.navigationController?.popViewController(animated: true)
@@ -49,5 +58,13 @@ extension AppCoordinator: TaskListModuleOutput {
         let viewController = builder.viewController
         let viewToPresent = UINavigationController(rootViewController: viewController)
         rootViewController.present(viewToPresent, animated: true)
+    }
+}
+
+// MARK: - Nested types
+
+extension AppCoordinator {
+    enum Constants {
+        static let filename: String = "savedCache.json"
     }
 }

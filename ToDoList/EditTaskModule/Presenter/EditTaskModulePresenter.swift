@@ -1,12 +1,12 @@
 import Foundation
 import UIKit
 
-protocol EditTaskModuleInput: AnyObject {
-    func loadItemFromCache(id: String)
-}
+protocol EditTaskModuleInput: AnyObject {}
 
 protocol EditTaskModuleOutput: AnyObject {
     func dismissPresented(on viewController: UIViewController)
+    func deleteItem(item: TodoItem)
+    func saveFileCache()
 }
 
 final class EditTaskModulePresenter {
@@ -74,7 +74,7 @@ final class EditTaskModulePresenter {
             createdAt: todoItem.createdAt,
             editedAt: Date())
         )
-        fileCache.save(to: Constants.filename)
+        output.saveFileCache()
     }
 
     private static func makeDefaultItem() -> TodoItem {
@@ -138,8 +138,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
 
     func deletePressed(on viewController: UIViewController) {
         showPlaceholder = true
-        fileCache.deleteTask(id: todoItem.id)
-        fileCache.save(to: Constants.filename)
+        output.deleteItem(item: todoItem)
         output.dismissPresented(on: viewController)
     }
 
@@ -178,20 +177,9 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
 
 extension EditTaskModulePresenter {
     enum Constants {
-        static let filename: String = "savedCache.json"
         static let defaultText: String = "Что будем делать?"
         static let defaultPriority: TodoItem.Priority = .ordinary
         static let defaultDeadline: Date? = nil
         static let emptyText: String = ""
-    }
-}
-
-extension EditTaskModulePresenter: EditTaskModuleInput {
-    func loadItemFromCache(id: String) {
-        fileCache.load(from: Constants.filename)
-        if let loadedItem = fileCache.todoItems.first {
-            todoItem = loadedItem
-            showPlaceholder = false
-        }
     }
 }

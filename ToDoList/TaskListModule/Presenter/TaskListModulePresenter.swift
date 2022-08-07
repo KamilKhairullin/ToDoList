@@ -8,6 +8,7 @@ protocol TaskListModuleInput: AnyObject {
 protocol TaskListModuleOutput: AnyObject {
     func showCreateNewTask()
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
+    func deleteItem(item: TodoItem)
 }
 
 final class TaskListModulePresenter {
@@ -56,6 +57,12 @@ final class TaskListModulePresenter {
 // MARK: - TaskListModuleViewOutput extension
 
 extension TaskListModulePresenter: TaskListModuleViewOutput {
+    func deleteSwipe(indexPath: IndexPath) {
+        let item = fileCache.todoItems[indexPath.row]
+        output.deleteItem(item: item)
+        view?.reloadData()
+    }
+
     func completeButtonPressed(indexPath: IndexPath?) {
         guard let indexPath = indexPath else {
             return
@@ -140,6 +147,7 @@ extension TaskListModulePresenter {
     }
 }
 // MARK: - TaskListModuleInput extension
+
 extension TaskListModulePresenter: TaskListModuleInput {
     func reloadData() {
         view?.reloadData()

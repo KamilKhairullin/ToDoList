@@ -12,6 +12,7 @@ protocol TaskListModuleViewOutput: AnyObject {
     func getRowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
     func completeButtonPressed(indexPath: IndexPath?)
+    func deleteSwipe(indexPath: IndexPath)
 }
 
 final class TaskListModuleViewController: UIViewController {
@@ -115,7 +116,8 @@ final class TaskListModuleViewController: UIViewController {
         let doneAction = UIContextualAction(
             style: .normal,
             title: nil
-        ) { _, _, completion in
+        ) { [weak self] _, _, completion in
+            self?.output?.completeButtonPressed(indexPath: indexPath)
             completion(true)
         }
         doneAction.image = UIImage(named: Constants.doneSwipeImageName)
@@ -139,7 +141,8 @@ final class TaskListModuleViewController: UIViewController {
         let doneAction = UIContextualAction(
             style: .normal,
             title: nil
-        ) { _, _, completion in
+        ) { [weak self] _, _, completion in
+            self?.output?.deleteSwipe(indexPath: indexPath)
             completion(true)
         }
         doneAction.image = UIImage(named: Constants.deleteSwipeImageName)
