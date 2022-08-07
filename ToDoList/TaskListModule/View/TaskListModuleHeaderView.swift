@@ -3,6 +3,8 @@ import UIKit
 final class TaskListModuleHeaderView: UIView {
     // MARK: - Properties
 
+    private let output: TaskListModuleViewOutput?
+
     private lazy var doneAmountLabel: UILabel = {
         let label = UILabel()
         label.text = Constants.doneAmountLabelTitle
@@ -16,7 +18,6 @@ final class TaskListModuleHeaderView: UIView {
         let button = UIButton()
         button.setTitleColor(ColorPalette.blue, for: .normal)
         button.titleLabel?.font = FontPalette.subhead
-        button.setTitle(Constants.hideDoneButtonTitle, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(hideDoneButtonPressed(sender:)), for: .touchUpInside)
         return button
@@ -24,8 +25,9 @@ final class TaskListModuleHeaderView: UIView {
 
     // MARK: - Lifecycle
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(output: TaskListModuleViewOutput?) {
+        self.output = output
+        super.init(frame: .zero)
         setupDoneAmountLabel()
         setupHideDoneButton()
     }
@@ -35,9 +37,22 @@ final class TaskListModuleHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Public
+
+    func setHideDoneButtonText(isHidden: Bool) {
+        let title = isHidden ? Constants.hiddenDoneTitle : Constants.shownDoneTitle
+        hideDoneButton.setTitle(title, for: .normal)
+    }
+
+    func setDoneAmountLabelNumber(number: Int) {
+        doneAmountLabel.text = "\(Constants.doneAmountLabelTitle)\(number)"
+    }
+
     // MARK: - Selectors
 
-    @objc private func hideDoneButtonPressed(sender: UIButton) {}
+    @objc private func hideDoneButtonPressed(sender: UIButton) {
+        output?.hideDonePressed()
+    }
 
     // MARK: - Private
 
@@ -78,7 +93,8 @@ extension TaskListModuleHeaderView {
     enum Constants {
         static let doneAmountLabelHeight: CGFloat = 20
         static let hideDoneButtonHeight: CGFloat = 20
-        static let doneAmountLabelTitle: String = "Выполнено - 5"
-        static let hideDoneButtonTitle: String = "Показать"
+        static let doneAmountLabelTitle: String = "Выполнено - "
+        static let hiddenDoneTitle: String = "Показать"
+        static let shownDoneTitle: String = "Скрыть"
     }
 }

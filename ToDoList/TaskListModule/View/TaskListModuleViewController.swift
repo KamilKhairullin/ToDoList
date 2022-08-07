@@ -13,6 +13,9 @@ protocol TaskListModuleViewOutput: AnyObject {
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
     func completeButtonPressed(indexPath: IndexPath?)
     func deleteSwipe(indexPath: IndexPath)
+    func hideDonePressed()
+    func getHideDoneButtonState() -> Bool
+    func getNumberOfDoneItems() -> Int
 }
 
 final class TaskListModuleViewController: UIViewController {
@@ -35,7 +38,7 @@ final class TaskListModuleViewController: UIViewController {
     }()
 
     private lazy var headerView: TaskListModuleHeaderView = {
-        let header = TaskListModuleHeaderView()
+        let header = TaskListModuleHeaderView(output: output)
         return header
     }()
 
@@ -223,8 +226,17 @@ extension TaskListModuleViewController: UITableViewDelegate {
 // MARK: - TaskListModuleViewInput extension
 
 extension TaskListModuleViewController: TaskListModuleViewInput {
+
     func reloadData() {
+        guard let output = output else {
+            return
+        }
         tableView.reloadData()
+        let buttonState = output.getHideDoneButtonState()
+        let numberOfDoneItems = output.getNumberOfDoneItems()
+
+        headerView.setHideDoneButtonText(isHidden: buttonState)
+        headerView.setDoneAmountLabelNumber(number: numberOfDoneItems)
     }
 }
 

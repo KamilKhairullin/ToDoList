@@ -14,10 +14,21 @@ protocol TaskListModuleOutput: AnyObject {
 final class TaskListModulePresenter {
     // MARK: - Properties
 
-    weak var view: TaskListModuleViewInput?
+    weak var view: TaskListModuleViewInput? {
+        didSet {
+            reloadData()
+        }
+    }
     let output: TaskListModuleOutput
 
     private let fileCache: FileCache
+    private var doneIsHidden = false
+    private var todoItems: [TodoItem] {
+        if doneIsHidden {
+            return fileCache.todoItems.filter { !$0.isDone }
+        }
+        return fileCache.todoItems
+    }
 
     // MARK: - Lifecycle
 
@@ -57,8 +68,21 @@ final class TaskListModulePresenter {
 // MARK: - TaskListModuleViewOutput extension
 
 extension TaskListModulePresenter: TaskListModuleViewOutput {
+    func getHideDoneButtonState() -> Bool {
+        doneIsHidden
+    }
+
+    func getNumberOfDoneItems() -> Int {
+        fileCache.todoItems.filter { $0.isDone }.count
+    }
+
+    func hideDonePressed() {
+        doneIsHidden = !doneIsHidden
+        view?.reloadData()
+    }
+
     func deleteSwipe(indexPath: IndexPath) {
-        let item = fileCache.todoItems[indexPath.row]
+        let item = todoItems[indexPath.row]
         output.deleteItem(item: item)
         view?.reloadData()
     }
@@ -67,7 +91,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
         guard let indexPath = indexPath else {
             return
         }
-        let item = fileCache.todoItems[indexPath.row]
+        let item = todoItems[indexPath.row]
         fileCache.addTask(TodoItem(
             id: item.id,
             text: item.text,
@@ -75,13 +99,14 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
             deadline: item.deadline,
             isDone: !item.isDone,
             createdAt: item.createdAt,
-            editedAt: Date())
+            editedAt: Date()
+        )
         )
         view?.reloadData()
     }
 
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController) {
-        if indexPath.row == fileCache.todoItems.count {
+        if indexPath.row == todoItems.count {
             output.showCreateNewTask()
         } else {
             output.selectRowAt(indexPath: indexPath, on: viewController)
@@ -94,10 +119,10 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
 
     func getCellData(_ indexPath: IndexPath) -> TaskListTableViewCellData {
         switch indexPath.row {
-        case fileCache.todoItems.count:
+        case todoItems.count:
             return TaskListTableViewCellData.createNewTaskCell
         default:
-            let item = fileCache.todoItems[indexPath.row]
+            let item = todoItems[indexPath.row]
 
             return TaskListTableViewCellData.taskCell(
                 TaskCellViewState(
@@ -114,15 +139,15 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
     }
 
     func getRowsNumber() -> Int {
-        return fileCache.todoItems.count + 1
+        return todoItems.count + 1
     }
 
     func getRowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int {
         switch indexPath.row {
-        case fileCache.todoItems.count:
+        case todoItems.count:
             return Constants.defaultCellHeight
         default:
-            let item = fileCache.todoItems[indexPath.row]
+            let item = todoItems[indexPath.row]
             var rowHeight = Constants.defaultCellHeight
             if item.deadline != nil {
                 rowHeight += Constants.subtitleHeight
@@ -146,6 +171,7 @@ extension TaskListModulePresenter {
         static let maxNumberOfLines = 3
     }
 }
+
 // MARK: - TaskListModuleInput extension
 
 extension TaskListModulePresenter: TaskListModuleInput {
