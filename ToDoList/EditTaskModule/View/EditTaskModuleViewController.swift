@@ -255,10 +255,10 @@ final class EditTaskModuleViewController: UIViewController {
         setupDatePicker()
 
         switch UIDevice.current.orientation {
-        case .portrait:
-            setupPortraitMode()
-        default:
+        case .landscapeLeft, .landscapeRight:
             setupLandscapeMode()
+        default:
+            setupPortraitMode()
         }
     }
 

@@ -12,7 +12,7 @@ final class AppCoordinator {
         taskListModule = taskListModuleBuilder()
         rootViewController = CustomNavigationController(
             rootViewController: taskListModule?.viewController,
-            title: "Мои дела"
+            title: Constants.rootViewControllerTitle
         )
     }
 
@@ -71,5 +71,6 @@ extension AppCoordinator: TaskListModuleOutput {
 extension AppCoordinator {
     enum Constants {
         static let filename: String = "savedCache.json"
+        static let rootViewControllerTitle = "Мои дела"
     }
 }

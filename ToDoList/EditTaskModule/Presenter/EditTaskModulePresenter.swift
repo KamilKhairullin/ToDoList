@@ -105,6 +105,8 @@ final class EditTaskModulePresenter {
     }
 }
 
+// MARK: - EditTaskModuleViewOutput extension
+
 extension EditTaskModulePresenter: EditTaskModuleViewOutput {
     func cancelPressed(on viewController: UIViewController) {
         output.dismissPresented(on: viewController)
