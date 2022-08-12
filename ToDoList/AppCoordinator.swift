@@ -1,5 +1,6 @@
 import UIKit
 import CocoaLumberjack
+import TodoListModels
 
 final class AppCoordinator {
     var rootViewController: UIViewController = .init()

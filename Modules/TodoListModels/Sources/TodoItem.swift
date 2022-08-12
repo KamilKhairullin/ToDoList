@@ -5,20 +5,20 @@ protocol JSONParsable {
     var json: Any { get }
 }
 
-struct TodoItem {
+public struct TodoItem {
     // MARK: - Properties
 
-    let id: String
-    let text: String
-    let priority: Priority
-    let deadline: Date?
-    let isDone: Bool
-    let createdAt: Date
-    let editedAt: Date?
+    public let id: String
+    public let text: String
+    public let priority: Priority
+    public let deadline: Date?
+    public let isDone: Bool
+    public let createdAt: Date
+    public let editedAt: Date?
 
     // MARK: - Lifecycle
 
-    init(
+    public init(
         id: String = UUID().uuidString,
         text: String,
         priority: Priority,
@@ -40,7 +40,7 @@ struct TodoItem {
 // MARK: - JSONParsable extension
 
 extension TodoItem: JSONParsable {
-    var json: Any {
+    public var json: Any {
         var dictionary: [String: Any] = [:]
 
         dictionary[CodingKeys.idKey] = id
@@ -66,7 +66,7 @@ extension TodoItem: JSONParsable {
         return dictionary
     }
 
-    static func parse(json: Any) -> TodoItem? {
+    public static func parse(json: Any) -> TodoItem? {
         guard
             let dict = json as? [String: Any],
             let id = dict[CodingKeys.idKey] as? String,
@@ -117,11 +117,11 @@ extension TodoItem: JSONParsable {
 // MARK: - Nested types
 
 extension TodoItem {
-    enum Constants {
+    public enum Constants {
         static let defaultPriority: Priority = .ordinary
     }
 
-    enum CodingKeys {
+    public enum CodingKeys {
         static let idKey: String = "id"
         static let textKey: String = "text"
         static let isDoneKey: String = "isDone"
@@ -131,7 +131,7 @@ extension TodoItem {
         static let editedAtKey: String = "editedAt"
     }
 
-    enum Priority: Int {
+    public enum Priority: Int {
         case important
         case ordinary
         case unimportant
