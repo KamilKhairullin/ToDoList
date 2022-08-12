@@ -1,4 +1,5 @@
 import UIKit
+import CocoaLumberjack
 
 final class AppCoordinator {
     var rootViewController: UIViewController = .init()
@@ -14,6 +15,7 @@ final class AppCoordinator {
             rootViewController: taskListModule?.viewController,
             title: Constants.rootViewControllerTitle
         )
+        setupCocoaLumberjack()
     }
 
     func deleteItem(item: TodoItem) {
@@ -27,6 +29,24 @@ final class AppCoordinator {
 }
 
 extension AppCoordinator {
+
+    private func setupCocoaLumberjack() {
+        DDLog.add(DDOSLogger.sharedInstance)
+        let message = DDLogMessage(
+            message: "App coordinator initialized.",
+            level: .all,
+            flag: .info,
+            context: 1,
+            file: "file.txt",
+            function: nil,
+            line: 0,
+            tag: nil,
+            options: [],
+            timestamp: Date()
+        )
+        DDLog.log(asynchronous: true, message: message)
+    }
+
     private func taskListModuleBuilder() -> TaskListModuleBuilder {
         return TaskListModuleBuilder(output: self, fileCache: fileCache)
     }
