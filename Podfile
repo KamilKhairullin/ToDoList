@@ -14,10 +14,16 @@ target 'ToDoList' do
 
   target 'ToDoListTests' do
     inherit! :search_paths
+    pod 'CocoaLumberjack'
+    pod 'SwiftLint'
+    local_pod 'TodoListModels'
   end
 
   target 'ToDoListUITests' do
     inherit! :search_paths
+    pod 'CocoaLumberjack'
+    pod 'SwiftLint'
+    local_pod 'TodoListModels'
   end
 end
 
