@@ -1,5 +1,6 @@
 @testable import ToDoList
 import XCTest
+import TodoListModels
 
 class TodoItemParsingTests: XCTestCase {
     func test_encodedAndDecoded_Equals() throws {

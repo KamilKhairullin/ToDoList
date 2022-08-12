@@ -118,7 +118,7 @@ extension TodoItem: JSONParsable {
 
 extension TodoItem {
     public enum Constants {
-        static let defaultPriority: Priority = .ordinary
+        public static let defaultPriority: Priority = .ordinary
     }
 
     public enum CodingKeys {
