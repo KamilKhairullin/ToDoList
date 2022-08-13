@@ -7,6 +7,7 @@ final class TaskListModuleBuilder {
     var output: TaskListModuleOutput {
         presenter.output
     }
+    
     var input: TaskListModuleInput {
         presenter
     }

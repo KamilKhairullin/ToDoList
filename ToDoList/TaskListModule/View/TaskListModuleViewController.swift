@@ -6,23 +6,24 @@ protocol TaskListModuleViewInput: AnyObject {
 }
 
 protocol TaskListModuleViewOutput: AnyObject {
-    func getCellData(_ indexPath: IndexPath) -> TaskListTableViewCellData
+    func cellData(_ indexPath: IndexPath) -> TaskListTableViewCellData
     func plusButtonPressed()
-    func getRowsNumber() -> Int
-    func getRowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int
+    func rowsNumber() -> Int
+    func rowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
     func completeButtonPressed(indexPath: IndexPath?)
     func deleteSwipe(indexPath: IndexPath)
     func hideDonePressed()
-    func getHideDoneButtonState() -> Bool
-    func getNumberOfDoneItems() -> Int
-    func getPreview(indexPath: IndexPath) -> UIViewController
+    func hideDoneButtonState() -> Bool
+    func numberOfDoneItems() -> Int
+    func preview(indexPath: IndexPath) -> UIViewController
+    func lastRowIndex() -> Int
 }
 
 final class TaskListModuleViewController: UIViewController {
     // MARK: - Properties
 
-    private var output: TaskListModuleViewOutput?
+    private var output: TaskListModuleViewOutput
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -77,7 +78,7 @@ final class TaskListModuleViewController: UIViewController {
     // MARK: - Selectors
 
     @objc private func plusButtonPressed() {
-        output?.plusButtonPressed()
+        output.plusButtonPressed()
     }
 
     // MARK: - Private
@@ -121,7 +122,7 @@ final class TaskListModuleViewController: UIViewController {
             style: .normal,
             title: nil
         ) { [weak self] _, _, completion in
-            self?.output?.completeButtonPressed(indexPath: indexPath)
+            self?.output.completeButtonPressed(indexPath: indexPath)
             completion(true)
         }
         doneAction.image = UIImage(named: Constants.doneSwipeImageName)
@@ -146,7 +147,7 @@ final class TaskListModuleViewController: UIViewController {
             style: .normal,
             title: nil
         ) { [weak self] _, _, completion in
-            self?.output?.deleteSwipe(indexPath: indexPath)
+            self?.output.deleteSwipe(indexPath: indexPath)
             completion(true)
         }
         doneAction.image = UIImage(named: Constants.deleteSwipeImageName)
@@ -159,12 +160,12 @@ final class TaskListModuleViewController: UIViewController {
 
 extension TaskListModuleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        output?.getRowsNumber() ?? 0
+        output.rowsNumber()
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let data = output.cellData(indexPath)
         guard
-            let data = output?.getCellData(indexPath),
             let cell = tableView.dequeueReusableCell(
                 withIdentifier: data.reuseIdentifier,
                 for: indexPath
@@ -181,8 +182,7 @@ extension TaskListModuleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let lineWidth = Int(tableView.bounds.width - Insets.cellSeparatorInsets.left)
         return CGFloat(
-            output?.getRowHeight(forIndexPath: indexPath, lineWidth: lineWidth)
-                ?? Constants.defaultRowHeight
+            output.rowHeight(forIndexPath: indexPath, lineWidth: lineWidth)
         )
     }
 }
@@ -202,6 +202,9 @@ extension TaskListModuleViewController: UITableViewDelegate {
         _ tableView: UITableView,
         leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
+        guard indexPath.row != output.lastRowIndex() else {
+            return nil
+        }
         let doneAction = makeDoneAction(indexPath: indexPath)
         return UISwipeActionsConfiguration(actions: [doneAction])
     }
@@ -210,6 +213,9 @@ extension TaskListModuleViewController: UITableViewDelegate {
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
+        guard indexPath.row != output.lastRowIndex() else {
+            return nil
+        }
         let infoAction = makeInfoAction(indexPath: indexPath)
         let deleteAction = makeDeleteAction(indexPath: indexPath)
 
@@ -219,7 +225,7 @@ extension TaskListModuleViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        output?.selectRowAt(indexPath: indexPath, on: self)
+        output.selectRowAt(indexPath: indexPath, on: self)
     }
 
     func tableView(
@@ -230,7 +236,7 @@ extension TaskListModuleViewController: UITableViewDelegate {
         let configuration = UIContextMenuConfiguration(
             identifier: indexPath as NSCopying,
             previewProvider: {
-                return self.output?.getPreview(indexPath: indexPath) ?? UIViewController()
+                return self.output.preview(indexPath: indexPath)
             }, actionProvider: { _ in
                 return nil
             }
@@ -247,7 +253,7 @@ extension TaskListModuleViewController: UITableViewDelegate {
         guard let indexPath = configuration.identifier as? IndexPath
         else { return }
         animator.addCompletion {
-            self.output?.selectRowAt(indexPath: indexPath, on: self)
+            self.output.selectRowAt(indexPath: indexPath, on: self)
         }
     }
 }
@@ -256,12 +262,9 @@ extension TaskListModuleViewController: UITableViewDelegate {
 
 extension TaskListModuleViewController: TaskListModuleViewInput {
     func reloadData() {
-        guard let output = output else {
-            return
-        }
         tableView.reloadData()
-        let buttonState = output.getHideDoneButtonState()
-        let numberOfDoneItems = output.getNumberOfDoneItems()
+        let buttonState = output.hideDoneButtonState()
+        let numberOfDoneItems = output.numberOfDoneItems()
 
         headerView.setHideDoneButtonText(isHidden: buttonState)
         headerView.setDoneAmountLabelNumber(number: numberOfDoneItems)

@@ -3,7 +3,7 @@ import UIKit
 final class TaskListModuleHeaderView: UIView {
     // MARK: - Properties
 
-    private let output: TaskListModuleViewOutput?
+    private let output: TaskListModuleViewOutput
 
     private lazy var doneAmountLabel: UILabel = {
         let label = UILabel()
@@ -25,7 +25,7 @@ final class TaskListModuleHeaderView: UIView {
 
     // MARK: - Lifecycle
 
-    init(output: TaskListModuleViewOutput?) {
+    init(output: TaskListModuleViewOutput) {
         self.output = output
         super.init(frame: .zero)
         setupDoneAmountLabel()
@@ -51,7 +51,7 @@ final class TaskListModuleHeaderView: UIView {
     // MARK: - Selectors
 
     @objc private func hideDoneButtonPressed(sender: UIButton) {
-        output?.hideDonePressed()
+        output.hideDonePressed()
     }
 
     // MARK: - Private

@@ -31,7 +31,7 @@ final class FileCache {
     }
 
     func save(to file: String) {
-        guard let path = getCachePath(for: file) else { return }
+        guard let path = cachePath(for: file) else { return }
         do {
             let items = todoItemsDict.map { $0.value.json }
             let json = try JSONSerialization.data(withJSONObject: items, options: [])
@@ -42,7 +42,7 @@ final class FileCache {
     }
 
     func load(from file: String) {
-        guard let path = getCachePath(for: file),
+        guard let path = cachePath(for: file),
               let data = try? Data(contentsOf: path)
         else {
             print("Unable to load data from \(file)")
@@ -68,7 +68,7 @@ final class FileCache {
 
     // MARK: - Private
 
-    private func getCachePath(for file: String) -> URL? {
+    private func cachePath(for file: String) -> URL? {
         guard let cachePath = FileManager.default.urls(
             for: .cachesDirectory,
             in: .userDomainMask
