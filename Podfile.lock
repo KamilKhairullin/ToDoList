@@ -4,13 +4,11 @@ PODS:
   - CocoaLumberjack/Core (3.7.4)
   - ColorBundle (0.0.1)
   - SwiftLint (0.48.0)
-  - TodoListModels (0.0.1)
 
 DEPENDENCIES:
   - CocoaLumberjack
   - ColorBundle (from `./Modules/ColorBundle`)
   - SwiftLint
-  - TodoListModels (from `./Modules/TodoListModels`)
 
 SPEC REPOS:
   trunk:
@@ -20,15 +18,12 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   ColorBundle:
     :path: "./Modules/ColorBundle"
-  TodoListModels:
-    :path: "./Modules/TodoListModels"
 
 SPEC CHECKSUMS:
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   ColorBundle: 2e496f0bf1541f9da69d0a590454171d6e710477
   SwiftLint: 284cea64b6187c5d6bd83e9a548a64104d546447
-  TodoListModels: 88ed828217755e94471fdf73c56e9a70648a1cf8
 
-PODFILE CHECKSUM: 65f19f133ab57e7cb95093d32450a5792855bbb9
+PODFILE CHECKSUM: 2e3bd6389dc7dbfb960759248d11d10cb305ba07
 
 COCOAPODS: 1.11.3

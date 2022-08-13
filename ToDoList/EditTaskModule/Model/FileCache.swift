@@ -1,9 +1,9 @@
 import Foundation
 
-public final class FileCache {
+final class FileCache {
     // MARK: - Properties
 
-    public var todoItems: [TodoItem] {
+    var todoItems: [TodoItem] {
         if isDirty {
             orderedTodoItems = todoItemsDict.values.sorted {
                 ($0.createdAt, $0.id) < ($1.createdAt, $1.id)
@@ -19,22 +19,22 @@ public final class FileCache {
 
     // MARK: - Lifecycle
 
-    public init() {}
+    init() {}
 
-    // MARK: - Public
+    // MARK: -
 
-    public func addTask(_ task: TodoItem) {
+    func addTask(_ task: TodoItem) {
         todoItemsDict[task.id] = task
         setNeedsSort()
     }
 
     @discardableResult
-    public func deleteTask(id: String) -> TodoItem? {
+    func deleteTask(id: String) -> TodoItem? {
         setNeedsSort()
         return todoItemsDict.removeValue(forKey: id)
     }
 
-    public func save(to file: String) {
+    func save(to file: String) {
         guard let path = cachePath(for: file) else { return }
         do {
             let items = todoItemsDict.map { $0.value.json }
@@ -45,7 +45,7 @@ public final class FileCache {
         }
     }
 
-    public func load(from file: String) {
+    func load(from file: String) {
         guard let path = cachePath(for: file),
               let data = try? Data(contentsOf: path)
         else {

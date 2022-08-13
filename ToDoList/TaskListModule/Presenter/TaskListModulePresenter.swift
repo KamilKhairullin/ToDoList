@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import TodoListModels
 
 protocol TaskListModuleInput: AnyObject {
     func reloadData()
