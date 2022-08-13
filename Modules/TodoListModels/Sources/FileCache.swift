@@ -35,7 +35,7 @@ public final class FileCache {
     }
 
     public func save(to file: String) {
-        guard let path = getCachePath(for: file) else { return }
+        guard let path = cachePath(for: file) else { return }
         do {
             let items = todoItemsDict.map { $0.value.json }
             let json = try JSONSerialization.data(withJSONObject: items, options: [])
@@ -46,7 +46,7 @@ public final class FileCache {
     }
 
     public func load(from file: String) {
-        guard let path = getCachePath(for: file),
+        guard let path = cachePath(for: file),
               let data = try? Data(contentsOf: path)
         else {
             print("Unable to load data from \(file)")
