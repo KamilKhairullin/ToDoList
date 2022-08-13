@@ -30,6 +30,14 @@ final class EditTaskModulePresenter {
     private let fileCache: FileCache
     private var showPlaceholder: Bool
 
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeZone = .none
+        formatter.dateFormat = "dd MMMM yyyy"
+        return formatter
+    }()
+
     // MARK: - Lifecycle
 
     init(output: EditTaskModuleOutput, fileCache: FileCache, with todoItem: TodoItem?) {
@@ -99,7 +107,7 @@ final class EditTaskModulePresenter {
             switchIsOn: hasDeadline,
             isCalendarShown: hasDeadline,
             deadline: todoItem.deadline,
-            deadlineString: todoItem.deadline?.editTaskFormat,
+            deadlineString: todoItem.deadline?.format(with: dateFormatter),
             isDeleteEnabled: true,
             isSaveEnabled: saveEnabled
         )

@@ -6,6 +6,7 @@ final class CellContentTitleStackView: UIStackView {
     private lazy var priorityImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
         return imageView
     }()
 

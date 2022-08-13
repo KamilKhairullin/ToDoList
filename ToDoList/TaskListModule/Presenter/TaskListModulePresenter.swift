@@ -10,7 +10,7 @@ protocol TaskListModuleOutput: AnyObject {
     func showCreateNewTask()
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
     func deleteItem(item: TodoItem)
-    func getPreview(indexPath: IndexPath) -> UIViewController
+    func preview(indexPath: IndexPath) -> UIViewController
 }
 
 final class TaskListModulePresenter {
@@ -31,6 +31,14 @@ final class TaskListModulePresenter {
         }
         return fileCache.todoItems
     }
+
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeZone = .none
+        formatter.dateFormat = "dd MMMM"
+        return formatter
+    }()
 
     // MARK: - Lifecycle
 
@@ -70,16 +78,20 @@ final class TaskListModulePresenter {
 // MARK: - TaskListModuleViewOutput extension
 
 extension TaskListModulePresenter: TaskListModuleViewOutput {
-    func getPreview(indexPath: IndexPath) -> UIViewController {
-        return output.getPreview(indexPath: indexPath)
+    func preview(indexPath: IndexPath) -> UIViewController {
+        return output.preview(indexPath: indexPath)
     }
 
-    func getHideDoneButtonState() -> Bool {
+    func hideDoneButtonState() -> Bool {
         doneIsHidden
     }
 
-    func getNumberOfDoneItems() -> Int {
+    func numberOfDoneItems() -> Int {
         fileCache.todoItems.filter { $0.isDone }.count
+    }
+
+    func lastRowIndex() -> Int {
+        todoItems.count
     }
 
     func hideDonePressed() {
@@ -123,7 +135,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
         output.showCreateNewTask()
     }
 
-    func getCellData(_ indexPath: IndexPath) -> TaskListTableViewCellData {
+    func cellData(_ indexPath: IndexPath) -> TaskListTableViewCellData {
         switch indexPath.row {
         case todoItems.count:
             return TaskListTableViewCellData.createNewTaskCell
@@ -136,7 +148,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
                     hideSubtitle: item.deadline == nil,
                     isDone: item.isDone,
                     isOverdue: isOverdue(deadline: item.deadline),
-                    deadlineString: item.deadline?.taskListFormat,
+                    deadlineString: item.deadline?.format(with: dateFormatter),
                     priorityImageName: priorityToImageName(item.priority),
                     output: self
                 )
@@ -144,11 +156,11 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
         }
     }
 
-    func getRowsNumber() -> Int {
+    func rowsNumber() -> Int {
         return todoItems.count + 1
     }
 
-    func getRowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int {
+    func rowHeight(forIndexPath indexPath: IndexPath, lineWidth: Int) -> Int {
         switch indexPath.row {
         case todoItems.count:
             return Constants.defaultCellHeight

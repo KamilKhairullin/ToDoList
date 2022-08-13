@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		19EC90D2FFCAB5DCC8582FE3 /* Pods_ToDoListUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A6734DB14C0C4749D8C96BA /* Pods_ToDoListUITests.framework */; };
 		291AF795120D09818EC03D92 /* Pods_ToDoListTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDF5166D7E54FC4FB92FD2EC /* Pods_ToDoListTests.framework */; };
 		8E0E44692894A7E6007B0F5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E44682894A7E6007B0F5E /* AppDelegate.swift */; };
 		8E0E44752894A7E7007B0F5E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E44732894A7E7007B0F5E /* LaunchScreen.storyboard */; };
@@ -17,6 +16,8 @@
 		8E398F2D289F07BD0026ADC4 /* TaskListModuleTaskCellConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E398F2C289F07BD0026ADC4 /* TaskListModuleTaskCellConfigurable.swift */; };
 		8E398F30289F08510026ADC4 /* TaskListTableViewCellData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E398F2F289F08510026ADC4 /* TaskListTableViewCellData.swift */; };
 		8E398F32289F0BB40026ADC4 /* TaskCellViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E398F31289F0BB40026ADC4 /* TaskCellViewState.swift */; };
+		8E66C36F2894AF6B00632D85 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E66C36E2894AF6B00632D85 /* TodoItem.swift */; };
+		8E7DD1E328A7F7050086804E /* UIWindowExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DD1E228A7F7050086804E /* UIWindowExtension.swift */; };
 		8E881DFC28A0495100446A96 /* AnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E881DFB28A0495100446A96 /* AnimationController.swift */; };
 		8ECEFA1F2896D8060098896B /* EditTaskModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECEFA1E2896D8060098896B /* EditTaskModuleBuilder.swift */; };
 		8ECEFA222896F4C20098896B /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECEFA212896F4C20098896B /* DateExtension.swift */; };
@@ -76,6 +77,8 @@
 		8E398F2C289F07BD0026ADC4 /* TaskListModuleTaskCellConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListModuleTaskCellConfigurable.swift; sourceTree = "<group>"; };
 		8E398F2F289F08510026ADC4 /* TaskListTableViewCellData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListTableViewCellData.swift; sourceTree = "<group>"; };
 		8E398F31289F0BB40026ADC4 /* TaskCellViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCellViewState.swift; sourceTree = "<group>"; };
+		8E66C36E2894AF6B00632D85 /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
+		8E7DD1E228A7F7050086804E /* UIWindowExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIWindowExtension.swift; sourceTree = "<group>"; };
 		8E881DFB28A0495100446A96 /* AnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationController.swift; sourceTree = "<group>"; };
 		8ECEFA1E2896D8060098896B /* EditTaskModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskModuleBuilder.swift; sourceTree = "<group>"; };
 		8ECEFA212896F4C20098896B /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
@@ -275,6 +278,7 @@
 			children = (
 				8ECEFA212896F4C20098896B /* DateExtension.swift */,
 				8ECEFA232896FF5B0098896B /* UIBarButtonItemExtension.swift */,
+				8E7DD1E228A7F7050086804E /* UIWindowExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -644,6 +648,7 @@
 				8EE74D5E289DAE800053BF61 /* TaskListModuleTaskCell.swift in Sources */,
 				8EE74D5C289DAA7E0053BF61 /* TaskListModuleBuilder.swift in Sources */,
 				8EE74D6A289DE8600053BF61 /* CellContentTitleStackView.swift in Sources */,
+				8E7DD1E328A7F7050086804E /* UIWindowExtension.swift in Sources */,
 				8ECEFA242896FF5B0098896B /* UIBarButtonItemExtension.swift in Sources */,
 				8E398F32289F0BB40026ADC4 /* TaskCellViewState.swift in Sources */,
 				8EEB84B62895D179005D5FF1 /* PriorityStackViewContainer.swift in Sources */,

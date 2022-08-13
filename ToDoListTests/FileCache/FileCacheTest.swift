@@ -36,7 +36,7 @@ class FileCacheTest: XCTestCase {
     func test_save_jsonError() throws {
         let items: [String: Any] = ["1": true, "2": false]
         let json = try JSONSerialization.data(withJSONObject: items, options: [])
-        try json.write(to: getCachePath(for: "mock.json")!, options: [])
+        try json.write(to: cachePath(for: "mock.json")!, options: [])
         let cache = FileCache()
         cache.load(from: "mock.json")
         XCTAssert(cache.todoItems.isEmpty)
@@ -52,7 +52,7 @@ class FileCacheTest: XCTestCase {
 }
 
 extension FileCacheTest {
-    private func getCachePath(for file: String) -> URL? {
+    private func cachePath(for file: String) -> URL? {
         guard let cachePath = FileManager.default.urls(
             for: .cachesDirectory,
             in: .userDomainMask

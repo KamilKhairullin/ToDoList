@@ -67,7 +67,7 @@ extension AppCoordinator: EditTaskModuleOutput {
 // MARK: - TaskListModuleOutput extension
 
 extension AppCoordinator: TaskListModuleOutput {
-    func getPreview(indexPath: IndexPath) -> UIViewController {
+    func preview(indexPath: IndexPath) -> UIViewController {
         let todoItem = fileCache.todoItems[indexPath.row]
         let builder = EditTaskModuleBuilder(output: self, fileCache: fileCache, with: todoItem)
         return builder.viewController

@@ -72,7 +72,7 @@ public final class FileCache {
 
     // MARK: - Private
 
-    private func getCachePath(for file: String) -> URL? {
+    private func cachePath(for file: String) -> URL? {
         guard let cachePath = FileManager.default.urls(
             for: .cachesDirectory,
             in: .userDomainMask
