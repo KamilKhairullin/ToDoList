@@ -160,12 +160,11 @@ final class EditTaskModuleViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        
+
         let isPortrait = size.width < size.height
-    
+
         if isPortrait {
             setupPortraitMode()
         } else {
@@ -257,7 +256,7 @@ final class EditTaskModuleViewController: UIViewController {
         setupDatePicker()
 
         let isPortrait = !UIWindow.isLandscape
-        
+
         if isPortrait {
             setupPortraitMode()
         } else {

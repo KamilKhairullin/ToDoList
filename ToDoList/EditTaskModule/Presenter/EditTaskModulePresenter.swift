@@ -36,7 +36,7 @@ final class EditTaskModulePresenter {
         formatter.dateFormat = "dd MMMM yyyy"
         return formatter
     }()
-    
+
     // MARK: - Lifecycle
 
     init(output: EditTaskModuleOutput, fileCache: FileCache, with todoItem: TodoItem?) {

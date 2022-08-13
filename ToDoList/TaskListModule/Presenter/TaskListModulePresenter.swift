@@ -38,7 +38,7 @@ final class TaskListModulePresenter {
         formatter.dateFormat = "dd MMMM"
         return formatter
     }()
-    
+
     // MARK: - Lifecycle
 
     init(output: TaskListModuleOutput, fileCache: FileCache) {
@@ -88,7 +88,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
     func numberOfDoneItems() -> Int {
         fileCache.todoItems.filter { $0.isDone }.count
     }
-    
+
     func lastRowIndex() -> Int {
         todoItems.count
     }
