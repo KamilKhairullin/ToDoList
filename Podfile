@@ -11,7 +11,8 @@ target 'ToDoList' do
   pod 'CocoaLumberjack'
   pod 'SwiftLint'
   local_pod 'TodoListModels'
-
+  local_pod 'ColorBundle'
+  
   target 'ToDoListTests' do
     inherit! :search_paths
     pod 'CocoaLumberjack'
