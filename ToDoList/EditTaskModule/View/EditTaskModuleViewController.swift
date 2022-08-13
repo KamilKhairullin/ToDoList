@@ -1,11 +1,44 @@
 import Foundation
 import UIKit
 
+protocol EditTaskModuleViewInput: AnyObject {
+    // swiftlint:disable:next function_parameter_count
+    func update(
+        text: String,
+        showPlaceholder: Bool,
+        prioritySegment: Int,
+        switchIsOn: Bool,
+        isCalendarShown: Bool,
+        deadline: Date?,
+        deadlineString: String?,
+        isDeleteEnabled: Bool,
+        isSaveEnabled: Bool
+    )
+}
+
+protocol EditTaskModuleViewOutput: AnyObject {
+    func switchTapped(isOn: Bool)
+
+    func newDatePicked(_ date: Date)
+
+    func textEdited(to text: String)
+
+    func prioritySet(to segment: Int)
+
+    func deletePressed(on viewController: UIViewController)
+
+    func savePressed(on viewController: UIViewController)
+
+    func cancelPressed(on viewController: UIViewController)
+}
+
 // swiftlint:disable file_length
 final class EditTaskModuleViewController: UIViewController {
     // MARK: - Properties
 
     private var output: EditTaskModuleViewOutput
+
+    private var isDatePickerHidden: Bool
 
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -99,16 +132,44 @@ final class EditTaskModuleViewController: UIViewController {
         return saveButton
     }()
 
+    private lazy var cancelButton: UIBarButtonItem = {
+        let cancelButton = UIBarButtonItem(
+            title: Constants.cancelButtonText,
+            style: .plain,
+            target: self,
+            action: nil
+        )
+        cancelButton.isEnabled = true
+        cancelButton.addTargetForAction(target: self, action: #selector(cancelButtonPressed))
+        return cancelButton
+    }()
+
+    private var textViewPortraitHeightConstraint: NSLayoutConstraint = .init()
+    private var textViewLandscapeHeightConstraint: NSLayoutConstraint = .init()
+
     // MARK: - Lifecycle
 
     init(output: EditTaskModuleViewOutput) {
         self.output = output
+        isDatePickerHidden = true
         super.init(nibName: nil, bundle: nil)
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        let isPortrait = size.width < size.height
+
+        if isPortrait {
+            setupPortraitMode()
+        } else {
+            setupLandscapeMode()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -132,17 +193,7 @@ final class EditTaskModuleViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = ColorPalette.backgroundColor
-        setupNavigationItem()
-        setupScrollView()
-        setupTextView()
-        setupStackView()
-        setupDeleteButton()
-        setupPriorityStackContainer()
-        setupFirstSeparator()
-        setupDeadlineStackContainer()
-        setupSecondSeparator()
-        setupDatePicker()
+        setupViews()
     }
 
     // MARK: - Selectors
@@ -174,11 +225,15 @@ final class EditTaskModuleViewController: UIViewController {
     }
 
     @objc func deletePressed(sender: UIButton) {
-        output.deletePressed()
+        output.deletePressed(on: self)
     }
 
     @objc func saveButtonPressed(sender: UIBarButtonItem) {
-        output.savePressed()
+        output.savePressed(on: self)
+    }
+
+    @objc func cancelButtonPressed(sender: UIBarButtonItem) {
+        output.cancelPressed(on: self)
     }
 
     @objc func textFieldDidChange(sender: UITextView) {
@@ -186,6 +241,28 @@ final class EditTaskModuleViewController: UIViewController {
     }
 
     // MARK: - Private
+
+    private func setupViews() {
+        view.backgroundColor = ColorPalette.backgroundColor
+        setupNavigationItem()
+        setupScrollView()
+        setupTextView()
+        setupStackView()
+        setupDeleteButton()
+        setupPriorityStackContainer()
+        setupFirstSeparator()
+        setupDeadlineStackContainer()
+        setupSecondSeparator()
+        setupDatePicker()
+
+        let isPortrait = !UIWindow.isLandscape
+
+        if isPortrait {
+            setupPortraitMode()
+        } else {
+            setupLandscapeMode()
+        }
+    }
 
     private func setupScrollView() {
         view.addSubview(scrollView)
@@ -200,14 +277,23 @@ final class EditTaskModuleViewController: UIViewController {
     private func setupTextView() {
         scrollView.addSubview(textView)
 
+        textViewPortraitHeightConstraint = textView.heightAnchor.constraint(
+            greaterThanOrEqualToConstant: Constants.textViewMinHeight
+        )
+        let landscapeScreenWidth = min(UIScreen.main.bounds.height, UIScreen.main.bounds.width)
+        let landscapeHeight = landscapeScreenWidth  + Constants.landscapeHeightInset
+
+        textViewLandscapeHeightConstraint = textView.heightAnchor.constraint(
+            greaterThanOrEqualToConstant: landscapeHeight
+        )
+
         NSLayoutConstraint.activate([
             textView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: Insets.textViewInsets.top),
             textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: Insets.textViewInsets.left),
             textView.widthAnchor.constraint(
                 equalTo: scrollView.widthAnchor,
                 constant: -(Insets.textViewInsets.left - Insets.textViewInsets.right)
-            ),
-            textView.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.textViewMinHeight)
+            )
         ])
     }
 
@@ -326,8 +412,33 @@ final class EditTaskModuleViewController: UIViewController {
     }
 
     private func setupNavigationItem() {
+        navigationItem.largeTitleDisplayMode = .never
         navigationItem.rightBarButtonItem = saveButton
+        if presentingViewController != nil {
+            navigationItem.leftBarButtonItem = cancelButton
+        }
         navigationItem.title = Constants.navigationItemTitle
+    }
+
+    private func setupLandscapeMode() {
+        stackView.isHidden = true
+        deleteButton.isHidden = true
+        priorityStackContainer.isHidden = true
+        deadlineStackContainer.isHidden = true
+        datePicker.isHidden = true
+        textViewPortraitHeightConstraint.isActive = false
+        textViewLandscapeHeightConstraint.isActive = true
+    }
+
+    private func setupPortraitMode() {
+        stackView.isHidden = false
+        deleteButton.isHidden = false
+        priorityStackContainer.isHidden = false
+        deadlineStackContainer.isHidden = false
+        datePicker.isHidden = isDatePickerHidden
+
+        textViewLandscapeHeightConstraint.isActive = false
+        textViewPortraitHeightConstraint.isActive = true
     }
 }
 
@@ -341,16 +452,18 @@ extension EditTaskModuleViewController {
         static let datePickerHeight: CGFloat = 338
         static let buttonHeight: CGFloat = 56
         static let buttonText: String = "Удалить"
+        static let cancelButtonText: String = "Отменить"
         static let saveButtonText: String = "Cохранить"
         static let navigationItemTitle: String = "Дело"
         static let separatorHeight: CGFloat = 0.5
+        static let landscapeHeightInset: CGFloat = -70
     }
 
     enum Insets {
         static let textViewInsets: UIEdgeInsets = .init(top: 16, left: 16, bottom: 0, right: -16)
         static let stackViewInsets: UIEdgeInsets = .init(top: 16, left: 16, bottom: 0, right: -16)
         static let priorityStackContainerInsets: UIEdgeInsets = .init(top: 0, left: 16, bottom: 0, right: -16)
-        static let deleteButtonInsets: UIEdgeInsets = .init(top: 16, left: 16, bottom: -30, right: -16)
+        static let deleteButtonInsets: UIEdgeInsets = .init(top: 16, left: 16, bottom: -15, right: -16)
         static let datePickerInsets: UIEdgeInsets = .init(top: 0, left: 12, bottom: 0, right: -12)
         static let separatorInsets: UIEdgeInsets = .init(top: 0, left: 16, bottom: 0, right: -16)
         static let textInsets: UIEdgeInsets = .init(top: 17, left: 16, bottom: 16, right: 16)
@@ -377,6 +490,7 @@ extension EditTaskModuleViewController: EditTaskModuleViewInput {
         priorityStackContainer.setSegmentControlHighlighted(
             selectedSegmentIndex: prioritySegment)
         deadlineStackContainer.setDeadlineSwitch(to: switchIsOn)
+        isDatePickerHidden = !isCalendarShown
         UIView.animate(
             withDuration: 0.3,
             animations: {

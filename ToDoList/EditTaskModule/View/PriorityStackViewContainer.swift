@@ -64,7 +64,7 @@ final class PriorityStackViewContainer: UIView {
         }
     }
 
-    func getSegmentControlValue() -> Int {
+    func segmentControlValue() -> Int {
         return segmentControl.selectedSegmentIndex
     }
 

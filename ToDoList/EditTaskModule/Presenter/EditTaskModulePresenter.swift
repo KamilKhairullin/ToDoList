@@ -1,32 +1,12 @@
 import Foundation
+import UIKit
 
-protocol EditTaskModuleViewInput: AnyObject {
-    // swiftlint:disable:next function_parameter_count
-    func update(
-        text: String,
-        showPlaceholder: Bool,
-        prioritySegment: Int,
-        switchIsOn: Bool,
-        isCalendarShown: Bool,
-        deadline: Date?,
-        deadlineString: String?,
-        isDeleteEnabled: Bool,
-        isSaveEnabled: Bool
-    )
-}
+protocol EditTaskModuleInput: AnyObject {}
 
-protocol EditTaskModuleViewOutput: AnyObject {
-    func switchTapped(isOn: Bool)
-
-    func newDatePicked(_ date: Date)
-
-    func textEdited(to text: String)
-
-    func prioritySet(to segment: Int)
-
-    func deletePressed()
-
-    func savePressed()
+protocol EditTaskModuleOutput: AnyObject {
+    func dismissPresented(on viewController: UIViewController)
+    func deleteItem(item: TodoItem)
+    func saveCacheToFile()
 }
 
 final class EditTaskModulePresenter {
@@ -34,49 +14,39 @@ final class EditTaskModulePresenter {
 
     weak var view: EditTaskModuleViewInput? {
         didSet {
-            loadCacheFromFile()
+            updateView()
         }
     }
 
+    private var output: EditTaskModuleOutput
+
     private var todoItem: TodoItem {
         didSet {
-            let hasDeadline = todoItem.deadline != nil
-            let saveEnabled = todoItem.text != Constants.emptyText && !showPlaceholder
-
-            view?.update(
-                text: todoItem.text,
-                showPlaceholder: showPlaceholder,
-                prioritySegment: EditTaskModulePresenter.toSegment(todoItem.priority),
-                switchIsOn: hasDeadline,
-                isCalendarShown: hasDeadline,
-                deadline: todoItem.deadline,
-                deadlineString: EditTaskModulePresenter.formatDate(todoItem.deadline),
-                isDeleteEnabled: true,
-                isSaveEnabled: saveEnabled
-            )
+            updateView()
         }
     }
 
     private let fileCache: FileCache
-    private var showPlaceholder = true
+    private var showPlaceholder: Bool
+
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeZone = .none
+        formatter.dateFormat = "dd MMMM yyyy"
+        return formatter
+    }()
 
     // MARK: - Lifecycle
 
-    init(fileCache: FileCache) {
+    init(output: EditTaskModuleOutput, fileCache: FileCache, with todoItem: TodoItem?) {
+        self.output = output
         self.fileCache = fileCache
-        self.todoItem = Constants.defaultItem
+        self.showPlaceholder = todoItem != nil ? false : true
+        self.todoItem = todoItem ?? EditTaskModulePresenter.makeDefaultItem()
     }
 
     // MARK: - Public
-
-    static func formatDate(_ date: Date?) -> String {
-        guard let date = date else {
-            return ""
-        }
-        let dateFormatterPrint = DateFormatter()
-        dateFormatterPrint.dateFormat = "dd MMMM yyyy"
-        return dateFormatterPrint.string(from: date)
-    }
 
     static func toPriority(_ segment: Int) -> TodoItem.Priority {
         switch segment {
@@ -102,24 +72,58 @@ final class EditTaskModulePresenter {
 
     // MARK: - Private
 
-    private func loadCacheFromFile() {
-        fileCache.load(from: Constants.filename)
-        if let loadedItem = fileCache.todoItems.first {
-            todoItem = loadedItem
-        } else {
-            todoItem = Constants.defaultItem
-        }
+    private func saveCacheToFile() {
+        fileCache.addTask(TodoItem(
+            id: todoItem.id,
+            text: todoItem.text,
+            priority: todoItem.priority,
+            deadline: todoItem.deadline,
+            isDone: todoItem.isDone,
+            createdAt: todoItem.createdAt,
+            editedAt: Date())
+        )
+        output.saveCacheToFile()
     }
 
-    private func saveCacheToFile() {
-        fileCache.addTask(todoItem)
-        fileCache.save(to: Constants.filename)
+    private static func makeDefaultItem() -> TodoItem {
+        TodoItem(
+            text: Constants.defaultText,
+            priority: Constants.defaultPriority,
+            deadline: Constants.defaultDeadline,
+            isDone: false,
+            editedAt: nil
+        )
+    }
+
+    private func updateView() {
+        let hasDeadline = todoItem.deadline != nil
+        let saveEnabled = todoItem.text != Constants.emptyText && !showPlaceholder
+
+        view?.update(
+            text: todoItem.text,
+            showPlaceholder: showPlaceholder,
+            prioritySegment: EditTaskModulePresenter.toSegment(todoItem.priority),
+            switchIsOn: hasDeadline,
+            isCalendarShown: hasDeadline,
+            deadline: todoItem.deadline,
+            deadlineString: todoItem.deadline?.format(with: dateFormatter),
+            isDeleteEnabled: true,
+            isSaveEnabled: saveEnabled
+        )
     }
 }
 
+// MARK: - EditTaskModuleViewOutput extension
+
 extension EditTaskModulePresenter: EditTaskModuleViewOutput {
+    func cancelPressed(on viewController: UIViewController) {
+        output.dismissPresented(on: viewController)
+    }
+
     func textEdited(to text: String) {
+        let text = showPlaceholder ? Constants.emptyText : text
         showPlaceholder = false
+
         todoItem = TodoItem(
             id: todoItem.id,
             text: text,
@@ -144,11 +148,10 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
         )
     }
 
-    func deletePressed() {
+    func deletePressed(on viewController: UIViewController) {
         showPlaceholder = true
-        fileCache.deleteTask(id: todoItem.id)
-        fileCache.deleteCacheFile(file: Constants.filename)
-        todoItem = Constants.defaultItem
+        output.deleteItem(item: todoItem)
+        output.dismissPresented(on: viewController)
     }
 
     func newDatePicked(_ date: Date) {
@@ -176,8 +179,9 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
         )
     }
 
-    func savePressed() {
+    func savePressed(on viewController: UIViewController) {
         saveCacheToFile()
+        output.dismissPresented(on: viewController)
     }
 }
 
@@ -185,17 +189,9 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
 
 extension EditTaskModulePresenter {
     enum Constants {
-        static let filename: String = "savedCache.json"
         static let defaultText: String = "Что будем делать?"
         static let defaultPriority: TodoItem.Priority = .ordinary
         static let defaultDeadline: Date? = nil
-        static let defaultItem: TodoItem = .init(
-            text: Constants.defaultText,
-            priority: Constants.defaultPriority,
-            deadline: Constants.defaultDeadline,
-            isDone: false,
-            editedAt: nil
-        )
         static let emptyText: String = ""
     }
 }
