@@ -3,7 +3,6 @@ import Foundation
 final class MockFileCacheService: FileCacheService {
     // MARK: - Properties
 
-    let queue: DispatchQueue
     let fileCache: FileCache
 
     var todoItems: [TodoItem] {
@@ -13,7 +12,6 @@ final class MockFileCacheService: FileCacheService {
     // MARK: - Lifecycle
 
     init(fileCache: FileCache) {
-        self.queue = DispatchQueue(label: Constants.queueName)
         self.fileCache = fileCache
     }
 
@@ -23,23 +21,14 @@ final class MockFileCacheService: FileCacheService {
         to file: String,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        let timeout = TimeInterval.random(in: 0..<2)
-        queue.asyncAfter(deadline: .now() + timeout) { [weak self] in
-            guard let self = self else {
-                MockFileCacheService.executeCompletionOnMainThread {
-                    completion(.failure(FileCacheError.selfNotExist))
-                }
-                return
-            }
+        Task {
             do {
-                try self.fileCache.save(to: file)
+                try await self.fileCache.save(to: file)
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.success(()))
                 }
             } catch let error {
-                MockFileCacheService.executeCompletionOnMainThread {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }
@@ -48,23 +37,14 @@ final class MockFileCacheService: FileCacheService {
         from file: String,
         completion: @escaping (Result<[TodoItem], Error>) -> Void
     ) {
-        let timeout = TimeInterval.random(in: 0..<2)
-        queue.asyncAfter(deadline: .now() + timeout) { [weak self] in
-            guard let self = self else {
-                MockFileCacheService.executeCompletionOnMainThread {
-                    completion(.failure(FileCacheError.selfNotExist))
-                }
-                return
-            }
+        Task {
             do {
-                try self.fileCache.load(from: file)
+                try await self.fileCache.load(from: file)
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.success(self.fileCache.todoItems))
                 }
             } catch let error {
-                MockFileCacheService.executeCompletionOnMainThread {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }
@@ -100,11 +80,5 @@ final class MockFileCacheService: FileCacheService {
         DispatchQueue.main.async {
             closure()
         }
-    }
-}
-
-extension MockFileCacheService {
-    enum Constants {
-        static let queueName: String = "FileCacheServiceQueue"
     }
 }

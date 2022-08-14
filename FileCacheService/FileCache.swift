@@ -34,7 +34,7 @@ final class FileCache {
         return todoItemsDict.removeValue(forKey: id)
     }
 
-    func save(to file: String) throws {
+    func save(to file: String) async throws {
         guard let path = cachePath(for: file) else {
             throw FileCacheError.invalidCachePath
         }
@@ -43,7 +43,7 @@ final class FileCache {
         try json.write(to: path, options: [])
     }
 
-    func load(from file: String) throws {
+    func load(from file: String) async throws {
         guard let path = cachePath(for: file) else {
             throw FileCacheError.invalidCachePath
         }
