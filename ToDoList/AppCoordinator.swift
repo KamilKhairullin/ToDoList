@@ -33,18 +33,7 @@ extension AppCoordinator {
 
     private func setupCocoaLumberjack() {
         DDLog.add(DDOSLogger.sharedInstance)
-        let message = DDLogMessage(
-            message: "App coordinator initialized.",
-            level: .all,
-            flag: .info,
-            context: 1,
-            file: "file.txt",
-            function: nil,
-            line: 0,
-            tag: nil,
-            options: [],
-            timestamp: Date()
-        )
+        let message = Constants.logMessage
         DDLog.log(asynchronous: true, message: message)
     }
 
@@ -93,5 +82,17 @@ extension AppCoordinator {
     enum Constants {
         static let filename: String = "savedCache.json"
         static let rootViewControllerTitle = "Мои дела"
+        static let logMessage: DDLogMessage = .init(
+            message: "App coordinator initialized.",
+            level: .all,
+            flag: .info,
+            context: 1,
+            file: "file.txt",
+            function: nil,
+            line: 0,
+            tag: nil,
+            options: [],
+            timestamp: Date()
+        )
     }
 }
