@@ -8,9 +8,7 @@ final class AppCoordinator {
 
     init() {
         self.fileCacheService = MockFileCacheService(fileCache: .init())
-        fileCacheService.load(from: Constants.filename) { _ in
-            self.taskListModule?.input.reloadData()
-        }
+        _ = try? fileCacheService.load(from: Constants.filename)
         taskListModule = taskListModuleBuilder()
         rootViewController = CustomNavigationController(
             rootViewController: taskListModule?.viewController,
@@ -20,12 +18,12 @@ final class AppCoordinator {
     }
 
     func deleteItem(item: TodoItem) {
-        fileCacheService.delete(id: item.id) { _ in }
-        fileCacheService.save(to: Constants.filename) { _ in }
+        _ = try? fileCacheService.delete(id: item.id)
+        try? fileCacheService.save(to: Constants.filename)
     }
 
     func saveCacheToFile() {
-        fileCacheService.save(to: Constants.filename) { _ in }
+        try? fileCacheService.save(to: Constants.filename)
     }
 }
 

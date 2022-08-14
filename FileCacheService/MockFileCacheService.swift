@@ -17,61 +17,29 @@ final class MockFileCacheService: FileCacheService {
 
     // MARK: - Public
 
-    func save(
-        to file: String,
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
+    func save(to file: String) throws {
         Task {
-            do {
-                try await self.fileCache.save(to: file)
-                MockFileCacheService.executeCompletionOnMainThread {
-                    completion(.success(()))
-                }
-            } catch let error {
-                completion(.failure(error))
-            }
+            try await self.fileCache.save(to: file)
         }
     }
 
-    func load(
-        from file: String,
-        completion: @escaping (Result<[TodoItem], Error>) -> Void
-    ) {
+    @discardableResult
+    func load(from file: String) throws -> [TodoItem] {
         Task {
-            do {
-                try await self.fileCache.load(from: file)
-                MockFileCacheService.executeCompletionOnMainThread {
-                    completion(.success(self.fileCache.todoItems))
-                }
-            } catch let error {
-                completion(.failure(error))
-            }
+            try await self.fileCache.load(from: file)
         }
+        return fileCache.todoItems
     }
 
-    func add(
-        _ newItem: TodoItem,
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
+    func add(_ newItem: TodoItem) throws {
         fileCache.add(newItem)
-        MockFileCacheService.executeCompletionOnMainThread {
-            completion(.success(()))
-        }
     }
 
-    func delete(
-        id: String,
-        completion: @escaping (Result<TodoItem, Error>) -> Void
-    ) {
+    func delete(id: String) throws -> TodoItem {
         guard let deleted = fileCache.delete(id: id) else {
-            MockFileCacheService.executeCompletionOnMainThread {
-                completion(.failure(FileCacheError.deleteFailed))
-            }
-            return
+            throw FileCacheError.deleteFailed
         }
-        MockFileCacheService.executeCompletionOnMainThread {
-            completion(.success(deleted))
-        }
+        return deleted
     }
 
     // MARK: - Private

@@ -4,23 +4,11 @@ protocol FileCacheService: AnyObject {
 
     var todoItems: [TodoItem] { get }
 
-    func save(
-        to file: String,
-        completion: @escaping (Result<Void, Error>) -> Void
-    )
+    func save(to file: String) throws
 
-    func load(
-        from file: String,
-        completion: @escaping (Result<[TodoItem], Error>) -> Void
-    )
+    func load(from file: String) throws -> [TodoItem]
 
-    func add(
-        _ newItem: TodoItem,
-        completion: @escaping (Result<Void, Error>) -> Void
-    )
+    func add(_ newItem: TodoItem) throws
 
-    func delete(
-        id: String,
-        completion: @escaping (Result<TodoItem, Error>) -> Void
-    )
+    func delete(id: String) throws -> TodoItem
 }

@@ -109,7 +109,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
             return
         }
         let item = todoItems[indexPath.row]
-        fileCache.add(TodoItem(
+        try? fileCache.add(TodoItem(
             id: item.id,
             text: item.text,
             priority: item.priority,
@@ -117,7 +117,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
             isDone: !item.isDone,
             createdAt: item.createdAt,
             editedAt: Date()
-        )) {_ in }
+        ))
 
         view?.reloadData()
     }

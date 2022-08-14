@@ -73,7 +73,7 @@ final class EditTaskModulePresenter {
     // MARK: - Private
 
     private func saveCacheToFile() {
-        fileCache.add(TodoItem(
+        try? fileCache.add(TodoItem(
             id: todoItem.id,
             text: todoItem.text,
             priority: todoItem.priority,
@@ -81,7 +81,7 @@ final class EditTaskModulePresenter {
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
             editedAt: Date())
-        ) {_ in }
+        )
         output.saveCacheToFile()
     }
 
