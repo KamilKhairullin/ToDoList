@@ -1,5 +1,5 @@
 import Foundation
 
 public enum NetworkServiceError: String, Error {
-    case invalidCachePath = "Error: Invalid cache path."
+    case requestFailed = "Error: Network request failed"
 }
