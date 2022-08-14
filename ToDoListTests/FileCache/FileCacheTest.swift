@@ -32,20 +32,24 @@ class FileCacheTest: XCTestCase {
         XCTAssertNil(cache.todoItems.first(where: { $0.text == task1.text }))
     }
 
-    func test_save_jsonError() throws {
+    func test_save_jsonError() async throws {
         let items: [String: Any] = ["1": true, "2": false]
         let json = try JSONSerialization.data(withJSONObject: items, options: [])
         try json.write(to: cachePath(for: "mock.json")!, options: [])
         let cache = FileCache()
-        try? cache.load(from: "mock.json")
+        Task {
+            try await cache.load(from: "mock.json")
+        }
         XCTAssert(cache.todoItems.isEmpty)
     }
 
-    func test_LoadFromPath() throws {
+    func test_LoadFromPath() async throws {
         let cache = FileCache()
         let task1 = TodoItem(id: "sAmE-1d", text: "Hellow", priority: .unimportant)
         cache.add(task1)
-        try? cache.load(from: "/")
+        Task {
+            try await cache.load(from: "/")
+        }
         XCTAssert(cache.todoItems.map { $0.id } == [task1.id])
     }
 }
