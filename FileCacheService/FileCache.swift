@@ -59,6 +59,7 @@ final class FileCache {
         todoItemsDict = deserializedItems.reduce(into: [:]) { result, current in
             result[current.id] = current
         }
+        isDirty = true
     }
 
     // MARK: - Private

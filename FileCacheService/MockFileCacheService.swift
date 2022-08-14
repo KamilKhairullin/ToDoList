@@ -13,7 +13,7 @@ final class MockFileCacheService: FileCacheService {
     // MARK: - Lifecycle
 
     init(fileCache: FileCache) {
-        self.queue = DispatchQueue(label: Constatns.queueName)
+        self.queue = DispatchQueue(label: Constants.queueName)
         self.fileCache = fileCache
     }
 
@@ -23,7 +23,8 @@ final class MockFileCacheService: FileCacheService {
         to file: String,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        queue.async { [weak self] in
+        let timeout = TimeInterval.random(in: 0..<2)
+        queue.asyncAfter(deadline: .now() + timeout) { [weak self] in
             guard let self = self else {
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.failure(FileCacheError.selfNotExist))
@@ -47,7 +48,8 @@ final class MockFileCacheService: FileCacheService {
         from file: String,
         completion: @escaping (Result<[TodoItem], Error>) -> Void
     ) {
-        queue.async { [weak self] in
+        let timeout = TimeInterval.random(in: 0..<2)
+        queue.asyncAfter(deadline: .now() + timeout) { [weak self] in
             guard let self = self else {
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.failure(FileCacheError.selfNotExist))
@@ -102,7 +104,7 @@ final class MockFileCacheService: FileCacheService {
 }
 
 extension MockFileCacheService {
-    enum Constatns {
+    enum Constants {
         static let queueName: String = "FileCacheServiceQueue"
     }
 }

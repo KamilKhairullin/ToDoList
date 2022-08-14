@@ -4,13 +4,13 @@ import CocoaLumberjack
 final class AppCoordinator {
     var rootViewController: UIViewController = .init()
     let fileCacheService: FileCacheService
-
     var taskListModule: TaskListModuleBuilder?
 
     init() {
-        let fileCache = FileCache()
-        self.fileCacheService = MockFileCacheService(fileCache: fileCache)
-        fileCacheService.load(from: Constants.filename) { _ in }
+        self.fileCacheService = MockFileCacheService(fileCache: .init())
+        fileCacheService.load(from: Constants.filename) { _ in
+            self.taskListModule?.input.reloadData()
+        }
         taskListModule = taskListModuleBuilder()
         rootViewController = CustomNavigationController(
             rootViewController: taskListModule?.viewController,
@@ -33,18 +33,7 @@ extension AppCoordinator {
 
     private func setupCocoaLumberjack() {
         DDLog.add(DDOSLogger.sharedInstance)
-        let message = DDLogMessage(
-            message: "App coordinator initialized.",
-            level: .all,
-            flag: .info,
-            context: 1,
-            file: "file.txt",
-            function: nil,
-            line: 0,
-            tag: nil,
-            options: [],
-            timestamp: Date()
-        ) // TODO
+        let message = Constants.logMessage
         DDLog.log(asynchronous: true, message: message)
     }
 
@@ -93,5 +82,17 @@ extension AppCoordinator {
     enum Constants {
         static let filename: String = "savedCache.json"
         static let rootViewControllerTitle = "Мои дела"
+        static let logMessage: DDLogMessage = .init(
+            message: "App coordinator initialized.",
+            level: .all,
+            flag: .info,
+            context: 1,
+            file: "file.txt",
+            function: nil,
+            line: 0,
+            tag: nil,
+            options: [],
+            timestamp: Date()
+        )
     }
 }
