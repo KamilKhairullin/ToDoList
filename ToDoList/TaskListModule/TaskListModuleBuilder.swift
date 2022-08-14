@@ -12,7 +12,7 @@ final class TaskListModuleBuilder {
         presenter
     }
 
-    init(output: TaskListModuleOutput, fileCache: FileCache) {
+    init(output: TaskListModuleOutput, fileCache: FileCacheService) {
         presenter = TaskListModulePresenter(output: output, fileCache: fileCache)
         viewController = TaskListModuleViewController(output: presenter)
         presenter.view = viewController

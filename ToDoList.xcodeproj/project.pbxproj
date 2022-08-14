@@ -241,10 +241,8 @@
 		8E3C742F28A813DA00A849A5 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				8E3C742D28A8127900A849A5 /* NetworkService.swift */,
-				8EEECB5528A8181000079D0F /* FileCacheService.swift */,
-				8EEECB5928A81BDC00079D0F /* FileCacheError.swift */,
-				8EEECB5728A8191B00079D0F /* MockFileCacheService.swift */,
+				8EE3EAB428A93A8500004AB8 /* NetworkService */,
+				8EE3EAB328A93A7500004AB8 /* FileCacheService */,
 			);
 			name = Services;
 			path = ..;
@@ -253,7 +251,6 @@
 		8E66C36D2894AF5100632D85 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				8E3C743028A815AF00A849A5 /* FileCache.swift */,
 				8E3C743128A815AF00A849A5 /* TodoItem.swift */,
 			);
 			path = Model;
@@ -267,6 +264,25 @@
 				8EE74D65289DD6360053BF61 /* Extensions */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		8EE3EAB328A93A7500004AB8 /* FileCacheService */ = {
+			isa = PBXGroup;
+			children = (
+				8E3C743028A815AF00A849A5 /* FileCache.swift */,
+				8EEECB5528A8181000079D0F /* FileCacheService.swift */,
+				8EEECB5728A8191B00079D0F /* MockFileCacheService.swift */,
+				8EEECB5928A81BDC00079D0F /* FileCacheError.swift */,
+			);
+			path = FileCacheService;
+			sourceTree = "<group>";
+		};
+		8EE3EAB428A93A8500004AB8 /* NetworkService */ = {
+			isa = PBXGroup;
+			children = (
+				8E3C742D28A8127900A849A5 /* NetworkService.swift */,
+			);
+			path = NetworkService;
 			sourceTree = "<group>";
 		};
 		8EE74A83289DA6A20053BF61 /* TaskListModule */ = {

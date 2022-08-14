@@ -6,21 +6,21 @@ protocol FileCacheService: AnyObject {
 
     func save(
         to file: String,
-        completion: @escaping (Result<Void, FileCacheError>) -> Void
+        completion: @escaping (Result<Void, Error>) -> Void
     )
 
     func load(
         from file: String,
-        completion: @escaping (Result<[TodoItem], FileCacheError>) -> Void
+        completion: @escaping (Result<[TodoItem], Error>) -> Void
     )
 
     func add(
         _ newItem: TodoItem,
-        completion: @escaping (Result<Void, FileCacheError>) -> Void
+        completion: @escaping (Result<Void, Error>) -> Void
     )
 
     func delete(
         id: String,
-        completion: @escaping (Result<TodoItem, FileCacheError>) -> Void
+        completion: @escaping (Result<TodoItem, Error>) -> Void
     )
 }
