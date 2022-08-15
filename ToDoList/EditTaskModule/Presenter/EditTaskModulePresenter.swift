@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import TodoListModels
 
 protocol EditTaskModuleInput: AnyObject {}
 

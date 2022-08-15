@@ -1,5 +1,6 @@
 @testable import ToDoList
 import XCTest
+import TodoListModels
 
 class FileCacheTest: XCTestCase {
     func test_addAndDelete() throws {
