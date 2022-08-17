@@ -1,6 +1,5 @@
 @testable import ToDoList
 import XCTest
-import TodoListModels
 
 class FileCacheTest: XCTestCase {
     func test_addAndDelete() throws {
@@ -11,12 +10,12 @@ class FileCacheTest: XCTestCase {
         sleep(UInt32(0.1))
         let task3 = TodoItem(text: "3", priority: .unimportant)
         let task4 = TodoItem(text: "4", priority: .unimportant)
-        cache.addTask(task1)
-        cache.addTask(task2)
-        cache.addTask(task3)
-        cache.deleteTask(id: task1.id)
+        cache.add(task1)
+        cache.add(task2)
+        cache.add(task3)
+        cache.delete(id: task1.id)
         XCTAssertEqual(cache.todoItems.map { $0.id }, [task2.id, task3.id])
-        XCTAssertNil(cache.deleteTask(id: task4.id))
+        XCTAssertNil(cache.delete(id: task4.id))
     }
 
     func test_todoitems() throws {
@@ -28,8 +27,8 @@ class FileCacheTest: XCTestCase {
         let cache = FileCache()
         let task1 = TodoItem(id: "sAmE-1d", text: "Hellow", priority: .unimportant)
         let task2 = TodoItem(id: "sAmE-1d", text: "World", priority: .important)
-        cache.addTask(task1)
-        cache.addTask(task2)
+        cache.add(task1)
+        cache.add(task2)
         XCTAssertNil(cache.todoItems.first(where: { $0.text == task1.text }))
     }
 
@@ -38,15 +37,15 @@ class FileCacheTest: XCTestCase {
         let json = try JSONSerialization.data(withJSONObject: items, options: [])
         try json.write(to: cachePath(for: "mock.json")!, options: [])
         let cache = FileCache()
-        cache.load(from: "mock.json")
+        try? cache.load(from: "mock.json")
         XCTAssert(cache.todoItems.isEmpty)
     }
 
     func test_LoadFromPath() throws {
         let cache = FileCache()
         let task1 = TodoItem(id: "sAmE-1d", text: "Hellow", priority: .unimportant)
-        cache.addTask(task1)
-        cache.load(from: "/")
+        cache.add(task1)
+        try? cache.load(from: "/")
         XCTAssert(cache.todoItems.map { $0.id } == [task1.id])
     }
 }

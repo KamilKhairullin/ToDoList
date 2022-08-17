@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import TodoListModels
 
 protocol EditTaskModuleInput: AnyObject {}
 
@@ -27,7 +26,7 @@ final class EditTaskModulePresenter {
         }
     }
 
-    private let fileCache: FileCache
+    private let fileCache: FileCacheService
     private var showPlaceholder: Bool
 
     private let dateFormatter: DateFormatter = {
@@ -40,7 +39,7 @@ final class EditTaskModulePresenter {
 
     // MARK: - Lifecycle
 
-    init(output: EditTaskModuleOutput, fileCache: FileCache, with todoItem: TodoItem?) {
+    init(output: EditTaskModuleOutput, fileCache: FileCacheService, with todoItem: TodoItem?) {
         self.output = output
         self.fileCache = fileCache
         self.showPlaceholder = todoItem != nil ? false : true
@@ -74,7 +73,7 @@ final class EditTaskModulePresenter {
     // MARK: - Private
 
     private func saveCacheToFile() {
-        fileCache.addTask(TodoItem(
+        fileCache.add(TodoItem(
             id: todoItem.id,
             text: todoItem.text,
             priority: todoItem.priority,
@@ -82,7 +81,7 @@ final class EditTaskModulePresenter {
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
             editedAt: Date())
-        )
+        ) {_ in }
         output.saveCacheToFile()
     }
 

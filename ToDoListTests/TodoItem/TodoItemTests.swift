@@ -1,6 +1,5 @@
 @testable import ToDoList
 import XCTest
-import TodoListModels
 
 class TodoItemTests: XCTestCase {
 

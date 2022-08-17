@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import TodoListModels
 
 protocol TaskListModuleInput: AnyObject {
     func reloadData()
@@ -23,7 +22,7 @@ final class TaskListModulePresenter {
     }
     let output: TaskListModuleOutput
 
-    private let fileCache: FileCache
+    private let fileCache: FileCacheService
     private var doneIsHidden = false
     private var todoItems: [TodoItem] {
         if doneIsHidden {
@@ -42,7 +41,7 @@ final class TaskListModulePresenter {
 
     // MARK: - Lifecycle
 
-    init(output: TaskListModuleOutput, fileCache: FileCache) {
+    init(output: TaskListModuleOutput, fileCache: FileCacheService) {
         self.output = output
         self.fileCache = fileCache
     }
@@ -110,7 +109,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
             return
         }
         let item = todoItems[indexPath.row]
-        fileCache.addTask(TodoItem(
+        fileCache.add(TodoItem(
             id: item.id,
             text: item.text,
             priority: item.priority,
@@ -118,8 +117,8 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
             isDone: !item.isDone,
             createdAt: item.createdAt,
             editedAt: Date()
-        )
-        )
+        )) {_ in }
+
         view?.reloadData()
     }
 

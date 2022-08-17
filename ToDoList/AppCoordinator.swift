@@ -1,16 +1,16 @@
 import UIKit
 import CocoaLumberjack
-import TodoListModels
 
 final class AppCoordinator {
     var rootViewController: UIViewController = .init()
-    let fileCache: FileCache
-
+    let fileCacheService: FileCacheService
     var taskListModule: TaskListModuleBuilder?
 
     init() {
-        fileCache = FileCache()
-        fileCache.load(from: Constants.filename)
+        self.fileCacheService = MockFileCacheService(fileCache: .init())
+        fileCacheService.load(from: Constants.filename) { _ in
+            self.taskListModule?.input.reloadData()
+        }
         taskListModule = taskListModuleBuilder()
         rootViewController = CustomNavigationController(
             rootViewController: taskListModule?.viewController,
@@ -20,12 +20,12 @@ final class AppCoordinator {
     }
 
     func deleteItem(item: TodoItem) {
-        fileCache.deleteTask(id: item.id)
-        fileCache.save(to: Constants.filename)
+        fileCacheService.delete(id: item.id) { _ in }
+        fileCacheService.save(to: Constants.filename) { _ in }
     }
 
     func saveCacheToFile() {
-        fileCache.save(to: Constants.filename)
+        fileCacheService.save(to: Constants.filename) { _ in }
     }
 }
 
@@ -38,7 +38,7 @@ extension AppCoordinator {
     }
 
     private func taskListModuleBuilder() -> TaskListModuleBuilder {
-        return TaskListModuleBuilder(output: self, fileCache: fileCache)
+        return TaskListModuleBuilder(output: self, fileCache: fileCacheService)
     }
 }
 
@@ -57,19 +57,19 @@ extension AppCoordinator: EditTaskModuleOutput {
 
 extension AppCoordinator: TaskListModuleOutput {
     func preview(indexPath: IndexPath) -> UIViewController {
-        let todoItem = fileCache.todoItems[indexPath.row]
-        let builder = EditTaskModuleBuilder(output: self, fileCache: fileCache, with: todoItem)
+        let todoItem = fileCacheService.todoItems[indexPath.row]
+        let builder = EditTaskModuleBuilder(output: self, fileCache: fileCacheService, with: todoItem)
         return builder.viewController
     }
 
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController) {
-        let todoItem = fileCache.todoItems[indexPath.row]
-        let builder = EditTaskModuleBuilder(output: self, fileCache: fileCache, with: todoItem)
+        let todoItem = fileCacheService.todoItems[indexPath.row]
+        let builder = EditTaskModuleBuilder(output: self, fileCache: fileCacheService, with: todoItem)
         viewController.navigationController?.pushViewController(builder.viewController, animated: true)
     }
 
     func showCreateNewTask() {
-        let builder = EditTaskModuleBuilder(output: self, fileCache: fileCache, with: nil)
+        let builder = EditTaskModuleBuilder(output: self, fileCache: fileCacheService, with: nil)
         let viewController = builder.viewController
         let viewToPresent = UINavigationController(rootViewController: viewController)
         rootViewController.present(viewToPresent, animated: true)
