@@ -147,7 +147,7 @@ extension TodoItem {
         case important
         case ordinary
         case unimportant
-
+        
         init(from networkPriority: NetworkTodoItem.Priority) {
             switch networkPriority {
             case .important:

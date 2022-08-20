@@ -11,16 +11,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let client = NetworkClientImp(urlSession: .init(configuration: .default))
         let service = NetworkServiceImp(networkClient: client)
-        service.getAllTodoItems { result in
+        var revision = 1
+        service.getAllTodoItems(revision: revision) { result in
             switch result {
             case .success(let data):
                 print(data)
+                revision = Int(data.revision ?? 0)
             case .failure(let error):
                 print(error)
             }
         }
-//
-//        let todoItem = TodoItem(text: "1", priority: .important, deadline: Date().dayAfter, createdAt: Date().noon, editedAt: Date())
+
+        service.deleteTodoItem(revision: revision, at: "C3ADF355-C80C-4F45-B4B1-2DE210EC30C0") { result in
+            switch result {
+            case .success(let data):
+                print(data.element)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+        service.getAllTodoItems(revision: revision) { result in
+            switch result {
+            case .success(let data):
+                print(data)
+                revision = Int(data.revision ?? 0)
+            case .failure(let error):
+                print(error)
+            }
+        }
+//        let todoItem = TodoItem(
+//            text: "1",
+//            priority: .important,
+//            deadline: Date().dayAfter,
+//            createdAt: Date().noon,
+//            editedAt: Date()
+//        )
 //        service.addTodoItem(todoItem) { result in
 //            switch result {
 //            case .success(let data):
@@ -29,6 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                print(error)
 //            }
 //        }
+
         window.rootViewController = appCoordinator.rootViewController
         window.makeKeyAndVisible()
         return true

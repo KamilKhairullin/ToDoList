@@ -1,22 +1,27 @@
 import Foundation
 
 final class NetworkServiceImp: NetworkService {
-
     // MARK: - Properties
     private let networkClient: NetworkClient
+    private var revision: Int = 0
 
     init(networkClient: NetworkClient) {
         self.networkClient = networkClient
     }
 
     // MARK: - Public
-    func getAllTodoItems(completion: @escaping (Result<ListQuery, Error>) -> Void) {
+    func getAllTodoItems(
+        revision: Int,
+        completion: @escaping (Result<ListQuery, Error>) -> Void
+    ) {
         networkClient.processRequest(
             request: createGetAllTodoItemsRequest(),
-            completion: completion)
+            completion: completion
+        )
     }
 
     func updateAllTodoItems(
+        revision: Int,
         _ items: [TodoItem],
         completion: @escaping (Result<ListQuery, Error>) -> Void
     ) {
@@ -26,19 +31,23 @@ final class NetworkServiceImp: NetworkService {
         }
         networkClient.processRequest(
             request: request,
-            completion: completion)
+            completion: completion
+        )
     }
 
     func getTodoItem(
+        revision: Int,
         at id: String,
         completion: @escaping (Result<ElementQuery, Error>) -> Void
     ) {
         networkClient.processRequest(
             request: createGetTodoItemRequest(id),
-            completion: completion)
+            completion: completion
+        )
     }
 
     func addTodoItem(
+        revision: Int,
         _ item: TodoItem,
         completion: @escaping (Result<ElementQuery, Error>) -> Void
     ) {
@@ -48,15 +57,34 @@ final class NetworkServiceImp: NetworkService {
         }
         networkClient.processRequest(
             request: request,
-            completion: completion)
+            completion: completion
+        )
     }
 
-    func editTodoItem(_ item: TodoItem, completion: @escaping (Result<ElementQuery, Error>) -> Void) {
-        completion(.failure(HTTPError.wrongRequest))
+    func editTodoItem(
+        revision: Int,
+        _ item: TodoItem,
+        completion: @escaping (Result<ElementQuery, Error>) -> Void
+    ) {
+        guard let request = try? createEditTodoItemRequest(item) else {
+            completion(.failure(HTTPError.decodingFailed))
+            return
+        }
+        networkClient.processRequest(
+            request: request,
+            completion: completion
+        )
     }
 
-    func deleteTodoItem(at id: String, completion: @escaping (Result<ElementQuery, Error>) -> Void) {
-        completion(.failure(HTTPError.wrongRequest))
+    func deleteTodoItem(
+        revision: Int,
+        at id: String,
+        completion: @escaping (Result<ElementQuery, Error>) -> Void
+    ) {
+        networkClient.processRequest(
+            request: createDeleteTodoItemRequest(id),
+            completion: completion
+        )
     }
 
     // MARK: - Private
@@ -109,6 +137,38 @@ final class NetworkServiceImp: NetworkService {
         HTTPRequest(
             route: "\(Constants.baseurl)/list/\(id)",
             headers: [Constants.authorizationKey: Constants.authorizationValue]
+        )
+    }
+
+    private func createEditTodoItemRequest(_ item: TodoItem) throws -> HTTPRequest {
+        let requestBody = ElementQuery(
+            element: NetworkTodoItem(from: item),
+            revision: nil
+        )
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(requestBody)
+
+        return HTTPRequest(
+            route: "\(Constants.baseurl)/list/\(item.id)",
+            headers: [
+                Constants.authorizationKey: Constants.authorizationValue,
+                Constants.lastRevisionKey: "0",
+                Constants.contentTypeKey: Constants.contentTypeValue
+            ],
+            body: data,
+            httpMethod: .put
+        )
+    }
+
+    private func createDeleteTodoItemRequest(_ id: String) -> HTTPRequest {
+        HTTPRequest(
+            route: "\(Constants.baseurl)/list/\(id)",
+            headers: [
+                Constants.authorizationKey: Constants.authorizationValue,
+                Constants.lastRevisionKey: "1",
+                Constants.contentTypeKey: Constants.contentTypeValue
+                     ],
+            httpMethod: .delete
         )
     }
 }

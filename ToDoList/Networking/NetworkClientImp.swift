@@ -23,13 +23,15 @@ struct NetworkClientImp: NetworkClient {
 
             let task = self.urlSession.dataTask(with: urlRequest) { data, response, error in
                 guard let response = response as? HTTPURLResponse,
-                      let unwrappedData = data
+                      let data = data,
+                      let stringData = String(data: data, encoding: .utf8)
                 else {
                     NetworkClientImp.executeCompletionOnMainThread {
                         completion(.failure(HTTPError.failedResponseUnwrapping))
                     }
                     return
                 }
+                let unwrappedData = Data(stringData.utf8)
                 let handledResponse = HTTPNetworkResponse.handleNetworkResponse(for: response)
 
                 switch handledResponse {
@@ -37,14 +39,16 @@ struct NetworkClientImp: NetworkClient {
                     let jsonDecoder = JSONDecoder()
                     jsonDecoder.keyDecodingStrategy = request.keyDecodingStrategy
                     jsonDecoder.dateDecodingStrategy = request.dateDecodingStrategy
-                    guard let result = try? jsonDecoder.decode(T.self, from: unwrappedData) else {
+
+                    do {
+                        let result = try jsonDecoder.decode(T.self, from: unwrappedData)
                         NetworkClientImp.executeCompletionOnMainThread {
-                            completion(.failure(HTTPError.decodingFailed))
+                            completion(.success(result))
                         }
-                        return
-                    }
-                    NetworkClientImp.executeCompletionOnMainThread {
-                        completion(.success(result))
+                    } catch let error {
+                        NetworkClientImp.executeCompletionOnMainThread {
+                            completion(.failure(error))
+                        }
                     }
                 case .failure(let error):
                     NetworkClientImp.executeCompletionOnMainThread {

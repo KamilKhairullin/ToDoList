@@ -16,7 +16,7 @@ struct HTTPRequest {
         body: Data? = nil,
         queryItems: [(key: String, value: String?)] = [],
         httpMethod: HTTPMethod = .get,
-        keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase,
+        keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
         dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970
     ) {
         self.route = route

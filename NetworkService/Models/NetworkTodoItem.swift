@@ -107,4 +107,17 @@ extension NetworkTodoItem: Codable {
         try container.encode(editedAt, forKey: .editedAt)
         try container.encode(lastUpdatedBy, forKey: .lastUpdatedBy)
     }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decode(String.self, forKey: .id)
+        text = try values.decode(String.self, forKey: .text)
+        priority = try values.decode(Priority.self, forKey: .priority)
+        deadline = try values.decode(Date?.self, forKey: .deadline)
+        isDone = try values.decode(Bool.self, forKey: .isDone)
+        color = try values.decode(String?.self, forKey: .color)
+        createdAt = try values.decode(Date.self, forKey: .createdAt)
+        editedAt = try values.decode(Date?.self, forKey: .editedAt)
+        lastUpdatedBy = try values.decode(String.self, forKey: .lastUpdatedBy)
+    }
 }
