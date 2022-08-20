@@ -8,7 +8,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         guard let window = window else { return false }
         let appCoordinator = AppCoordinator()
-        
+
         let client = NetworkClientImp(urlSession: .init(configuration: .default))
         let service = NetworkServiceImp(networkClient: client)
         service.getAllTodoItems { result in
@@ -19,7 +19,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print(error)
             }
         }
-        
+//
+//        let todoItem = TodoItem(text: "1", priority: .important, deadline: Date().dayAfter, createdAt: Date().noon, editedAt: Date())
+//        service.addTodoItem(todoItem) { result in
+//            switch result {
+//            case .success(let data):
+//                print(data)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
         window.rootViewController = appCoordinator.rootViewController
         window.makeKeyAndVisible()
         return true

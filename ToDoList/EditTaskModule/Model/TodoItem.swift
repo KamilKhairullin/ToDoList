@@ -117,7 +117,7 @@ extension TodoItem: JSONParsable {
         self.init(
             id: networkTodoItem.id,
             text: networkTodoItem.text,
-            priority: .init(from: networkTodoItem.priority),
+            priority: Priority(from: networkTodoItem.priority),
             deadline: networkTodoItem.deadline,
             isDone: networkTodoItem.isDone,
             createdAt: networkTodoItem.createdAt,

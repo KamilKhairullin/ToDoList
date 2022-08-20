@@ -16,7 +16,7 @@ struct NetworkClientImp: NetworkClient {
     @discardableResult
     func processRequest<T: Decodable>(
         request: HTTPRequest,
-        completion: @escaping (Result<T, HTTPError>) -> Void
+        completion: @escaping (Result<T, Error>) -> Void
     ) -> Cancellable? {
         do {
             let urlRequest = try createUrlRequest(from: request)
