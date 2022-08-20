@@ -22,8 +22,8 @@
 		8E3C743228A815AF00A849A5 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3C743028A815AF00A849A5 /* FileCache.swift */; };
 		8E3C743328A815AF00A849A5 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3C743128A815AF00A849A5 /* TodoItem.swift */; };
 		8E4B54AD28AF7C1E0030DAF8 /* NetworkServiceImp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54AC28AF7C1E0030DAF8 /* NetworkServiceImp.swift */; };
-		8E4B54AF28AF87F10030DAF8 /* NetworkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54AE28AF87F10030DAF8 /* NetworkResponse.swift */; };
-		8E4B54B128AF88AA0030DAF8 /* NetworkItemResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54B028AF88AA0030DAF8 /* NetworkItemResponse.swift */; };
+		8E4B54AF28AF87F10030DAF8 /* ListQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54AE28AF87F10030DAF8 /* ListQuery.swift */; };
+		8E4B54B328B1370B0030DAF8 /* ElementQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54B228B1370B0030DAF8 /* ElementQuery.swift */; };
 		8E56E37428ACDFB300CE1C19 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E56E37328ACDFB300CE1C19 /* NetworkClient.swift */; };
 		8E56E37628ACDFFA00CE1C19 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E56E37528ACDFFA00CE1C19 /* HTTPError.swift */; };
 		8E56E37828ACE03100CE1C19 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E56E37728ACE03100CE1C19 /* HTTPRequest.swift */; };
@@ -99,8 +99,8 @@
 		8E3C743028A815AF00A849A5 /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 		8E3C743128A815AF00A849A5 /* TodoItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		8E4B54AC28AF7C1E0030DAF8 /* NetworkServiceImp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceImp.swift; sourceTree = "<group>"; };
-		8E4B54AE28AF87F10030DAF8 /* NetworkResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkResponse.swift; sourceTree = "<group>"; };
-		8E4B54B028AF88AA0030DAF8 /* NetworkItemResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkItemResponse.swift; sourceTree = "<group>"; };
+		8E4B54AE28AF87F10030DAF8 /* ListQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListQuery.swift; sourceTree = "<group>"; };
+		8E4B54B228B1370B0030DAF8 /* ElementQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementQuery.swift; sourceTree = "<group>"; };
 		8E56E37328ACDFB300CE1C19 /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		8E56E37528ACDFFA00CE1C19 /* HTTPError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPError.swift; sourceTree = "<group>"; };
 		8E56E37728ACE03100CE1C19 /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
@@ -294,8 +294,8 @@
 			isa = PBXGroup;
 			children = (
 				8E99418A28AD421A009878CE /* NetworkTodoItem.swift */,
-				8E4B54AE28AF87F10030DAF8 /* NetworkResponse.swift */,
-				8E4B54B028AF88AA0030DAF8 /* NetworkItemResponse.swift */,
+				8E4B54AE28AF87F10030DAF8 /* ListQuery.swift */,
+				8E4B54B228B1370B0030DAF8 /* ElementQuery.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -752,12 +752,12 @@
 				8E398F32289F0BB40026ADC4 /* TaskCellViewState.swift in Sources */,
 				8EEB84B62895D179005D5FF1 /* PriorityStackViewContainer.swift in Sources */,
 				8E99418628AD35F6009878CE /* HTTPNetworkResponse.swift in Sources */,
-				8E4B54B128AF88AA0030DAF8 /* NetworkItemResponse.swift in Sources */,
-				8E4B54AF28AF87F10030DAF8 /* NetworkResponse.swift in Sources */,
+				8E4B54AF28AF87F10030DAF8 /* ListQuery.swift in Sources */,
 				8EE74A89289DA7660053BF61 /* TaskListModulePresenter.swift in Sources */,
 				8E56E37628ACDFFA00CE1C19 /* HTTPError.swift in Sources */,
 				8EE74D60289DB53E0053BF61 /* TaskListModuleHeaderView.swift in Sources */,
 				8E398F2B289EF7450026ADC4 /* TaskListCreateNewTaskCell.swift in Sources */,
+				8E4B54B328B1370B0030DAF8 /* ElementQuery.swift in Sources */,
 				8EE74D6C289DE8690053BF61 /* CellContentSubtitleStackView.swift in Sources */,
 				8ECEFA1F2896D8060098896B /* EditTaskModuleBuilder.swift in Sources */,
 				8E56E37A28ACF03A00CE1C19 /* NetworkClientImp.swift in Sources */,

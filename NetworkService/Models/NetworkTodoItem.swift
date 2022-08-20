@@ -37,18 +37,6 @@ struct NetworkTodoItem {
         self.editedAt = editedAt
         self.lastUpdatedBy = lastUpdatedBy
     }
-
-    enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case text = "text"
-        case priority = "importance"
-        case deadline = "deadline"
-        case isDone = "done"
-        case color = "color"
-        case createdAt = "created_at"
-        case editedAt = "changed_at"
-        case lastUpdatedBy = "last_updated_by"
-    }
 }
 
 // MARK: - Nested types
@@ -70,6 +58,22 @@ extension NetworkTodoItem {
             }
         }
     }
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case text = "text"
+        case priority = "importance"
+        case deadline = "deadline"
+        case isDone = "done"
+        case color = "color"
+        case createdAt = "created_at"
+        case editedAt = "changed_at"
+        case lastUpdatedBy = "last_updated_by"
+    }
+
+    enum Constants {
+        static let color: String = ""
+    }
 }
 
 extension NetworkTodoItem {
@@ -77,10 +81,10 @@ extension NetworkTodoItem {
         self.init(
             id: todoItem.id,
             text: todoItem.text,
-            priority: Priority.init(from: todoItem.priority),
+            priority: Priority(from: todoItem.priority),
             deadline: todoItem.deadline,
             isDone: todoItem.isDone,
-            color: "#FFFFFF",
+            color: "",
             createdAt: todoItem.createdAt,
             editedAt: Date(timeIntervalSince1970: 682678810.0),
             lastUpdatedBy: UIDevice.current.identifierForVendor!.uuidString

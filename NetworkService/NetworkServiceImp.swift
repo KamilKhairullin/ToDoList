@@ -1,87 +1,127 @@
 import Foundation
 
 final class NetworkServiceImp: NetworkService {
+
+    // MARK: - Properties
     private let networkClient: NetworkClient
 
     init(networkClient: NetworkClient) {
         self.networkClient = networkClient
     }
 
-    func getAllTodoItems(completion: @escaping (Result<NetworkResponse, Error>) -> Void) {
+    // MARK: - Public
+    func getAllTodoItems(completion: @escaping (Result<ListQuery, Error>) -> Void) {
         networkClient.processRequest(
             request: createGetAllTodoItemsRequest(),
             completion: completion)
     }
 
-    func updateAllTodoItems(_ items: [TodoItem], completion: @escaping (Result<NetworkResponse, Error>) -> Void) {
+    func updateAllTodoItems(
+        _ items: [TodoItem],
+        completion: @escaping (Result<ListQuery, Error>) -> Void
+    ) {
+        guard let request = try? createUpdateAllTodoItemsRequest(items) else {
+            completion(.failure(HTTPError.decodingFailed))
+            return
+        }
         networkClient.processRequest(
-            request: createUpdateAllTodoItemsRequest(items),
+            request: request,
             completion: completion)
     }
 
-    func getTodoItem(at id: String, completion: @escaping (Result<NetworkItemResponse, Error>) -> Void) {
+    func getTodoItem(
+        at id: String,
+        completion: @escaping (Result<ElementQuery, Error>) -> Void
+    ) {
         networkClient.processRequest(
             request: createGetTodoItemRequest(id),
             completion: completion)
     }
 
-    func addTodoItem(_ item: TodoItem, completion: @escaping (Result<NetworkItemResponse, Error>) -> Void) {
+    func addTodoItem(
+        _ item: TodoItem,
+        completion: @escaping (Result<ElementQuery, Error>) -> Void
+    ) {
+        guard let request = try? createAddTodoItemRequest(item) else {
+            completion(.failure(HTTPError.decodingFailed))
+            return
+        }
         networkClient.processRequest(
-            request: createAddTodoItemRequest(item),
+            request: request,
             completion: completion)
     }
 
-    func editTodoItem(_ item: TodoItem, completion: @escaping (Result<NetworkItemResponse, Error>) -> Void) {
+    func editTodoItem(_ item: TodoItem, completion: @escaping (Result<ElementQuery, Error>) -> Void) {
         completion(.failure(HTTPError.wrongRequest))
     }
 
-    func deleteTodoItem(at id: String, completion: @escaping (Result<NetworkItemResponse, Error>) -> Void) {
+    func deleteTodoItem(at id: String, completion: @escaping (Result<ElementQuery, Error>) -> Void) {
         completion(.failure(HTTPError.wrongRequest))
     }
+
+    // MARK: - Private
 
     private func createGetAllTodoItemsRequest() -> HTTPRequest {
-        HTTPRequest(route: "https://beta.mrdekk.ru/todobackend/list", headers: ["Authorization": "Bearer VolatileFlowers"])
+        HTTPRequest(
+            route: "\(Constants.baseurl)/list",
+            headers: [Constants.authorizationKey: Constants.authorizationValue])
     }
 
-    private func createUpdateAllTodoItemsRequest(_ items: [TodoItem]) -> HTTPRequest {
+    private func createUpdateAllTodoItemsRequest(_ items: [TodoItem]) throws -> HTTPRequest {
+        let encoder = JSONEncoder()
+
         let networkItems = items.map { NetworkTodoItem(from: $0) }
-        let encoder = JSONEncoder()
-        let requestBody = NetworkResponse(status: "ok", list: networkItems, revision: nil)
+        let body = ListQuery(list: networkItems, revision: nil)
+        let data = try encoder.encode(body)
 
-        guard let data = try? encoder.encode(requestBody) else {
-            fatalError()
-        }
         return HTTPRequest(
-            route: "https://beta.mrdekk.ru/todobackend/list",
+            route: "\(Constants.baseurl)/list",
             headers: [
-                "Authorization": "Bearer VolatileFlowers",
-                "X-Last-Known-Revision": "0",
+                Constants.authorizationKey: Constants.authorizationValue,
+                Constants.lastRevisionKey: "0"
             ],
             body: data,
-            httpMethod: .patch)
+            httpMethod: .patch
+        )
     }
 
-    private func createAddTodoItemRequest(_ item: TodoItem) -> HTTPRequest {
-        let networkItem = NetworkTodoItem(from: item)
+    private func createAddTodoItemRequest(_ item: TodoItem) throws -> HTTPRequest {
+        let requestBody = ElementQuery(
+            element: NetworkTodoItem(from: item),
+            revision: 0
+        )
         let encoder = JSONEncoder()
-        let requestBody = NetworkItemResponse(status: "ok", element: networkItem, revision: 0)
-
-        guard let data = try? encoder.encode(requestBody) else {
-            fatalError()
-        }
+        let data = try encoder.encode(requestBody)
 
         return HTTPRequest(
-            route: "https://beta.mrdekk.ru/todobackend/list",
+            route: "\(Constants.baseurl)/list",
             headers: [
-                "Authorization": "Bearer VolatileFlowers",
-                "X-Last-Known-Revision": "0",
-                "Content-type": "application/json",
+                Constants.authorizationKey: Constants.authorizationValue,
+                Constants.lastRevisionKey: "0",
+                Constants.contentTypeKey: Constants.contentTypeValue
             ],
             body: data,
-            httpMethod: .post)
+            httpMethod: .post
+        )
     }
 
     private func createGetTodoItemRequest(_ id: String) -> HTTPRequest {
-        HTTPRequest(route: "https://beta.mrdekk.ru/todobackend/list/\(id)", headers: ["Authorization": "Bearer VolatileFlowers"])
+        HTTPRequest(
+            route: "\(Constants.baseurl)/list/\(id)",
+            headers: [Constants.authorizationKey: Constants.authorizationValue]
+        )
+    }
+}
+
+// MARK: - Nested types
+
+extension NetworkServiceImp {
+    enum Constants {
+        static let baseurl: String = "https://beta.mrdekk.ru/todobackend"
+        static let authorizationKey: String = "Authorization"
+        static let authorizationValue: String = "Bearer VolatileFlowers"
+        static let lastRevisionKey: String = "X-Last-Known-Revision"
+        static let contentTypeKey: String = "Content-type"
+        static let contentTypeValue: String = "application/json"
     }
 }

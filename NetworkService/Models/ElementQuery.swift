@@ -1,6 +1,6 @@
 import Foundation
 
-struct NetworkItemResponse: Codable {
+struct ElementQuery: Codable {
     // MARK: - Properties
 
     let status: String
@@ -10,12 +10,18 @@ struct NetworkItemResponse: Codable {
     // MARK: - Lifecycle
 
     init(
-        status: String,
+        status: String = Constants.statusDefaultValue,
         element: NetworkTodoItem,
         revision: Int32?
     ) {
         self.status = status
         self.element = element
         self.revision = revision
+    }
+}
+
+extension ElementQuery {
+    enum Constants {
+        static let statusDefaultValue = "ok"
     }
 }
