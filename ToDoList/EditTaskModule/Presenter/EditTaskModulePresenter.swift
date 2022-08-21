@@ -116,7 +116,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
             deadline: todoItem.deadline,
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
-            editedAt: todoItem.editedAt
+            editedAt: Date()
         )
     }
 
@@ -129,7 +129,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
             deadline: todoItem.deadline,
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
-            editedAt: todoItem.editedAt
+            editedAt: Date()
         )
     }
 
@@ -147,7 +147,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
             deadline: date,
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
-            editedAt: todoItem.editedAt
+            editedAt: Date()
         )
     }
 
@@ -160,7 +160,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
             deadline: deadline,
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
-            editedAt: todoItem.editedAt
+            editedAt: Date()
         )
     }
 
@@ -172,7 +172,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
             deadline: todoItem.deadline,
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
-            editedAt: Date())
+            editedAt: todoItem.editedAt)
         ) { _ in }
 
         output.dismissPresented(on: viewController)

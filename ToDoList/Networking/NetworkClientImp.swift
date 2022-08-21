@@ -9,6 +9,7 @@ struct NetworkClientImp: NetworkClient {
 
     init(urlSession: URLSession) {
         self.urlSession = urlSession
+        urlSession.configuration.timeoutIntervalForRequest = Constants.timeout
     }
 
     // MARK: - Public
@@ -111,5 +112,6 @@ extension NetworkClientImp {
     enum Constants {
         static let replaceOccurrencesOf: String = "+"
         static let replacingOccurrencesWith: String = "%2B"
+        static let timeout: Double = 30.0
     }
 }
