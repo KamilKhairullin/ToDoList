@@ -32,10 +32,8 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
         if isDirty {
             isDirty = false
             networkService.getAllTodoItems(revision: revision) { result in
-                print("here")
                 switch result {
                 case .success(let data):
-                    print("here2")
                     guard let revision = data.revision else {
                         completion(.failure(HTTPError.decodingFailed))
                         return
@@ -53,30 +51,6 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
         }
     }
 
-//    func getAllItems(completion: @escaping (Result<[TodoItem], Error>) -> Void) {
-//        completion(.success(fileCacheService.todoItems))
-//        if isDirty {
-//            isDirty = false
-//            networkService.getAllTodoItems(revision: revision) { result in
-//                switch result {
-//                case .success(let data):
-//                    guard let revision = data.revision else {
-//                        completion(.failure(HTTPError.decodingFailed))
-//                        return
-//                    }
-//                    let list = data.list.map { TodoItem(from: $0) }
-//                    self.revision = revision
-//                    self.updateLocalItems(with: list)
-//                    self.isDirty = false
-//                    completion(.success(list))
-//                    self.output.reloadData()
-//                case .failure(let error):
-//                    completion(.failure(error))
-//                }
-//            }
-//        }
-//    }
-
     func addItem(item: TodoItem, completion: @escaping (Result<Void, Error>) -> Void) {
         self.fileCacheService.addTodoItem(item) { _ in }
         self.fileCacheService.save(to: Constants.filename) { _ in }
@@ -84,7 +58,12 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
 
         networkService.addTodoItem(revision: revision, item) { [weak self] result in
             switch result {
-            case .success:
+            case .success(let data):
+                guard let revision = data.revision else {
+                    completion(.failure(HTTPError.decodingFailed))
+                    return
+                }
+                self?.revision = revision
                 completion(.success(()))
             case .failure(let error):
                 self?.isDirty = true
@@ -101,7 +80,12 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
 
         networkService.editTodoItem(revision: revision, item) { [weak self] result in
             switch result {
-            case .success:
+            case .success(let data):
+                guard let revision = data.revision else {
+                    completion(.failure(HTTPError.decodingFailed))
+                    return
+                }
+                self?.revision = revision
                 completion(.success(()))
             case .failure(let error):
                 self?.isDirty = true
@@ -117,7 +101,12 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
 
         networkService.deleteTodoItem(revision: revision, at: id) { [weak self] result in
             switch result {
-            case .success:
+            case .success(let data):
+                guard let revision = data.revision else {
+                    completion(.failure(HTTPError.decodingFailed))
+                    return
+                }
+                self?.revision = revision
                 completion(.success(()))
             case .failure(let error):
                 self?.isDirty = true

@@ -15,20 +15,12 @@ final class AppCoordinator {
             output: self
         )
 
-//        serviceCoordinator.sync { _ in
-//            self.taskListModule?.input.reloadData()
-//        }
-
         taskListModule = taskListModuleBuilder()
         rootViewController = CustomNavigationController(
             rootViewController: taskListModule?.viewController,
             title: Constants.rootViewControllerTitle
         )
         setupCocoaLumberjack()
-    }
-
-    func saveCacheToFile() {
-//        serviceCoordinator.save(to: Constants.filename) { _ in }
     }
 }
 

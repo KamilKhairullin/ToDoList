@@ -65,7 +65,7 @@ final class NetworkServiceImp: NetworkService {
         _ item: TodoItem,
         completion: @escaping (Result<ElementQuery, Error>) -> Void
     ) {
-        guard let request = try? createEditTodoItemRequest(item) else {
+        guard let request = try? createEditTodoItemRequest(revision: revision, item) else {
             completion(.failure(HTTPError.decodingFailed))
             return
         }
@@ -137,7 +137,7 @@ final class NetworkServiceImp: NetworkService {
         )
     }
 
-    private func createEditTodoItemRequest(_ item: TodoItem) throws -> HTTPRequest {
+    private func createEditTodoItemRequest(revision: Int, _ item: TodoItem) throws -> HTTPRequest {
         let requestBody = ElementQuery(
             element: NetworkTodoItem(from: item),
             revision: nil
@@ -149,7 +149,7 @@ final class NetworkServiceImp: NetworkService {
             route: "\(Constants.baseurl)/list/\(item.id)",
             headers: [
                 Constants.authorizationKey: Constants.authorizationValue,
-                Constants.lastRevisionKey: "0",
+                Constants.lastRevisionKey: "\(revision)",
                 Constants.contentTypeKey: Constants.contentTypeValue
             ],
             body: data,

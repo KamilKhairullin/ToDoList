@@ -5,7 +5,6 @@ protocol EditTaskModuleInput: AnyObject {}
 
 protocol EditTaskModuleOutput: AnyObject {
     func dismissPresented(on viewController: UIViewController)
-    func saveCacheToFile()
 }
 
 final class EditTaskModulePresenter {
@@ -70,20 +69,6 @@ final class EditTaskModulePresenter {
     }
 
     // MARK: - Private
-
-    private func saveCacheToFile() {
-        serviceCoordinator.addItem(item: TodoItem(
-            id: todoItem.id,
-            text: todoItem.text,
-            priority: todoItem.priority,
-            deadline: todoItem.deadline,
-            isDone: todoItem.isDone,
-            createdAt: todoItem.createdAt,
-            editedAt: Date())
-        ) { [weak self] _ in
-            self?.output.saveCacheToFile()
-        }
-    }
 
     private static func makeDefaultItem() -> TodoItem {
         TodoItem(
@@ -150,7 +135,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
 
     func deletePressed(on viewController: UIViewController) {
         showPlaceholder = true
-//        output.deleteItem(item: todoItem) // TODO
+        self.serviceCoordinator.removeItem(at: todoItem.id) { _ in }
         output.dismissPresented(on: viewController)
     }
 
@@ -180,7 +165,16 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
     }
 
     func savePressed(on viewController: UIViewController) {
-        saveCacheToFile()
+        serviceCoordinator.addItem(item: TodoItem(
+            id: todoItem.id,
+            text: todoItem.text,
+            priority: todoItem.priority,
+            deadline: todoItem.deadline,
+            isDone: todoItem.isDone,
+            createdAt: todoItem.createdAt,
+            editedAt: Date())
+        ) { _ in }
+
         output.dismissPresented(on: viewController)
     }
 }

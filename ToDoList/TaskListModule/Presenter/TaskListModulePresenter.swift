@@ -109,7 +109,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
             return
         }
         let item = todoItems[indexPath.row]
-        serviceCoordinator.addItem(item: TodoItem(
+        serviceCoordinator.updateItem(item: TodoItem(
             id: item.id,
             text: item.text,
             priority: item.priority,
