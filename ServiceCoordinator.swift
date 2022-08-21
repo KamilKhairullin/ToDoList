@@ -26,10 +26,4 @@ protocol ServiceCoordinator {
         at id: String,
         completion: @escaping (Result<Void, Error>) -> Void
     )
-//
-//    func merge(
-//        _ items1: [TodoItem],
-//        _ items2: [TodoItem],
-//        completion: @escaping (Result<[TodoItem], Error>) -> Void
-//    )
 }

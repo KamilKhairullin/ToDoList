@@ -37,7 +37,7 @@ final class FileCache {
     func get(id: String) -> TodoItem? {
         return todoItemsDict[id]
     }
-    
+
     func save(to file: String) throws {
         guard let path = cachePath(for: file) else {
             throw FileCacheError.invalidCachePath

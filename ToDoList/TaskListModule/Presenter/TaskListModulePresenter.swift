@@ -100,7 +100,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
     }
 
     func deleteSwipe(indexPath: IndexPath) {
-        let item = todoItems[indexPath.row]        
+        let item = todoItems[indexPath.row]
         serviceCoordinator.removeItem(at: item.id) { _ in}
     }
 
