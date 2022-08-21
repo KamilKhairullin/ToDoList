@@ -196,11 +196,11 @@ extension TaskListModulePresenter: TaskListModuleInput {
     func startAnimatingActivityIndicator() {
         view?.startAnimatingActivityIndicator()
     }
-    
+
     func stopAnimatingActivityIndicator() {
         view?.stopAnimatingActivityIndicator()
     }
-    
+
     func reloadData() {
         view?.reloadData()
     }

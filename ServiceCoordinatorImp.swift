@@ -101,7 +101,7 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
         fileCacheService.addTodoItem(item)
         output.reloadData()
         fileCacheService.save(to: Constants.filename) { _ in }
-        
+
         networkService.addTodoItem(revision: revision, item) { [weak self] result in
             switch result {
             case .success(let data):
