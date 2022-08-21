@@ -81,7 +81,7 @@ final class EditTaskModulePresenter {
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
             editedAt: Date())
-        ) {_ in }
+        )
         output.saveCacheToFile()
     }
 

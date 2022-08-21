@@ -20,7 +20,7 @@ final class AppCoordinator {
     }
 
     func deleteItem(item: TodoItem) {
-        fileCacheService.delete(id: item.id) { _ in }
+        fileCacheService.delete(id: item.id)
         fileCacheService.save(to: Constants.filename) { _ in }
     }
 

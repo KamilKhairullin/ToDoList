@@ -6,7 +6,7 @@ struct HTTPNetworkResponse {
             return .failure(HTTPError.failedResponseUnwrapping)
         }
         switch response.statusCode {
-        case 200...299: return .success(())
+        case 200: return .success(())
         case 400: return .failure(HTTPError.wrongRequest)
         case 401: return .failure(HTTPError.authenticationError)
         case 404: return .failure(HTTPError.notFound)

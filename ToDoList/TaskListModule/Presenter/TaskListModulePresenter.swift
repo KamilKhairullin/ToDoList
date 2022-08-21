@@ -117,7 +117,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
             isDone: !item.isDone,
             createdAt: item.createdAt,
             editedAt: Date()
-        )) {_ in }
+        ))
 
         view?.reloadData()
     }

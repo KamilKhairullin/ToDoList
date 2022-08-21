@@ -5,14 +5,14 @@ struct ElementQuery: Codable {
 
     let status: String
     let element: NetworkTodoItem
-    let revision: Int32?
+    let revision: Int?
 
     // MARK: - Lifecycle
 
     init(
         status: String = Constants.statusDefaultValue,
         element: NetworkTodoItem,
-        revision: Int32?
+        revision: Int? = nil
     ) {
         self.status = status
         self.element = element

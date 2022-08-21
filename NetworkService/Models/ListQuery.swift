@@ -5,14 +5,14 @@ struct ListQuery: Codable {
 
     let status: String
     let list: [NetworkTodoItem]
-    let revision: Int32?
+    let revision: Int?
 
     // MARK: - Lifecycle
 
     init(
         status: String = Constants.statusDefaultValue,
         list: [NetworkTodoItem],
-        revision: Int32? = nil
+        revision: Int? = nil
     ) {
         self.status = status
         self.list = list

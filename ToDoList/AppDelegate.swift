@@ -11,35 +11,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let client = NetworkClientImp(urlSession: .init(configuration: .default))
         let service = NetworkServiceImp(networkClient: client)
-        var revision = 1
-        service.getAllTodoItems(revision: revision) { result in
-            switch result {
-            case .success(let data):
-                print(data)
-                revision = Int(data.revision ?? 0)
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        service.getAllTodoItems(revision: revision) { result in
+//            switch result {
+//            case .success(let data):
+//                print(data)
+//                revision = Int(data.revision ?? 0)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
 
-        service.deleteTodoItem(revision: revision, at: "C3ADF355-C80C-4F45-B4B1-2DE210EC30C0") { result in
-            switch result {
-            case .success(let data):
-                print(data.element)
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        service.deleteTodoItem(revision: revision, at: "36680514-56FF-4567-9599-C466C4E00BE7") { result in
+//            switch result {
+//            case .success(let data):
+//                print(data.element)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
         
-        service.getAllTodoItems(revision: revision) { result in
-            switch result {
-            case .success(let data):
-                print(data)
-                revision = Int(data.revision ?? 0)
-            case .failure(let error):
-                print(error)
-            }
-        }
 //        let todoItem = TodoItem(
 //            text: "1",
 //            priority: .important,
@@ -47,10 +37,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            createdAt: Date().noon,
 //            editedAt: Date()
 //        )
-//        service.addTodoItem(todoItem) { result in
+//        service.addTodoItem(revision: revision, todoItem) { result in
 //            switch result {
 //            case .success(let data):
 //                print(data)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+//
+//        service.getAllTodoItems(revision: 2) { result in
+//            switch result {
+//            case .success(let data):
+//                print(data)
+//                revision = Int(data.revision ?? 0)
 //            case .failure(let error):
 //                print(error)
 //            }

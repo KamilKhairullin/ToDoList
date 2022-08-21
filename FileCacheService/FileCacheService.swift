@@ -14,12 +14,12 @@ protocol FileCacheService: AnyObject {
         completion: @escaping (Result<[TodoItem], Error>) -> Void
     )
 
-    func add(
+    func addTodoItem(
         _ newItem: TodoItem,
         completion: @escaping (Result<Void, Error>) -> Void
     )
 
-    func delete(
+    func deleteTodoItem(
         id: String,
         completion: @escaping (Result<TodoItem, Error>) -> Void
     )

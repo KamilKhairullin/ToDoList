@@ -3,7 +3,6 @@ import Foundation
 final class NetworkServiceImp: NetworkService {
     // MARK: - Properties
     private let networkClient: NetworkClient
-    private var revision: Int = 0
 
     init(networkClient: NetworkClient) {
         self.networkClient = networkClient
@@ -25,7 +24,7 @@ final class NetworkServiceImp: NetworkService {
         _ items: [TodoItem],
         completion: @escaping (Result<ListQuery, Error>) -> Void
     ) {
-        guard let request = try? createUpdateAllTodoItemsRequest(items) else {
+        guard let request = try? createUpdateAllTodoItemsRequest(revision: revision, items) else {
             completion(.failure(HTTPError.decodingFailed))
             return
         }
@@ -51,7 +50,7 @@ final class NetworkServiceImp: NetworkService {
         _ item: TodoItem,
         completion: @escaping (Result<ElementQuery, Error>) -> Void
     ) {
-        guard let request = try? createAddTodoItemRequest(item) else {
+        guard let request = try? createAddTodoItemRequest(revision: revision, item) else {
             completion(.failure(HTTPError.decodingFailed))
             return
         }
@@ -82,7 +81,7 @@ final class NetworkServiceImp: NetworkService {
         completion: @escaping (Result<ElementQuery, Error>) -> Void
     ) {
         networkClient.processRequest(
-            request: createDeleteTodoItemRequest(id),
+            request: createDeleteTodoItemRequest(revision: revision, id),
             completion: completion
         )
     }
@@ -95,7 +94,7 @@ final class NetworkServiceImp: NetworkService {
             headers: [Constants.authorizationKey: Constants.authorizationValue])
     }
 
-    private func createUpdateAllTodoItemsRequest(_ items: [TodoItem]) throws -> HTTPRequest {
+    private func createUpdateAllTodoItemsRequest(revision: Int, _ items: [TodoItem]) throws -> HTTPRequest {
         let encoder = JSONEncoder()
 
         let networkItems = items.map { NetworkTodoItem(from: $0) }
@@ -106,18 +105,16 @@ final class NetworkServiceImp: NetworkService {
             route: "\(Constants.baseurl)/list",
             headers: [
                 Constants.authorizationKey: Constants.authorizationValue,
-                Constants.lastRevisionKey: "0"
+                Constants.lastRevisionKey: "\(revision)",
+                Constants.contentTypeKey: Constants.contentTypeValue
             ],
             body: data,
             httpMethod: .patch
         )
     }
 
-    private func createAddTodoItemRequest(_ item: TodoItem) throws -> HTTPRequest {
-        let requestBody = ElementQuery(
-            element: NetworkTodoItem(from: item),
-            revision: 0
-        )
+    private func createAddTodoItemRequest(revision: Int, _ item: TodoItem) throws -> HTTPRequest {
+        let requestBody = ElementQuery(element: NetworkTodoItem(from: item))
         let encoder = JSONEncoder()
         let data = try encoder.encode(requestBody)
 
@@ -125,7 +122,7 @@ final class NetworkServiceImp: NetworkService {
             route: "\(Constants.baseurl)/list",
             headers: [
                 Constants.authorizationKey: Constants.authorizationValue,
-                Constants.lastRevisionKey: "0",
+                Constants.lastRevisionKey: "\(revision)",
                 Constants.contentTypeKey: Constants.contentTypeValue
             ],
             body: data,
@@ -160,12 +157,12 @@ final class NetworkServiceImp: NetworkService {
         )
     }
 
-    private func createDeleteTodoItemRequest(_ id: String) -> HTTPRequest {
+    private func createDeleteTodoItemRequest(revision: Int, _ id: String) -> HTTPRequest {
         HTTPRequest(
             route: "\(Constants.baseurl)/list/\(id)",
             headers: [
                 Constants.authorizationKey: Constants.authorizationValue,
-                Constants.lastRevisionKey: "1",
+                Constants.lastRevisionKey: "\(revision)",
                 Constants.contentTypeKey: Constants.contentTypeValue
                      ],
             httpMethod: .delete

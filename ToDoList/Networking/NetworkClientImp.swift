@@ -56,7 +56,6 @@ struct NetworkClientImp: NetworkClient {
                     }
                 }
             }
-
             task.resume()
             return task
         } catch {
@@ -80,7 +79,7 @@ struct NetworkClientImp: NetworkClient {
 
         urlComponents.queryItems = queryItems
         urlComponents.percentEncodedQuery = urlComponents.percentEncodedQuery?.replacingOccurrences(
-            of: "+", with: "%2B"
+            of: Constants.replaceOccurrencesOf, with: Constants.replacingOccurrencesWith
         )
 
         guard let url = urlComponents.url else {
@@ -105,3 +104,12 @@ struct NetworkClientImp: NetworkClient {
 }
 
 extension URLSessionDataTask: Cancellable {}
+
+// MARK: - Nested types
+
+extension NetworkClientImp {
+    enum Constants {
+        static let replaceOccurrencesOf: String = "+"
+        static let replacingOccurrencesWith: String = "%2B"
+    }
+}

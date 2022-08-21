@@ -73,6 +73,7 @@ extension NetworkTodoItem {
 
     enum Constants {
         static let color: String = ""
+        static let defaultDeviceId: String = ""
     }
 }
 
@@ -84,10 +85,10 @@ extension NetworkTodoItem {
             priority: Priority(from: todoItem.priority),
             deadline: todoItem.deadline,
             isDone: todoItem.isDone,
-            color: "",
+            color: Constants.color,
             createdAt: todoItem.createdAt,
-            editedAt: Date(timeIntervalSince1970: 682678810.0),
-            lastUpdatedBy: UIDevice.current.identifierForVendor!.uuidString
+            editedAt: todoItem.editedAt ?? Date(),
+            lastUpdatedBy: UIDevice.current.identifierForVendor?.uuidString ?? Constants.defaultDeviceId
         )
     }
 }

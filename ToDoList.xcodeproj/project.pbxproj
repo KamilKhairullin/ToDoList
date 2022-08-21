@@ -24,6 +24,8 @@
 		8E4B54AD28AF7C1E0030DAF8 /* NetworkServiceImp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54AC28AF7C1E0030DAF8 /* NetworkServiceImp.swift */; };
 		8E4B54AF28AF87F10030DAF8 /* ListQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54AE28AF87F10030DAF8 /* ListQuery.swift */; };
 		8E4B54B328B1370B0030DAF8 /* ElementQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54B228B1370B0030DAF8 /* ElementQuery.swift */; };
+		8E4B54B528B2255E0030DAF8 /* ServiceCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54B428B2255E0030DAF8 /* ServiceCoordinator.swift */; };
+		8E4B54B728B2264C0030DAF8 /* ServiceCoordinatorImp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B54B628B2264C0030DAF8 /* ServiceCoordinatorImp.swift */; };
 		8E56E37428ACDFB300CE1C19 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E56E37328ACDFB300CE1C19 /* NetworkClient.swift */; };
 		8E56E37628ACDFFA00CE1C19 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E56E37528ACDFFA00CE1C19 /* HTTPError.swift */; };
 		8E56E37828ACE03100CE1C19 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E56E37728ACE03100CE1C19 /* HTTPRequest.swift */; };
@@ -101,6 +103,8 @@
 		8E4B54AC28AF7C1E0030DAF8 /* NetworkServiceImp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceImp.swift; sourceTree = "<group>"; };
 		8E4B54AE28AF87F10030DAF8 /* ListQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListQuery.swift; sourceTree = "<group>"; };
 		8E4B54B228B1370B0030DAF8 /* ElementQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementQuery.swift; sourceTree = "<group>"; };
+		8E4B54B428B2255E0030DAF8 /* ServiceCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCoordinator.swift; sourceTree = "<group>"; };
+		8E4B54B628B2264C0030DAF8 /* ServiceCoordinatorImp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCoordinatorImp.swift; sourceTree = "<group>"; };
 		8E56E37328ACDFB300CE1C19 /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		8E56E37528ACDFFA00CE1C19 /* HTTPError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPError.swift; sourceTree = "<group>"; };
 		8E56E37728ACE03100CE1C19 /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
@@ -264,6 +268,8 @@
 			children = (
 				8EE3EAB428A93A8500004AB8 /* NetworkService */,
 				8EE3EAB328A93A7500004AB8 /* FileCacheService */,
+				8E4B54B428B2255E0030DAF8 /* ServiceCoordinator.swift */,
+				8E4B54B628B2264C0030DAF8 /* ServiceCoordinatorImp.swift */,
 			);
 			name = Services;
 			path = ..;
@@ -741,6 +747,7 @@
 				8E99418B28AD421A009878CE /* NetworkTodoItem.swift in Sources */,
 				8ECEFA222896F4C20098896B /* DateExtension.swift in Sources */,
 				8EE74D5E289DAE800053BF61 /* TaskListModuleTaskCell.swift in Sources */,
+				8E4B54B528B2255E0030DAF8 /* ServiceCoordinator.swift in Sources */,
 				8E3C742E28A8127900A849A5 /* NetworkService.swift in Sources */,
 				8EE74D5C289DAA7E0053BF61 /* TaskListModuleBuilder.swift in Sources */,
 				8E56E37828ACE03100CE1C19 /* HTTPRequest.swift in Sources */,
@@ -749,6 +756,7 @@
 				8EEECB5628A8181000079D0F /* FileCacheService.swift in Sources */,
 				8E7DD1E328A7F7050086804E /* UIWindowExtension.swift in Sources */,
 				8ECEFA242896FF5B0098896B /* UIBarButtonItemExtension.swift in Sources */,
+				8E4B54B728B2264C0030DAF8 /* ServiceCoordinatorImp.swift in Sources */,
 				8E398F32289F0BB40026ADC4 /* TaskCellViewState.swift in Sources */,
 				8EEB84B62895D179005D5FF1 /* PriorityStackViewContainer.swift in Sources */,
 				8E99418628AD35F6009878CE /* HTTPNetworkResponse.swift in Sources */,

@@ -23,8 +23,7 @@ final class MockFileCacheService: FileCacheService {
         to file: String,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        let timeout = TimeInterval.random(in: 0..<2)
-        queue.asyncAfter(deadline: .now() + timeout) { [weak self] in
+        queue.async { [weak self] in
             guard let self = self else {
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.failure(FileCacheError.selfNotExist))
@@ -36,7 +35,7 @@ final class MockFileCacheService: FileCacheService {
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.success(()))
                 }
-            } catch let error {
+            } catch {
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.failure(error))
                 }
@@ -48,8 +47,7 @@ final class MockFileCacheService: FileCacheService {
         from file: String,
         completion: @escaping (Result<[TodoItem], Error>) -> Void
     ) {
-        let timeout = TimeInterval.random(in: 0..<2)
-        queue.asyncAfter(deadline: .now() + timeout) { [weak self] in
+        queue.async { [weak self] in
             guard let self = self else {
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.failure(FileCacheError.selfNotExist))
@@ -61,7 +59,7 @@ final class MockFileCacheService: FileCacheService {
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.success(self.fileCache.todoItems))
                 }
-            } catch let error {
+            } catch {
                 MockFileCacheService.executeCompletionOnMainThread {
                     completion(.failure(error))
                 }
@@ -69,28 +67,38 @@ final class MockFileCacheService: FileCacheService {
         }
     }
 
-    func add(
-        _ newItem: TodoItem,
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
-        fileCache.add(newItem)
-        MockFileCacheService.executeCompletionOnMainThread {
-            completion(.success(()))
+    func addTodoItem(_ newItem: TodoItem, completion: @escaping (Result<Void, Error>) -> Void) {
+        queue.async { [weak self] in
+            guard let self = self else {
+                MockFileCacheService.executeCompletionOnMainThread {
+                    completion(.failure(FileCacheError.selfNotExist))
+                }
+                return
+            }
+            self.fileCache.add(newItem)
+            MockFileCacheService.executeCompletionOnMainThread {
+                completion(.success(()))
+            }
         }
     }
 
-    func delete(
-        id: String,
-        completion: @escaping (Result<TodoItem, Error>) -> Void
-    ) {
-        guard let deleted = fileCache.delete(id: id) else {
-            MockFileCacheService.executeCompletionOnMainThread {
-                completion(.failure(FileCacheError.deleteFailed))
+    func deleteTodoItem(id: String, completion: @escaping (Result<TodoItem, Error>) -> Void) {
+        queue.async { [weak self] in
+            guard let self = self else {
+                MockFileCacheService.executeCompletionOnMainThread {
+                    completion(.failure(FileCacheError.selfNotExist))
+                }
+                return
             }
-            return
-        }
-        MockFileCacheService.executeCompletionOnMainThread {
-            completion(.success(deleted))
+            guard let deleted = self.fileCache.delete(id: id) else {
+                MockFileCacheService.executeCompletionOnMainThread {
+                    completion(.failure(FileCacheError.deleteFailed))
+                }
+                return
+            }
+            MockFileCacheService.executeCompletionOnMainThread {
+                completion(.success(deleted))
+            }
         }
     }
 
