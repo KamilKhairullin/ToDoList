@@ -1,5 +1,11 @@
 import Foundation
 
+protocol ServiceCoordinatorOutput: AnyObject {
+    func reloadData()
+    func loadingStarted()
+    func loadingEnded()
+}
+
 final class ServiceCoordinatorImp: ServiceCoordinator {
 
     private let networkService: NetworkService
@@ -8,6 +14,15 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
     private var revision: Int = Constants.defaultRevision
     private var isDirty = Constants.defaultIsDirty
 
+    var numberOfLoadingItems: Int = 0 {
+        didSet {
+            if numberOfLoadingItems == 0 {
+                output.loadingEnded()
+            } else {
+                output.loadingStarted()
+            }
+        }
+    }
     var todoItems: [TodoItem] {
         return fileCacheService.todoItems
     }
@@ -37,7 +52,7 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
 
     func sync(completion: @escaping (Result<Void, Error>) -> Void) {
         isDirty = false
-
+        numberOfLoadingItems += 1
         networkService.updateAllTodoItems(revision: revision, fileCacheService.todoItems) { [weak self] result in
             switch result {
             case .success(let data):
@@ -56,13 +71,15 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 self?.isDirty = true
                 completion(.failure(error))
             }
+            self?.numberOfLoadingItems -= 1
         }
     }
 
     func getAllItems(
         completion: @escaping (Result<[TodoItem], Error>) -> Void
     ) {
-        networkService.getAllTodoItems(revision: revision) { result in
+        numberOfLoadingItems += 1
+        networkService.getAllTodoItems(revision: revision) { [weak self] result in
             switch result {
             case .success(let data):
                 guard let revision = data.revision else {
@@ -70,19 +87,21 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                     return
                 }
                 let list = data.list.map { TodoItem(from: $0) }
-                self.revision = revision
+                self?.revision = revision
                 completion(.success(list))
             case .failure(let error):
                 completion(.failure(error))
             }
+            self?.numberOfLoadingItems -= 1
         }
     }
 
     func addItem(item: TodoItem, completion: @escaping (Result<Void, Error>) -> Void) {
+        numberOfLoadingItems += 1
         fileCacheService.addTodoItem(item)
         output.reloadData()
         fileCacheService.save(to: Constants.filename) { _ in }
-
+        
         networkService.addTodoItem(revision: revision, item) { [weak self] result in
             switch result {
             case .success(let data):
@@ -97,10 +116,12 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 self?.sync { _ in }
                 completion(.failure(error))
             }
+            self?.numberOfLoadingItems -= 1
         }
     }
 
     func updateItem(item: TodoItem, completion: @escaping (Result<Void, Error>) -> Void) {
+        numberOfLoadingItems += 1
         fileCacheService.addTodoItem(item)
         output.reloadData()
 
@@ -120,10 +141,12 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 self?.sync { _ in }
                 completion(.failure(error))
             }
+            self?.numberOfLoadingItems -= 1
         }
     }
 
     func removeItem(at id: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        numberOfLoadingItems += 1
         _ = fileCacheService.deleteTodoItem(id: id)
         output.reloadData()
 
@@ -143,6 +166,7 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 self?.sync { _ in }
                 completion(.failure(error))
             }
+            self?.numberOfLoadingItems -= 1
         }
     }
 
@@ -158,10 +182,6 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
             completion(.success(()))
         }
     }
-}
-
-protocol ServiceCoordinatorOutput: AnyObject {
-    func reloadData()
 }
 
 extension ServiceCoordinatorImp {

@@ -84,6 +84,14 @@ extension AppCoordinator: TaskListModuleOutput {
 }
 
 extension AppCoordinator: ServiceCoordinatorOutput {
+    func loadingStarted() {
+        self.taskListModule?.input.startAnimatingActivityIndicator()
+    }
+
+    func loadingEnded() {
+        self.taskListModule?.input.stopAnimatingActivityIndicator()
+    }
+
     func reloadData() {
         self.taskListModule?.input.reloadData()
     }

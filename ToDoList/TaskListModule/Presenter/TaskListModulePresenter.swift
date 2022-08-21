@@ -3,6 +3,8 @@ import UIKit
 
 protocol TaskListModuleInput: AnyObject {
     func reloadData()
+    func startAnimatingActivityIndicator()
+    func stopAnimatingActivityIndicator()
 }
 
 protocol TaskListModuleOutput: AnyObject {
@@ -191,6 +193,14 @@ extension TaskListModulePresenter {
 // MARK: - TaskListModuleInput extension
 
 extension TaskListModulePresenter: TaskListModuleInput {
+    func startAnimatingActivityIndicator() {
+        view?.startAnimatingActivityIndicator()
+    }
+    
+    func stopAnimatingActivityIndicator() {
+        view?.stopAnimatingActivityIndicator()
+    }
+    
     func reloadData() {
         view?.reloadData()
     }
