@@ -8,7 +8,6 @@ protocol TaskListModuleInput: AnyObject {
 protocol TaskListModuleOutput: AnyObject {
     func showCreateNewTask()
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController)
-    func deleteItem(item: TodoItem)
     func preview(indexPath: IndexPath) -> UIViewController
 }
 
@@ -20,15 +19,17 @@ final class TaskListModulePresenter {
             reloadData()
         }
     }
+
     let output: TaskListModuleOutput
 
-    private let fileCache: FileCacheService
+    private let serviceCoordinator: ServiceCoordinator
     private var doneIsHidden = false
+
     private var todoItems: [TodoItem] {
         if doneIsHidden {
-            return fileCache.todoItems.filter { !$0.isDone }
+            return serviceCoordinator.todoItems.filter { !$0.isDone }
         }
-        return fileCache.todoItems
+        return serviceCoordinator.todoItems
     }
 
     private let dateFormatter: DateFormatter = {
@@ -41,9 +42,9 @@ final class TaskListModulePresenter {
 
     // MARK: - Lifecycle
 
-    init(output: TaskListModuleOutput, fileCache: FileCacheService) {
+    init(output: TaskListModuleOutput, serviceCoordinator: ServiceCoordinator) {
         self.output = output
-        self.fileCache = fileCache
+        self.serviceCoordinator = serviceCoordinator
     }
 
     // MARK: - Private
@@ -86,7 +87,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
     }
 
     func numberOfDoneItems() -> Int {
-        fileCache.todoItems.filter { $0.isDone }.count
+        serviceCoordinator.todoItems.filter { $0.isDone }.count
     }
 
     func lastRowIndex() -> Int {
@@ -99,9 +100,8 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
     }
 
     func deleteSwipe(indexPath: IndexPath) {
-        let item = todoItems[indexPath.row]
-        output.deleteItem(item: item)
-        view?.reloadData()
+        let item = todoItems[indexPath.row]        
+        serviceCoordinator.removeItem(at: item.id) { _ in}
     }
 
     func completeButtonPressed(indexPath: IndexPath?) {
@@ -109,7 +109,7 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
             return
         }
         let item = todoItems[indexPath.row]
-        fileCache.add(TodoItem(
+        serviceCoordinator.addItem(item: TodoItem(
             id: item.id,
             text: item.text,
             priority: item.priority,
@@ -117,9 +117,8 @@ extension TaskListModulePresenter: TaskListModuleViewOutput {
             isDone: !item.isDone,
             createdAt: item.createdAt,
             editedAt: Date()
-        ))
+        )) { _ in }
 
-        view?.reloadData()
     }
 
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController) {

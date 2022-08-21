@@ -23,4 +23,6 @@ protocol FileCacheService: AnyObject {
         id: String,
         completion: @escaping (Result<TodoItem, Error>) -> Void
     )
+    
+    func getTodoItem(id: String) -> TodoItem?
 }

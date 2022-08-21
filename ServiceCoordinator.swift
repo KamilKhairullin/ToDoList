@@ -1,9 +1,16 @@
 import Foundation
 
 protocol ServiceCoordinator {
-    func getAllItems(
-        completion: @escaping (Result<[TodoItem], Error>) -> Void
+
+    var todoItems: [TodoItem] { get }
+
+    func sync(
+        completion: @escaping (Result<Void, Error>) -> Void
     )
+
+//    func getAllItems(
+//        completion: @escaping (Result<[TodoItem], Error>) -> Void
+//    )
 
     func addItem(
         item: TodoItem,

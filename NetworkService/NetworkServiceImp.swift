@@ -114,7 +114,7 @@ final class NetworkServiceImp: NetworkService {
     }
 
     private func createAddTodoItemRequest(revision: Int, _ item: TodoItem) throws -> HTTPRequest {
-        let requestBody = ElementQuery(element: NetworkTodoItem(from: item))
+        let requestBody = ElementQuery(element: NetworkTodoItem(from: item), revision: revision)
         let encoder = JSONEncoder()
         let data = try encoder.encode(requestBody)
 

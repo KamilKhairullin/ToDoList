@@ -25,6 +25,6 @@ struct HTTPRequest {
         self.queryItems = queryItems
         self.httpMethod = httpMethod
         self.keyDecodingStrategy = keyDecodingStrategy
-        self.dateDecodingStrategy = dateDecodingStrategy
+        self.dateDecodingStrategy = .secondsSince1970
     }
 }

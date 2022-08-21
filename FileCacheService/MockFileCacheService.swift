@@ -1,6 +1,7 @@
 import Foundation
 
 final class MockFileCacheService: FileCacheService {
+
     // MARK: - Properties
 
     let queue: DispatchQueue
@@ -100,6 +101,10 @@ final class MockFileCacheService: FileCacheService {
                 completion(.success(deleted))
             }
         }
+    }
+
+    func getTodoItem(id: String) -> TodoItem? {
+        return fileCache.get(id: id)
     }
 
     // MARK: - Private

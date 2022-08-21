@@ -101,11 +101,11 @@ extension NetworkTodoItem: Codable {
         try container.encode(id, forKey: .id)
         try container.encode(text, forKey: .text)
         try container.encode(priority, forKey: .priority)
-        try container.encode(deadline, forKey: .deadline)
+        try container.encode(deadline?.noon, forKey: .deadline)
         try container.encode(isDone, forKey: .isDone)
         try container.encode(color, forKey: .color)
-        try container.encode(createdAt, forKey: .createdAt)
-        try container.encode(editedAt, forKey: .editedAt)
+        try container.encode(createdAt.noon, forKey: .createdAt)
+        try container.encode(editedAt?.noon, forKey: .editedAt)
         try container.encode(lastUpdatedBy, forKey: .lastUpdatedBy)
     }
 
@@ -114,11 +114,11 @@ extension NetworkTodoItem: Codable {
         id = try values.decode(String.self, forKey: .id)
         text = try values.decode(String.self, forKey: .text)
         priority = try values.decode(Priority.self, forKey: .priority)
-        deadline = try values.decode(Date?.self, forKey: .deadline)
+        deadline = try? values.decode(Date.self, forKey: .deadline)
         isDone = try values.decode(Bool.self, forKey: .isDone)
-        color = try values.decode(String?.self, forKey: .color)
+        color = try? values.decode(String.self, forKey: .color)
         createdAt = try values.decode(Date.self, forKey: .createdAt)
-        editedAt = try values.decode(Date?.self, forKey: .editedAt)
+        editedAt = try? values.decode(Date.self, forKey: .editedAt)
         lastUpdatedBy = try values.decode(String.self, forKey: .lastUpdatedBy)
     }
 }

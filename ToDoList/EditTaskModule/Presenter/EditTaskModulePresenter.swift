@@ -5,7 +5,6 @@ protocol EditTaskModuleInput: AnyObject {}
 
 protocol EditTaskModuleOutput: AnyObject {
     func dismissPresented(on viewController: UIViewController)
-    func deleteItem(item: TodoItem)
     func saveCacheToFile()
 }
 
@@ -26,7 +25,7 @@ final class EditTaskModulePresenter {
         }
     }
 
-    private let fileCache: FileCacheService
+    private let serviceCoordinator: ServiceCoordinator
     private var showPlaceholder: Bool
 
     private let dateFormatter: DateFormatter = {
@@ -39,9 +38,9 @@ final class EditTaskModulePresenter {
 
     // MARK: - Lifecycle
 
-    init(output: EditTaskModuleOutput, fileCache: FileCacheService, with todoItem: TodoItem?) {
+    init(output: EditTaskModuleOutput, serviceCoordinator: ServiceCoordinator, with todoItem: TodoItem?) {
         self.output = output
-        self.fileCache = fileCache
+        self.serviceCoordinator = serviceCoordinator
         self.showPlaceholder = todoItem != nil ? false : true
         self.todoItem = todoItem ?? EditTaskModulePresenter.makeDefaultItem()
     }
@@ -73,7 +72,7 @@ final class EditTaskModulePresenter {
     // MARK: - Private
 
     private func saveCacheToFile() {
-        fileCache.add(TodoItem(
+        serviceCoordinator.addItem(item: TodoItem(
             id: todoItem.id,
             text: todoItem.text,
             priority: todoItem.priority,
@@ -81,8 +80,9 @@ final class EditTaskModulePresenter {
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
             editedAt: Date())
-        )
-        output.saveCacheToFile()
+        ) { [weak self] _ in
+            self?.output.saveCacheToFile()
+        }
     }
 
     private static func makeDefaultItem() -> TodoItem {
@@ -150,7 +150,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
 
     func deletePressed(on viewController: UIViewController) {
         showPlaceholder = true
-        output.deleteItem(item: todoItem)
+//        output.deleteItem(item: todoItem) // TODO
         output.dismissPresented(on: viewController)
     }
 
