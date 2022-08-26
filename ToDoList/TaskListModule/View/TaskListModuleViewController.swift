@@ -243,6 +243,9 @@ extension TaskListModuleViewController: UITableViewDelegate {
         contextMenuConfigurationForRowAt indexPath: IndexPath,
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
+        guard indexPath.row != output.lastRowIndex() else {
+            return nil
+        }
         let configuration = UIContextMenuConfiguration(
             identifier: indexPath as NSCopying,
             previewProvider: {

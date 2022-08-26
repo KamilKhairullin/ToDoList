@@ -6,4 +6,5 @@ public enum FileCacheError: String, Error {
     case deleteFailed = "Error: Failed to remove item from list."
     case unparsableData = "Error: Failed to parse data after serialization."
     case itemNotExist = "Error: Item not exist"
+    case databaseEmpty = "Error: Nothing cached."
 }

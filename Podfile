@@ -10,6 +10,7 @@ target 'ToDoList' do
 
   pod 'CocoaLumberjack'
   pod 'SwiftLint'
+  pod 'SQLite.swift', '~> 0.13.3'
   local_pod 'ColorBundle'
   
   target 'ToDoListTests' do

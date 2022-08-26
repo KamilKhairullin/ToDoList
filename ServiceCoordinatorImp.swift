@@ -7,12 +7,19 @@ protocol ServiceCoordinatorOutput: AnyObject {
 }
 
 final class ServiceCoordinatorImp: ServiceCoordinator {
+    // MARK: - Properties
 
     private let networkService: NetworkService
     private let fileCacheService: FileCacheService
     private let output: ServiceCoordinatorOutput
     private var revision: Int = Constants.defaultRevision
-    private var isDirty = Constants.defaultIsDirty
+    private var isDirty = Constants.defaultIsDirty {
+        didSet {
+            if isDirty == true {
+                self.sync { _ in }
+            }
+        }
+    }
 
     var numberOfLoadingItems: Int = 0 {
         didSet {
@@ -23,57 +30,28 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
             }
         }
     }
+
     var todoItems: [TodoItem] {
         return fileCacheService.todoItems
     }
+
+    // MARK: - Lifecycle
 
     init(networkService: NetworkService, fileCacheService: FileCacheService, output: ServiceCoordinatorOutput) {
         self.networkService = networkService
         self.fileCacheService = fileCacheService
         self.output = output
-        fileCacheService.load(from: Constants.filename) { [weak self] result in
+        fileCacheService.load { [weak self] result in
             switch result {
             case .success:
                 self?.sync { _ in }
             case .failure:
-                self?.getAllItems { result in
-                    switch result {
-                    case .success(let data):
-                        self?.updateLocalItems(with: data) { _ in
-                            self?.sync { _ in }
-                        }
-                    case .failure:
-                        return
-                    }
-                }
+                self?.loadAndSync()
             }
         }
     }
 
-    func sync(completion: @escaping (Result<Void, Error>) -> Void) {
-        isDirty = false
-        numberOfLoadingItems += 1
-        networkService.updateAllTodoItems(revision: revision, fileCacheService.todoItems) { [weak self] result in
-            switch result {
-            case .success(let data):
-                guard let revision = data.revision else {
-                    completion(.failure(HTTPError.decodingFailed))
-                    return
-                }
-                let list = data.list.map { TodoItem(from: $0) }
-                self?.revision = revision
-                self?.updateLocalItems(with: list) { _ in
-                    self?.output.reloadData()
-                    self?.isDirty = false
-                }
-                completion(.success(()))
-            case .failure(let error):
-                self?.isDirty = true
-                completion(.failure(error))
-            }
-            self?.numberOfLoadingItems -= 1
-        }
-    }
+    // MARK: - Public
 
     func getAllItems(
         completion: @escaping (Result<[TodoItem], Error>) -> Void
@@ -98,9 +76,9 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
 
     func addItem(item: TodoItem, completion: @escaping (Result<Void, Error>) -> Void) {
         numberOfLoadingItems += 1
-        fileCacheService.addTodoItem(item)
-        output.reloadData()
-        fileCacheService.save(to: Constants.filename) { _ in }
+        fileCacheService.addTodoItem(item) { [weak self] _ in
+            self?.output.reloadData()
+        }
 
         networkService.addTodoItem(revision: revision, item) { [weak self] result in
             switch result {
@@ -113,7 +91,6 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 completion(.success(()))
             case .failure(let error):
                 self?.isDirty = true
-                self?.sync { _ in }
                 completion(.failure(error))
             }
             self?.numberOfLoadingItems -= 1
@@ -122,10 +99,9 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
 
     func updateItem(item: TodoItem, completion: @escaping (Result<Void, Error>) -> Void) {
         numberOfLoadingItems += 1
-        fileCacheService.addTodoItem(item)
-        output.reloadData()
-
-        fileCacheService.save(to: Constants.filename) { _ in }
+        fileCacheService.editTodoItem(item) { [weak self] _ in
+            self?.output.reloadData()
+        }
 
         networkService.editTodoItem(revision: revision, item) { [weak self] result in
             switch result {
@@ -138,7 +114,6 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 completion(.success(()))
             case .failure(let error):
                 self?.isDirty = true
-                self?.sync { _ in }
                 completion(.failure(error))
             }
             self?.numberOfLoadingItems -= 1
@@ -147,10 +122,9 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
 
     func removeItem(at id: String, completion: @escaping (Result<Void, Error>) -> Void) {
         numberOfLoadingItems += 1
-        _ = fileCacheService.deleteTodoItem(id: id)
-        output.reloadData()
-
-        fileCacheService.save(to: Constants.filename) { _ in }
+        fileCacheService.deleteTodoItem(id: id) { [weak self] _ in
+            self?.output.reloadData()
+        }
 
         networkService.deleteTodoItem(revision: revision, at: id) { [weak self] result in
             switch result {
@@ -163,7 +137,6 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 completion(.success(()))
             case .failure(let error):
                 self?.isDirty = true
-                self?.sync { _ in }
                 completion(.failure(error))
             }
             self?.numberOfLoadingItems -= 1
@@ -171,18 +144,57 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
     }
 
     // MARK: - Private
-    private func updateLocalItems(with remoteItems: [TodoItem], completion: @escaping (Result<Void, Error>) -> Void) {
-        fileCacheService.todoItems.forEach {
-            _ = fileCacheService.deleteTodoItem(id: $0.id)
+
+    private func loadAndSync() {
+        getAllItems { [weak self] result in
+            switch result {
+            case .success(let data):
+                for (index, item) in data.enumerated() {
+                    self?.fileCacheService.addTodoItem(item) { _ in
+                        if index == data.lastIndex(where: { _ in true }) {
+                            self?.sync { _ in }
+                        }
+                    }
+                }
+            case .failure:
+                return
+            }
         }
-        remoteItems.forEach {
-            fileCacheService.addTodoItem($0)
-        }
-        fileCacheService.save(to: Constants.filename) { _ in
-            completion(.success(()))
+    }
+
+    private func sync(completion: @escaping (Result<Void, Error>) -> Void) {
+        numberOfLoadingItems += 1
+
+        networkService.updateAllTodoItems(
+            revision: revision,
+            fileCacheService.todoItems
+        ) { [weak self] result in
+            switch result {
+            case .success(let data):
+                guard let revision = data.revision else {
+                    completion(.failure(HTTPError.decodingFailed))
+                    return
+                }
+                let list = data.list.map { TodoItem(from: $0) }
+                self?.revision = revision
+                for (index, item) in list.enumerated() {
+                    self?.fileCacheService.editTodoItem(item) { _ in
+                        if index == list.lastIndex(where: { _ in true }) {
+                            self?.output.reloadData()
+                            self?.isDirty = false
+                        }
+                    }
+                }
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+            self?.numberOfLoadingItems -= 1
         }
     }
 }
+
+// MARK: - Nested types
 
 extension ServiceCoordinatorImp {
     enum Constants {
