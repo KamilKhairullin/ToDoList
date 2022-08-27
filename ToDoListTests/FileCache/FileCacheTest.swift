@@ -8,7 +8,7 @@ class FileCacheTest: XCTestCase {
             try fileCache.delete($0.id)
         }
     }
-    
+
     func test_addAndDelete() throws {
         let cache = FileCache()
         let task1 = TodoItem(text: "1", priority: .ordinary)
@@ -16,7 +16,6 @@ class FileCacheTest: XCTestCase {
         let task2 = TodoItem(text: "2", priority: .important)
         sleep(UInt32(0.1))
         let task3 = TodoItem(text: "3", priority: .unimportant)
-        let task4 = TodoItem(text: "4", priority: .unimportant)
         try cache.insert(task1)
         try cache.insert(task2)
         try cache.insert(task3)
