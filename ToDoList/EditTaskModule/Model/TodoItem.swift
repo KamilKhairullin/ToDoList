@@ -1,18 +1,8 @@
 import Foundation
-import SQLite
 
 protocol JSONParsable {
     static func parse(json: Any) -> TodoItem?
     var json: Any { get }
-}
-
-var dbUrl: URL? {
-    guard let documentDirectory = FileManager.default.urls(for: .documentDirectory,
-                                                           in: .userDomainMask).first else {
-        return nil
-    }
-    let path = documentDirectory.appendingPathComponent("ToDoList.sqlite3")
-    return path
 }
 
 struct TodoItem {
@@ -124,42 +114,6 @@ extension TodoItem: JSONParsable {
         )
     }
 
-    var sqlReplaceStatement: [Setter] {
-         return [
-            Constants.idExpression <- id,
-            Constants.textExpression <- text,
-            Constants.priorityExpression <- priority.rawValue,
-            Constants.deadlineExpression <- deadline?.timeIntervalSince1970,
-            Constants.isDoneExpression <- isDone,
-            Constants.createdAtExpression <- createdAt.timeIntervalSince1970,
-            Constants.editedAtExpression <- editedAt?.timeIntervalSince1970
-        ]
-    }
-
-    static func parseSQL(row: Row) -> TodoItem? {
-        let id = row[Constants.idExpression]
-        let text = row[Constants.textExpression]
-        let priority = Priority(rawValue: row[Constants.priorityExpression]) ?? Constants.defaultPriority
-        let deadline = row[Constants.deadlineExpression].flatMap {
-            Date(timeIntervalSince1970: TimeInterval($0))
-        }
-        let isDone = row[Constants.isDoneExpression]
-        let createdAt = Date(timeIntervalSince1970: TimeInterval(row[Constants.createdAtExpression]))
-        let editedAt = row[Constants.editedAtExpression].flatMap {
-            Date(timeIntervalSince1970: TimeInterval($0))
-        }
-
-        return TodoItem(
-            id: id,
-            text: text,
-            priority: priority,
-            deadline: deadline,
-            isDone: isDone,
-            createdAt: createdAt,
-            editedAt: editedAt
-        )
-    }
-
     init(from networkTodoItem: NetworkTodoItem) {
         self.init(
             id: networkTodoItem.id,
@@ -171,6 +125,18 @@ extension TodoItem: JSONParsable {
             editedAt: networkTodoItem.editedAt
         )
     }
+
+    init(from coreDataitem: TodoItemCD) {
+        self.init(
+            id: coreDataitem.id,
+            text: coreDataitem.text,
+            priority: Priority(from: coreDataitem.priority),
+            deadline: coreDataitem.deadline,
+            isDone: coreDataitem.isDone,
+            createdAt: coreDataitem.createdAt,
+            editedAt: coreDataitem.editedAt
+        )
+    }
 }
 
 // MARK: - Nested types
@@ -178,13 +144,6 @@ extension TodoItem: JSONParsable {
 extension TodoItem {
     enum Constants {
         static let defaultPriority: Priority = .ordinary
-        static let idExpression = Expression<String>(CodingKeys.idKey)
-        static let textExpression = Expression<String>(CodingKeys.textKey)
-        static let priorityExpression = Expression<Int>(CodingKeys.priorityKey)
-        static let deadlineExpression = Expression<Double?>(CodingKeys.deadlineKey)
-        static let isDoneExpression = Expression<Bool>(CodingKeys.isDoneKey)
-        static let createdAtExpression = Expression<Double>(CodingKeys.createdAtKey)
-        static let editedAtExpression = Expression<Double?>(CodingKeys.editedAtKey)
     }
 
     enum CodingKeys {
@@ -204,6 +163,17 @@ extension TodoItem {
 
         init(from networkPriority: NetworkTodoItem.Priority) {
             switch networkPriority {
+            case .important:
+                self = .important
+            case .ordinary:
+                self = .ordinary
+            case .unimportant:
+                self = .unimportant
+            }
+        }
+
+        init(from coreDataItem: TodoItemCD.Priority) {
+            switch coreDataItem {
             case .important:
                 self = .important
             case .ordinary:

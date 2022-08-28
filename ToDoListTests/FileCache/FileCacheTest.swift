@@ -33,6 +33,7 @@ class FileCacheTest: XCTestCase {
         let task1 = TodoItem(id: "sAmE-1d", text: "Hellow", priority: .unimportant)
         let task2 = TodoItem(id: "sAmE-1d", text: "World", priority: .important)
         try cache.insert(task1)
+        print(cache.todoItems)
         XCTAssertThrowsError(try cache.insert(task2))
     }
 

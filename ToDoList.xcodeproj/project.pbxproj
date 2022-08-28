@@ -14,6 +14,9 @@
 		8E0E44752894A7E7007B0F5E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E44732894A7E7007B0F5E /* LaunchScreen.storyboard */; };
 		8E0E448A2894A7E7007B0F5E /* ToDoListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E44892894A7E7007B0F5E /* ToDoListUITests.swift */; };
 		8E0E448C2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E448B2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift */; };
+		8E1F6DF528BB7A5B00F12FE3 /* TodoItemCoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8E1F6DF328BB7A5B00F12FE3 /* TodoItemCoreData.xcdatamodeld */; };
+		8E1F6DFC28BB7B1C00F12FE3 /* TodoItemCD+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1F6DFA28BB7B1C00F12FE3 /* TodoItemCD+CoreDataClass.swift */; };
+		8E1F6DFD28BB7B1C00F12FE3 /* TodoItemCD+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1F6DFB28BB7B1C00F12FE3 /* TodoItemCD+CoreDataProperties.swift */; };
 		8E398F2B289EF7450026ADC4 /* TaskListCreateNewTaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E398F2A289EF7450026ADC4 /* TaskListCreateNewTaskCell.swift */; };
 		8E398F2D289F07BD0026ADC4 /* TaskListModuleTaskCellConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E398F2C289F07BD0026ADC4 /* TaskListModuleTaskCellConfigurable.swift */; };
 		8E398F30289F08510026ADC4 /* TaskListTableViewCellData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E398F2F289F08510026ADC4 /* TaskListTableViewCellData.swift */; };
@@ -93,6 +96,9 @@
 		8E0E44852894A7E7007B0F5E /* ToDoListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0E44892894A7E7007B0F5E /* ToDoListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListUITests.swift; sourceTree = "<group>"; };
 		8E0E448B2894A7E7007B0F5E /* ToDoListUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		8E1F6DF428BB7A5B00F12FE3 /* TodoItemCoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TodoItemCoreData.xcdatamodel; sourceTree = "<group>"; };
+		8E1F6DFA28BB7B1C00F12FE3 /* TodoItemCD+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TodoItemCD+CoreDataClass.swift"; path = "FileCacheService/CoreDataModel/TodoItemCD+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		8E1F6DFB28BB7B1C00F12FE3 /* TodoItemCD+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TodoItemCD+CoreDataProperties.swift"; path = "FileCacheService/CoreDataModel/TodoItemCD+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		8E398F2A289EF7450026ADC4 /* TaskListCreateNewTaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListCreateNewTaskCell.swift; sourceTree = "<group>"; };
 		8E398F2C289F07BD0026ADC4 /* TaskListModuleTaskCellConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListModuleTaskCellConfigurable.swift; sourceTree = "<group>"; };
 		8E398F2F289F08510026ADC4 /* TaskListTableViewCellData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListTableViewCellData.swift; sourceTree = "<group>"; };
@@ -254,6 +260,16 @@
 			path = ToDoListUITests;
 			sourceTree = "<group>";
 		};
+		8E1F6E4128BB996700F12FE3 /* CoreDataModel */ = {
+			isa = PBXGroup;
+			children = (
+				8E1F6DF328BB7A5B00F12FE3 /* TodoItemCoreData.xcdatamodeld */,
+				8E1F6DFA28BB7B1C00F12FE3 /* TodoItemCD+CoreDataClass.swift */,
+				8E1F6DFB28BB7B1C00F12FE3 /* TodoItemCD+CoreDataProperties.swift */,
+			);
+			path = CoreDataModel;
+			sourceTree = "<group>";
+		};
 		8E398F2E289F08030026ADC4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -319,6 +335,7 @@
 		8EE3EAB328A93A7500004AB8 /* FileCacheService */ = {
 			isa = PBXGroup;
 			children = (
+				8E1F6E4128BB996700F12FE3 /* CoreDataModel */,
 				8E3C743028A815AF00A849A5 /* FileCache.swift */,
 				8EEECB5528A8181000079D0F /* FileCacheService.swift */,
 				8EEECB5728A8191B00079D0F /* FileCacheServiceImp.swift */,
@@ -740,6 +757,7 @@
 				8EE74D68289DE84E0053BF61 /* CellContentStackView.swift in Sources */,
 				8E4B54AD28AF7C1E0030DAF8 /* NetworkServiceImp.swift in Sources */,
 				8E56E37428ACDFB300CE1C19 /* NetworkClient.swift in Sources */,
+				8E1F6DF528BB7A5B00F12FE3 /* TodoItemCoreData.xcdatamodeld in Sources */,
 				8EE74D62289DD35F0053BF61 /* AppCoordinator.swift in Sources */,
 				8EEB81D728957D3C005D5FF1 /* EditTaskModulePresenter.swift in Sources */,
 				8EEECB5A28A81BDC00079D0F /* FileCacheError.swift in Sources */,
@@ -757,6 +775,8 @@
 				8E7DD1E328A7F7050086804E /* UIWindowExtension.swift in Sources */,
 				8ECEFA242896FF5B0098896B /* UIBarButtonItemExtension.swift in Sources */,
 				8E4B54B728B2264C0030DAF8 /* ServiceCoordinatorImp.swift in Sources */,
+				8E1F6DFC28BB7B1C00F12FE3 /* TodoItemCD+CoreDataClass.swift in Sources */,
+				8E1F6DFD28BB7B1C00F12FE3 /* TodoItemCD+CoreDataProperties.swift in Sources */,
 				8E398F32289F0BB40026ADC4 /* TaskCellViewState.swift in Sources */,
 				8EEB84B62895D179005D5FF1 /* PriorityStackViewContainer.swift in Sources */,
 				8E99418628AD35F6009878CE /* HTTPNetworkResponse.swift in Sources */,
@@ -1116,6 +1136,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		8E1F6DF328BB7A5B00F12FE3 /* TodoItemCoreData.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				8E1F6DF428BB7A5B00F12FE3 /* TodoItemCoreData.xcdatamodel */,
+			);
+			currentVersion = 8E1F6DF428BB7A5B00F12FE3 /* TodoItemCoreData.xcdatamodel */;
+			path = TodoItemCoreData.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 8E0E445D2894A7E6007B0F5E /* Project object */;
 }

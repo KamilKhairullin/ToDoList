@@ -1,5 +1,5 @@
 import Foundation
-import SQLite
+import CoreData
 
 final class FileCache {
     // MARK: - Properties
@@ -14,39 +14,27 @@ final class FileCache {
     private var cachedTodoItems: [TodoItem] = []
     private var isDirty: Bool = true
 
-    private var fileManager: FileManager
-
-    private var databaseURL: URL? {
-        guard let documentDirectory = FileManager.default.urls(
-            for: .documentDirectory,
-            in: .userDomainMask
-        ).first else {
-            return nil
+    private let container: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "TodoItemCoreData")
+        container.loadPersistentStores { (_, error) in
+            if let error = error {
+                fatalError("Loading failed. \(error)")
+            }
         }
-        let path = documentDirectory.appendingPathComponent(Constatns.filename)
-        return path
-    }
-
-    private let todoItemsTable: Table
-
+        return container
+    }()
     // MARK: - Lifecycle
 
     init() {
-        self.fileManager = .default
-        todoItemsTable = Table("TodoItems")
-        try? self.initDatabase()
     }
 
     // MARK: - Public
 
     func load() throws {
-        guard let databaseURL = databaseURL else {
-            throw FileCacheError.invalidCachePath
-        }
-        let connection = try Connection(databaseURL.path)
-        let objects = try connection.prepare(todoItemsTable)
-
-        self.cachedTodoItems = objects.compactMap { TodoItem.parseSQL(row: $0) }
+        let context = container.viewContext
+        let fetchRequest = NSFetchRequest<TodoItemCD>(entityName: "TodoItemCD")
+        let items = try context.fetch(fetchRequest)
+        self.cachedTodoItems = items.compactMap { TodoItem.init(from: $0) }
         isDirty = false
         if cachedTodoItems.isEmpty {
             throw FileCacheError.databaseEmpty
@@ -54,64 +42,70 @@ final class FileCache {
     }
 
     func insert(_ item: TodoItem) throws {
-        guard let databaseURL = databaseURL else {
-            return
+        let context = container.viewContext
+        if (try? getItem(with: item.id)) != nil {
+            throw FileCacheError.itemAlreadyExists
         }
-        let connection = try Connection(databaseURL.path)
-        try connection.run(
-            todoItemsTable.insert(item.sqlReplaceStatement)
-        )
+
+        guard
+            let dbItem = NSEntityDescription.insertNewObject(
+                forEntityName: "TodoItemCD",
+                into: context
+            ) as? TodoItemCD
+        else {
+            throw FileCacheError.unparsableData
+        }
+
+        dbItem.id = item.id
+        dbItem.text = item.text
+        dbItem.priority = TodoItemCD.Priority(from: item.priority)
+        dbItem.isDone = item.isDone
+        dbItem.deadline = item.deadline
+        dbItem.createdAt = item.createdAt
+        dbItem.editedAt = item.editedAt
+
+        try context.save()
         setNeedsSort()
     }
 
     func update(_ item: TodoItem) throws {
-        guard let databaseURL = databaseURL else {
-            return
-        }
-        let connection = try Connection(databaseURL.path)
-        let filteredTable = todoItemsTable.filter(
-            TodoItem.Constants.idExpression == item.id
-        )
-        try connection.run(
-            filteredTable.update(item.sqlReplaceStatement)
-        )
+        let context = container.viewContext
+
+        let dbItem = try getItem(with: item.id)
+
+        dbItem.id = item.id
+        dbItem.text = item.text
+        dbItem.priority = TodoItemCD.Priority(from: item.priority)
+        dbItem.isDone = item.isDone
+        dbItem.deadline = item.deadline
+        dbItem.createdAt = item.createdAt
+        dbItem.editedAt = item.editedAt
+
+        try context.save()
         setNeedsSort()
     }
 
     func delete(_ id: String) throws {
-        guard let databaseURL = databaseURL else {
-            throw FileCacheError.deleteFailed
-        }
-        let connection = try Connection(databaseURL.path)
-        let filteredTable = todoItemsTable.filter(
-            TodoItem.Constants.idExpression == id
-        )
-        try connection.run(filteredTable.delete())
+        let context = container.viewContext
+        let dbItem = try getItem(with: id)
+        context.delete(dbItem)
+        try context.save()
         setNeedsSort()
     }
 
-    // MARK: - Private
+    func getItem(with id: String) throws -> TodoItemCD {
+        let context = container.viewContext
+        let fetchRequest = NSFetchRequest<TodoItemCD>(entityName: "TodoItemCD")
+        fetchRequest.fetchLimit = 1
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id)
+        let items = try context.fetch(fetchRequest)
 
-    private func initDatabase() throws {
-        guard let databaseURL = databaseURL else {
-            return
+        guard let item = items.first else {
+            throw FileCacheError.itemNotExist
         }
-
-        if !fileManager.fileExists(atPath: databaseURL.path) {
-            fileManager.createFile(atPath: databaseURL.path, contents: nil, attributes: nil)
-        }
-
-        let connection = try Connection(databaseURL.path)
-        try connection.run(todoItemsTable.create(ifNotExists: true) { table in
-            table.column(TodoItem.Constants.idExpression, primaryKey: true)
-            table.column(TodoItem.Constants.textExpression)
-            table.column(TodoItem.Constants.priorityExpression)
-            table.column(TodoItem.Constants.deadlineExpression)
-            table.column(TodoItem.Constants.isDoneExpression)
-            table.column(TodoItem.Constants.createdAtExpression)
-            table.column(TodoItem.Constants.editedAtExpression)
-        })
+        return item
     }
+    // MARK: - Private
 
     private func setNeedsSort() {
         isDirty = true

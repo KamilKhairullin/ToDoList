@@ -7,4 +7,5 @@ public enum FileCacheError: String, Error {
     case unparsableData = "Error: Failed to parse data after serialization."
     case itemNotExist = "Error: Item not exist"
     case databaseEmpty = "Error: Nothing cached."
+    case itemAlreadyExists = "Error: Item already exists in database. Try update instead."
 }
