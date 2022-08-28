@@ -112,6 +112,18 @@ extension TodoItem: JSONParsable {
             editedAt: editedAt
         )
     }
+
+    init(from networkTodoItem: NetworkTodoItem) {
+        self.init(
+            id: networkTodoItem.id,
+            text: networkTodoItem.text,
+            priority: Priority(from: networkTodoItem.priority),
+            deadline: networkTodoItem.deadline,
+            isDone: networkTodoItem.isDone,
+            createdAt: networkTodoItem.createdAt,
+            editedAt: networkTodoItem.editedAt
+        )
+    }
 }
 
 // MARK: - Nested types
@@ -135,5 +147,16 @@ extension TodoItem {
         case important
         case ordinary
         case unimportant
+
+        init(from networkPriority: NetworkTodoItem.Priority) {
+            switch networkPriority {
+            case .important:
+                self = .important
+            case .ordinary:
+                self = .ordinary
+            case .unimportant:
+                self = .unimportant
+            }
+        }
     }
 }

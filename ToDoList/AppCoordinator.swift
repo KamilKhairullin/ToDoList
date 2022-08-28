@@ -3,29 +3,24 @@ import CocoaLumberjack
 
 final class AppCoordinator {
     var rootViewController: UIViewController = .init()
-    let fileCacheService: FileCacheService
+    var serviceCoordinator: ServiceCoordinator?
     var taskListModule: TaskListModuleBuilder?
 
     init() {
-        self.fileCacheService = MockFileCacheService(fileCache: .init())
-        fileCacheService.load(from: Constants.filename) { _ in
-            self.taskListModule?.input.reloadData()
-        }
+        self.serviceCoordinator = ServiceCoordinatorImp(
+            networkService: NetworkServiceImp(
+                networkClient: NetworkClientImp(urlSession: .init(configuration: .default))
+            ),
+            fileCacheService: MockFileCacheService(fileCache: .init()),
+            output: self
+        )
+
         taskListModule = taskListModuleBuilder()
         rootViewController = CustomNavigationController(
             rootViewController: taskListModule?.viewController,
             title: Constants.rootViewControllerTitle
         )
         setupCocoaLumberjack()
-    }
-
-    func deleteItem(item: TodoItem) {
-        fileCacheService.delete(id: item.id) { _ in }
-        fileCacheService.save(to: Constants.filename) { _ in }
-    }
-
-    func saveCacheToFile() {
-        fileCacheService.save(to: Constants.filename) { _ in }
     }
 }
 
@@ -38,7 +33,10 @@ extension AppCoordinator {
     }
 
     private func taskListModuleBuilder() -> TaskListModuleBuilder {
-        return TaskListModuleBuilder(output: self, fileCache: fileCacheService)
+        guard let serviceCoordinator = serviceCoordinator else {
+            fatalError()
+        }
+        return TaskListModuleBuilder(output: self, serviceCoordinator: serviceCoordinator)
     }
 }
 
@@ -57,30 +55,51 @@ extension AppCoordinator: EditTaskModuleOutput {
 
 extension AppCoordinator: TaskListModuleOutput {
     func preview(indexPath: IndexPath) -> UIViewController {
-        let todoItem = fileCacheService.todoItems[indexPath.row]
-        let builder = EditTaskModuleBuilder(output: self, fileCache: fileCacheService, with: todoItem)
+        guard let serviceCoordinator = serviceCoordinator else {
+            fatalError()
+        }
+        let todoItem = serviceCoordinator.todoItems[indexPath.row]
+        let builder = EditTaskModuleBuilder(output: self, serviceCoordinator: serviceCoordinator, with: todoItem)
         return builder.viewController
     }
 
     func selectRowAt(indexPath: IndexPath, on viewController: UIViewController) {
-        let todoItem = fileCacheService.todoItems[indexPath.row]
-        let builder = EditTaskModuleBuilder(output: self, fileCache: fileCacheService, with: todoItem)
+        guard let serviceCoordinator = serviceCoordinator else {
+            fatalError()
+        }
+        let todoItem = serviceCoordinator.todoItems[indexPath.row]
+        let builder = EditTaskModuleBuilder(output: self, serviceCoordinator: serviceCoordinator, with: todoItem)
         viewController.navigationController?.pushViewController(builder.viewController, animated: true)
     }
 
     func showCreateNewTask() {
-        let builder = EditTaskModuleBuilder(output: self, fileCache: fileCacheService, with: nil)
+        guard let serviceCoordinator = serviceCoordinator else {
+            fatalError()
+        }
+        let builder = EditTaskModuleBuilder(output: self, serviceCoordinator: serviceCoordinator, with: nil)
         let viewController = builder.viewController
         let viewToPresent = UINavigationController(rootViewController: viewController)
         rootViewController.present(viewToPresent, animated: true)
     }
 }
 
+extension AppCoordinator: ServiceCoordinatorOutput {
+    func loadingStarted() {
+        self.taskListModule?.input.startAnimatingActivityIndicator()
+    }
+
+    func loadingEnded() {
+        self.taskListModule?.input.stopAnimatingActivityIndicator()
+    }
+
+    func reloadData() {
+        self.taskListModule?.input.reloadData()
+    }
+}
 // MARK: - Nested types
 
 extension AppCoordinator {
     enum Constants {
-        static let filename: String = "savedCache.json"
         static let rootViewControllerTitle = "Мои дела"
         static let logMessage: DDLogMessage = .init(
             message: "App coordinator initialized.",

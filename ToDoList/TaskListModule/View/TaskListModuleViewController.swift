@@ -3,6 +3,8 @@ import UIKit
 
 protocol TaskListModuleViewInput: AnyObject {
     func reloadData()
+    func startAnimatingActivityIndicator()
+    func stopAnimatingActivityIndicator()
 }
 
 protocol TaskListModuleViewOutput: AnyObject {
@@ -57,6 +59,7 @@ final class TaskListModuleViewController: UIViewController {
         return button
     }()
 
+    private lazy var activityIndicator = UIActivityIndicatorView(style: .medium)
     // MARK: - Lifecycle
 
     init(output: TaskListModuleViewOutput) {
@@ -73,6 +76,7 @@ final class TaskListModuleViewController: UIViewController {
         super.viewDidLoad()
         setupTableView()
         setupPlusButton()
+        setupActivityIndicator()
     }
 
     // MARK: - Selectors
@@ -115,6 +119,12 @@ final class TaskListModuleViewController: UIViewController {
             plusButton.widthAnchor.constraint(equalToConstant: Constants.plusButtonSideSize.width),
             plusButton.heightAnchor.constraint(equalToConstant: Constants.plusButtonSideSize.height)
         ])
+    }
+
+    private func setupActivityIndicator() {
+        let activityIndicatorButtonItem = UIBarButtonItem(customView: activityIndicator)
+        navigationItem.setRightBarButton(activityIndicatorButtonItem, animated: false)
+        activityIndicator.isHidden = true
     }
 
     private func makeDoneAction(indexPath: IndexPath) -> UIContextualAction {
@@ -261,6 +271,16 @@ extension TaskListModuleViewController: UITableViewDelegate {
 // MARK: - TaskListModuleViewInput extension
 
 extension TaskListModuleViewController: TaskListModuleViewInput {
+    func startAnimatingActivityIndicator() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+
+    func stopAnimatingActivityIndicator() {
+        activityIndicator.isHidden = true
+        activityIndicator.stopAnimating()
+    }
+
     func reloadData() {
         tableView.reloadData()
         let buttonState = output.hideDoneButtonState()

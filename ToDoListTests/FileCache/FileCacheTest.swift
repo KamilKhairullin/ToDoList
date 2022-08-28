@@ -45,8 +45,10 @@ class FileCacheTest: XCTestCase {
         let cache = FileCache()
         let task1 = TodoItem(id: "sAmE-1d", text: "Hellow", priority: .unimportant)
         cache.add(task1)
-        try? cache.load(from: "/")
-        XCTAssert(cache.todoItems.map { $0.id } == [task1.id])
+        try? cache.save(to: "saved.json")
+        let cache2 = FileCache()
+        try? cache2.load(from: "saved.json")
+        XCTAssert(cache.todoItems.map { $0.id } == cache2.todoItems.map { $0.id })
     }
 }
 

@@ -5,8 +5,6 @@ protocol EditTaskModuleInput: AnyObject {}
 
 protocol EditTaskModuleOutput: AnyObject {
     func dismissPresented(on viewController: UIViewController)
-    func deleteItem(item: TodoItem)
-    func saveCacheToFile()
 }
 
 final class EditTaskModulePresenter {
@@ -26,7 +24,7 @@ final class EditTaskModulePresenter {
         }
     }
 
-    private let fileCache: FileCacheService
+    private let serviceCoordinator: ServiceCoordinator
     private var showPlaceholder: Bool
 
     private let dateFormatter: DateFormatter = {
@@ -39,9 +37,9 @@ final class EditTaskModulePresenter {
 
     // MARK: - Lifecycle
 
-    init(output: EditTaskModuleOutput, fileCache: FileCacheService, with todoItem: TodoItem?) {
+    init(output: EditTaskModuleOutput, serviceCoordinator: ServiceCoordinator, with todoItem: TodoItem?) {
         self.output = output
-        self.fileCache = fileCache
+        self.serviceCoordinator = serviceCoordinator
         self.showPlaceholder = todoItem != nil ? false : true
         self.todoItem = todoItem ?? EditTaskModulePresenter.makeDefaultItem()
     }
@@ -71,19 +69,6 @@ final class EditTaskModulePresenter {
     }
 
     // MARK: - Private
-
-    private func saveCacheToFile() {
-        fileCache.add(TodoItem(
-            id: todoItem.id,
-            text: todoItem.text,
-            priority: todoItem.priority,
-            deadline: todoItem.deadline,
-            isDone: todoItem.isDone,
-            createdAt: todoItem.createdAt,
-            editedAt: Date())
-        ) {_ in }
-        output.saveCacheToFile()
-    }
 
     private static func makeDefaultItem() -> TodoItem {
         TodoItem(
@@ -131,7 +116,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
             deadline: todoItem.deadline,
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
-            editedAt: todoItem.editedAt
+            editedAt: Date()
         )
     }
 
@@ -144,13 +129,13 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
             deadline: todoItem.deadline,
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
-            editedAt: todoItem.editedAt
+            editedAt: Date()
         )
     }
 
     func deletePressed(on viewController: UIViewController) {
         showPlaceholder = true
-        output.deleteItem(item: todoItem)
+        self.serviceCoordinator.removeItem(at: todoItem.id) { _ in }
         output.dismissPresented(on: viewController)
     }
 
@@ -162,7 +147,7 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
             deadline: date,
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
-            editedAt: todoItem.editedAt
+            editedAt: Date()
         )
     }
 
@@ -175,12 +160,34 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
             deadline: deadline,
             isDone: todoItem.isDone,
             createdAt: todoItem.createdAt,
-            editedAt: todoItem.editedAt
+            editedAt: Date()
         )
     }
 
     func savePressed(on viewController: UIViewController) {
-        saveCacheToFile()
+        let isAlreadyExists = !serviceCoordinator.todoItems.filter { $0.id == todoItem.id }.isEmpty
+        if isAlreadyExists {
+            serviceCoordinator.updateItem(item: TodoItem(
+                id: todoItem.id,
+                text: todoItem.text,
+                priority: todoItem.priority,
+                deadline: todoItem.deadline,
+                isDone: todoItem.isDone,
+                createdAt: todoItem.createdAt,
+                editedAt: todoItem.editedAt)
+            ) { _ in }
+        } else {
+            serviceCoordinator.addItem(item: TodoItem(
+                id: todoItem.id,
+                text: todoItem.text,
+                priority: todoItem.priority,
+                deadline: todoItem.deadline,
+                isDone: todoItem.isDone,
+                createdAt: todoItem.createdAt,
+                editedAt: todoItem.editedAt)
+            ) { _ in }
+        }
+
         output.dismissPresented(on: viewController)
     }
 }
