@@ -6,7 +6,7 @@ final class FileCache {
 
     var todoItems: [TodoItem] {
         if isDirty {
-            try? self.load()
+            try? load()
         }
         return cachedTodoItems
     }
@@ -32,9 +32,9 @@ final class FileCache {
     // MARK: - Lifecycle
 
     init() {
-        self.fileManager = .default
-        todoItemsTable = Table("TodoItems")
-        try? self.initDatabase()
+        fileManager = .default
+        todoItemsTable = Table(Constatns.tableName)
+        try? initDatabase()
     }
 
     // MARK: - Public
@@ -46,7 +46,7 @@ final class FileCache {
         let connection = try Connection(databaseURL.path)
         let objects = try connection.prepare(todoItemsTable)
 
-        self.cachedTodoItems = objects.compactMap { TodoItem.parseSQL(row: $0) }
+        cachedTodoItems = objects.compactMap { TodoItem.parseSQL(row: $0) }
         isDirty = false
         if cachedTodoItems.isEmpty {
             throw FileCacheError.databaseEmpty
@@ -58,9 +58,8 @@ final class FileCache {
             return
         }
         let connection = try Connection(databaseURL.path)
-        try connection.run(
-            todoItemsTable.insert(item.sqlReplaceStatement)
-        )
+        let query = todoItemsTable.insert(item.sqlReplaceStatement)
+        try connection.run(query)
         setNeedsSort()
     }
 
@@ -72,9 +71,8 @@ final class FileCache {
         let filteredTable = todoItemsTable.filter(
             TodoItem.Constants.idExpression == item.id
         )
-        try connection.run(
-            filteredTable.update(item.sqlReplaceStatement)
-        )
+        let query = filteredTable.update(item.sqlReplaceStatement)
+        try connection.run(query)
         setNeedsSort()
     }
 
@@ -86,7 +84,8 @@ final class FileCache {
         let filteredTable = todoItemsTable.filter(
             TodoItem.Constants.idExpression == id
         )
-        try connection.run(filteredTable.delete())
+        let query = filteredTable.delete()
+        try connection.run(query)
         setNeedsSort()
     }
 
@@ -121,5 +120,6 @@ final class FileCache {
 extension FileCache {
     enum Constatns {
         static let filename: String = "ToDoListDatabase.sqlite3"
+        static let tableName: String = "TodoItems"
     }
 }

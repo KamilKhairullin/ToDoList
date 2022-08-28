@@ -6,15 +6,6 @@ protocol JSONParsable {
     var json: Any { get }
 }
 
-var dbUrl: URL? {
-    guard let documentDirectory = FileManager.default.urls(for: .documentDirectory,
-                                                           in: .userDomainMask).first else {
-        return nil
-    }
-    let path = documentDirectory.appendingPathComponent("ToDoList.sqlite3")
-    return path
-}
-
 struct TodoItem {
     // MARK: - Properties
 
