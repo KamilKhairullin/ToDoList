@@ -6,7 +6,7 @@ final class FileCache {
 
     var todoItems: [TodoItem] {
         if isDirty {
-            try? self.load()
+            try? load()
         }
         return cachedTodoItems
     }
@@ -115,5 +115,6 @@ final class FileCache {
 extension FileCache {
     enum Constatns {
         static let filename: String = "ToDoListDatabase.sqlite3"
+        static let tableName: String = "TodoItems"
     }
 }

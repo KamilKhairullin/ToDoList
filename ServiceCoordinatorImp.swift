@@ -56,7 +56,7 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
     func getAllItems(
         completion: @escaping (Result<[TodoItem], Error>) -> Void
     ) {
-        numberOfLoadingItems += 1
+        loadingWillStart()
         networkService.getAllTodoItems(revision: revision) { [weak self] result in
             switch result {
             case .success(let data):
@@ -70,12 +70,12 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
             case .failure(let error):
                 completion(.failure(error))
             }
-            self?.numberOfLoadingItems -= 1
+            self?.loadingWillEnd()
         }
     }
 
     func addItem(item: TodoItem, completion: @escaping (Result<Void, Error>) -> Void) {
-        numberOfLoadingItems += 1
+        loadingWillStart()
         fileCacheService.addTodoItem(item) { [weak self] _ in
             self?.output.reloadData()
         }
@@ -93,12 +93,12 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 self?.isDirty = true
                 completion(.failure(error))
             }
-            self?.numberOfLoadingItems -= 1
+            self?.loadingWillEnd()
         }
     }
 
     func updateItem(item: TodoItem, completion: @escaping (Result<Void, Error>) -> Void) {
-        numberOfLoadingItems += 1
+        loadingWillStart()
         fileCacheService.editTodoItem(item) { [weak self] _ in
             self?.output.reloadData()
         }
@@ -116,12 +116,12 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 self?.isDirty = true
                 completion(.failure(error))
             }
-            self?.numberOfLoadingItems -= 1
+            self?.loadingWillEnd()
         }
     }
 
     func removeItem(at id: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        numberOfLoadingItems += 1
+        loadingWillStart()
         fileCacheService.deleteTodoItem(id: id) { [weak self] _ in
             self?.output.reloadData()
         }
@@ -139,7 +139,7 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
                 self?.isDirty = true
                 completion(.failure(error))
             }
-            self?.numberOfLoadingItems -= 1
+            self?.loadingWillEnd()
         }
     }
 
@@ -163,7 +163,7 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
     }
 
     private func sync(completion: @escaping (Result<Void, Error>) -> Void) {
-        numberOfLoadingItems += 1
+        loadingWillStart()
 
         networkService.updateAllTodoItems(
             revision: revision,
@@ -189,8 +189,16 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
             case .failure(let error):
                 completion(.failure(error))
             }
-            self?.numberOfLoadingItems -= 1
+            self?.loadingWillEnd()
         }
+    }
+
+    private func loadingWillStart() {
+        self.numberOfLoadingItems += 1
+    }
+
+    private func loadingWillEnd() {
+        self.numberOfLoadingItems -= 1
     }
 }
 
@@ -198,7 +206,6 @@ final class ServiceCoordinatorImp: ServiceCoordinator {
 
 extension ServiceCoordinatorImp {
     enum Constants {
-        static let filename: String = "savedCache.json"
         static let defaultRevision: Int = -1
         static let defaultIsDirty: Bool = false
     }
