@@ -1,4 +1,5 @@
 import Foundation
+import SQLite
 
 protocol JSONParsable {
     static func parse(json: Any) -> TodoItem?
@@ -40,6 +41,7 @@ struct TodoItem {
 // MARK: - JSONParsable extension
 
 extension TodoItem: JSONParsable {
+
     var json: Any {
         var dictionary: [String: Any] = [:]
 
@@ -113,6 +115,42 @@ extension TodoItem: JSONParsable {
         )
     }
 
+    var sqlReplaceStatement: [Setter] {
+         return [
+            Constants.idExpression <- id,
+            Constants.textExpression <- text,
+            Constants.priorityExpression <- priority.rawValue,
+            Constants.deadlineExpression <- deadline?.timeIntervalSince1970,
+            Constants.isDoneExpression <- isDone,
+            Constants.createdAtExpression <- createdAt.timeIntervalSince1970,
+            Constants.editedAtExpression <- editedAt?.timeIntervalSince1970
+        ]
+    }
+
+    static func parseSQL(row: Row) -> TodoItem? {
+        let id = row[Constants.idExpression]
+        let text = row[Constants.textExpression]
+        let priority = Priority(rawValue: row[Constants.priorityExpression]) ?? Constants.defaultPriority
+        let deadline = row[Constants.deadlineExpression].flatMap {
+            Date(timeIntervalSince1970: TimeInterval($0))
+        }
+        let isDone = row[Constants.isDoneExpression]
+        let createdAt = Date(timeIntervalSince1970: TimeInterval(row[Constants.createdAtExpression]))
+        let editedAt = row[Constants.editedAtExpression].flatMap {
+            Date(timeIntervalSince1970: TimeInterval($0))
+        }
+
+        return TodoItem(
+            id: id,
+            text: text,
+            priority: priority,
+            deadline: deadline,
+            isDone: isDone,
+            createdAt: createdAt,
+            editedAt: editedAt
+        )
+    }
+
     init(from networkTodoItem: NetworkTodoItem) {
         self.init(
             id: networkTodoItem.id,
@@ -131,6 +169,13 @@ extension TodoItem: JSONParsable {
 extension TodoItem {
     enum Constants {
         static let defaultPriority: Priority = .ordinary
+        static let idExpression = Expression<String>(CodingKeys.idKey)
+        static let textExpression = Expression<String>(CodingKeys.textKey)
+        static let priorityExpression = Expression<Int>(CodingKeys.priorityKey)
+        static let deadlineExpression = Expression<Double?>(CodingKeys.deadlineKey)
+        static let isDoneExpression = Expression<Bool>(CodingKeys.isDoneKey)
+        static let createdAtExpression = Expression<Double>(CodingKeys.createdAtKey)
+        static let editedAtExpression = Expression<Double?>(CodingKeys.editedAtKey)
     }
 
     enum CodingKeys {

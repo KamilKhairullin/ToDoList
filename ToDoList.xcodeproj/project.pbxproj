@@ -58,7 +58,7 @@
 		8EEB84B62895D179005D5FF1 /* PriorityStackViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB84B52895D179005D5FF1 /* PriorityStackViewContainer.swift */; };
 		8EEB84B8289669AF005D5FF1 /* DeadlineStackViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB84B7289669AF005D5FF1 /* DeadlineStackViewContainer.swift */; };
 		8EEECB5628A8181000079D0F /* FileCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEECB5528A8181000079D0F /* FileCacheService.swift */; };
-		8EEECB5828A8191B00079D0F /* MockFileCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEECB5728A8191B00079D0F /* MockFileCacheService.swift */; };
+		8EEECB5828A8191B00079D0F /* FileCacheServiceImp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEECB5728A8191B00079D0F /* FileCacheServiceImp.swift */; };
 		8EEECB5A28A81BDC00079D0F /* FileCacheError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEECB5928A81BDC00079D0F /* FileCacheError.swift */; };
 /* End PBXBuildFile section */
 
@@ -137,7 +137,7 @@
 		8EEB84B52895D179005D5FF1 /* PriorityStackViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityStackViewContainer.swift; sourceTree = "<group>"; };
 		8EEB84B7289669AF005D5FF1 /* DeadlineStackViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadlineStackViewContainer.swift; sourceTree = "<group>"; };
 		8EEECB5528A8181000079D0F /* FileCacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCacheService.swift; sourceTree = "<group>"; };
-		8EEECB5728A8191B00079D0F /* MockFileCacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileCacheService.swift; sourceTree = "<group>"; };
+		8EEECB5728A8191B00079D0F /* FileCacheServiceImp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCacheServiceImp.swift; sourceTree = "<group>"; };
 		8EEECB5928A81BDC00079D0F /* FileCacheError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCacheError.swift; sourceTree = "<group>"; };
 		A6BD46B79D425777C9741BE7 /* Pods-ToDoListUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ToDoListUITests.debug.xcconfig"; path = "Target Support Files/Pods-ToDoListUITests/Pods-ToDoListUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		DD10EE91E43B3C27D2F6B14E /* Pods-ToDoListTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ToDoListTests.release.xcconfig"; path = "Target Support Files/Pods-ToDoListTests/Pods-ToDoListTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -321,7 +321,7 @@
 			children = (
 				8E3C743028A815AF00A849A5 /* FileCache.swift */,
 				8EEECB5528A8181000079D0F /* FileCacheService.swift */,
-				8EEECB5728A8191B00079D0F /* MockFileCacheService.swift */,
+				8EEECB5728A8191B00079D0F /* FileCacheServiceImp.swift */,
 				8EEECB5928A81BDC00079D0F /* FileCacheError.swift */,
 			);
 			path = FileCacheService;
@@ -743,7 +743,7 @@
 				8EE74D62289DD35F0053BF61 /* AppCoordinator.swift in Sources */,
 				8EEB81D728957D3C005D5FF1 /* EditTaskModulePresenter.swift in Sources */,
 				8EEECB5A28A81BDC00079D0F /* FileCacheError.swift in Sources */,
-				8EEECB5828A8191B00079D0F /* MockFileCacheService.swift in Sources */,
+				8EEECB5828A8191B00079D0F /* FileCacheServiceImp.swift in Sources */,
 				8E99418B28AD421A009878CE /* NetworkTodoItem.swift in Sources */,
 				8ECEFA222896F4C20098896B /* DateExtension.swift in Sources */,
 				8EE74D5E289DAE800053BF61 /* TaskListModuleTaskCell.swift in Sources */,
@@ -940,7 +940,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4B27E81844AD4746FE9D01FB /* Pods-ToDoList.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -971,7 +970,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E820B327C89764E375F8BA8E /* Pods-ToDoList.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;

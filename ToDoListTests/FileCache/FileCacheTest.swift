@@ -2,6 +2,13 @@
 import XCTest
 
 class FileCacheTest: XCTestCase {
+    override func setUpWithError() throws {
+        let fileCache = FileCache()
+        try fileCache.todoItems.forEach {
+            try fileCache.delete($0.id)
+        }
+    }
+
     func test_addAndDelete() throws {
         let cache = FileCache()
         let task1 = TodoItem(text: "1", priority: .ordinary)
@@ -9,13 +16,11 @@ class FileCacheTest: XCTestCase {
         let task2 = TodoItem(text: "2", priority: .important)
         sleep(UInt32(0.1))
         let task3 = TodoItem(text: "3", priority: .unimportant)
-        let task4 = TodoItem(text: "4", priority: .unimportant)
-        cache.add(task1)
-        cache.add(task2)
-        cache.add(task3)
-        cache.delete(id: task1.id)
+        try cache.insert(task1)
+        try cache.insert(task2)
+        try cache.insert(task3)
+        try cache.delete(task1.id)
         XCTAssertEqual(cache.todoItems.map { $0.id }, [task2.id, task3.id])
-        XCTAssertNil(cache.delete(id: task4.id))
     }
 
     func test_todoitems() throws {
@@ -27,27 +32,16 @@ class FileCacheTest: XCTestCase {
         let cache = FileCache()
         let task1 = TodoItem(id: "sAmE-1d", text: "Hellow", priority: .unimportant)
         let task2 = TodoItem(id: "sAmE-1d", text: "World", priority: .important)
-        cache.add(task1)
-        cache.add(task2)
-        XCTAssertNil(cache.todoItems.first(where: { $0.text == task1.text }))
-    }
-
-    func test_save_jsonError() throws {
-        let items: [String: Any] = ["1": true, "2": false]
-        let json = try JSONSerialization.data(withJSONObject: items, options: [])
-        try json.write(to: cachePath(for: "mock.json")!, options: [])
-        let cache = FileCache()
-        try? cache.load(from: "mock.json")
-        XCTAssert(cache.todoItems.isEmpty)
+        try cache.insert(task1)
+        XCTAssertThrowsError(try cache.insert(task2))
     }
 
     func test_LoadFromPath() throws {
         let cache = FileCache()
         let task1 = TodoItem(id: "sAmE-1d", text: "Hellow", priority: .unimportant)
-        cache.add(task1)
-        try? cache.save(to: "saved.json")
+        try cache.insert(task1)
         let cache2 = FileCache()
-        try? cache2.load(from: "saved.json")
+        try? cache2.load()
         XCTAssert(cache.todoItems.map { $0.id } == cache2.todoItems.map { $0.id })
     }
 }

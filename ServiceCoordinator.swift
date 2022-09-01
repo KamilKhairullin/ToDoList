@@ -4,14 +4,6 @@ protocol ServiceCoordinator {
 
     var todoItems: [TodoItem] { get }
 
-    func sync(
-        completion: @escaping (Result<Void, Error>) -> Void
-    )
-
-    func getAllItems(
-        completion: @escaping (Result<[TodoItem], Error>) -> Void
-    )
-
     func addItem(
         item: TodoItem,
         completion: @escaping (Result<Void, Error>) -> Void

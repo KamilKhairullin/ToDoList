@@ -166,26 +166,21 @@ extension EditTaskModulePresenter: EditTaskModuleViewOutput {
 
     func savePressed(on viewController: UIViewController) {
         let isAlreadyExists = !serviceCoordinator.todoItems.filter { $0.id == todoItem.id }.isEmpty
+
+        let item = TodoItem(
+            id: todoItem.id,
+            text: todoItem.text,
+            priority: todoItem.priority,
+            deadline: todoItem.deadline,
+            isDone: todoItem.isDone,
+            createdAt: todoItem.createdAt,
+            editedAt: todoItem.editedAt
+        )
+
         if isAlreadyExists {
-            serviceCoordinator.updateItem(item: TodoItem(
-                id: todoItem.id,
-                text: todoItem.text,
-                priority: todoItem.priority,
-                deadline: todoItem.deadline,
-                isDone: todoItem.isDone,
-                createdAt: todoItem.createdAt,
-                editedAt: todoItem.editedAt)
-            ) { _ in }
+            serviceCoordinator.updateItem(item: item) { _ in }
         } else {
-            serviceCoordinator.addItem(item: TodoItem(
-                id: todoItem.id,
-                text: todoItem.text,
-                priority: todoItem.priority,
-                deadline: todoItem.deadline,
-                isDone: todoItem.isDone,
-                createdAt: todoItem.createdAt,
-                editedAt: todoItem.editedAt)
-            ) { _ in }
+            serviceCoordinator.addItem(item: item) { _ in }
         }
 
         output.dismissPresented(on: viewController)

@@ -11,7 +11,7 @@ final class AppCoordinator {
             networkService: NetworkServiceImp(
                 networkClient: NetworkClientImp(urlSession: .init(configuration: .default))
             ),
-            fileCacheService: MockFileCacheService(fileCache: .init()),
+            fileCacheService: FileCacheServiceImp(fileCache: .init()),
             output: self
         )
 
@@ -58,6 +58,7 @@ extension AppCoordinator: TaskListModuleOutput {
         guard let serviceCoordinator = serviceCoordinator else {
             fatalError()
         }
+
         let todoItem = serviceCoordinator.todoItems[indexPath.row]
         let builder = EditTaskModuleBuilder(output: self, serviceCoordinator: serviceCoordinator, with: todoItem)
         return builder.viewController

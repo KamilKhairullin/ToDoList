@@ -1,86 +1,125 @@
 import Foundation
+import SQLite
 
 final class FileCache {
     // MARK: - Properties
 
     var todoItems: [TodoItem] {
         if isDirty {
-            orderedTodoItems = todoItemsDict.values.sorted {
-                ($0.createdAt, $0.id) < ($1.createdAt, $1.id)
-            }
-            isDirty = false
+            try? load()
         }
-        return orderedTodoItems
+        return cachedTodoItems
     }
 
-    private var todoItemsDict: [String: TodoItem] = [:]
-    private var orderedTodoItems: [TodoItem] = []
+    private var cachedTodoItems: [TodoItem] = []
     private var isDirty: Bool = true
+
+    private var fileManager: FileManager
+
+    private var databaseURL: URL? {
+        guard let documentDirectory = FileManager.default.urls(
+            for: .documentDirectory,
+            in: .userDomainMask
+        ).first else {
+            return nil
+        }
+        let path = documentDirectory.appendingPathComponent(Constatns.filename)
+        return path
+    }
+
+    private let todoItemsTable: Table
 
     // MARK: - Lifecycle
 
-    init() {}
+    init() {
+        fileManager = .default
+        todoItemsTable = Table(Constatns.tableName)
+        try? initDatabase()
+    }
 
-    // MARK: -
+    // MARK: - Public
 
-    func add(_ task: TodoItem) {
-        todoItemsDict[task.id] = task
+    func load() throws {
+        guard let databaseURL = databaseURL else {
+            throw FileCacheError.invalidCachePath
+        }
+        let connection = try Connection(databaseURL.path)
+        let objects = try connection.prepare(todoItemsTable)
+
+        cachedTodoItems = objects.compactMap { TodoItem.parseSQL(row: $0) }
+        isDirty = false
+        if cachedTodoItems.isEmpty {
+            throw FileCacheError.databaseEmpty
+        }
+    }
+
+    func insert(_ item: TodoItem) throws {
+        guard let databaseURL = databaseURL else {
+            return
+        }
+        let connection = try Connection(databaseURL.path)
+        let query = todoItemsTable.insert(item.sqlReplaceStatement)
+        try connection.run(query)
         setNeedsSort()
     }
 
-    @discardableResult
-    func delete(id: String) -> TodoItem? {
+    func update(_ item: TodoItem) throws {
+        guard let databaseURL = databaseURL else {
+            return
+        }
+        let connection = try Connection(databaseURL.path)
+        let filteredTable = todoItemsTable.filter(
+            TodoItem.Constants.idExpression == item.id
+        )
+        let query = filteredTable.update(item.sqlReplaceStatement)
+        try connection.run(query)
         setNeedsSort()
-        return todoItemsDict.removeValue(forKey: id)
     }
 
-    func get(id: String) -> TodoItem? {
-        return todoItemsDict[id]
-    }
-
-    func save(to file: String) throws {
-        guard let path = cachePath(for: file) else {
-            throw FileCacheError.invalidCachePath
+    func delete(_ id: String) throws {
+        guard let databaseURL = databaseURL else {
+            throw FileCacheError.deleteFailed
         }
-        let items = todoItemsDict.map { $0.value.json }
-        let json = try JSONSerialization.data(withJSONObject: items, options: [])
-        try json.write(to: path, options: [])
-    }
-
-    func load(from file: String) throws {
-        guard let path = cachePath(for: file) else {
-            throw FileCacheError.invalidCachePath
-        }
-
-        let data = try Data(contentsOf: path)
-        let json = try JSONSerialization.jsonObject(with: data, options: [])
-
-        guard let objects = json as? [Any] else {
-            throw FileCacheError.unparsableData
-        }
-
-        let deserializedItems = objects.compactMap { TodoItem.parse(json: $0) }
-        todoItemsDict = deserializedItems.reduce(into: [:]) { result, current in
-            result[current.id] = current
-        }
-        isDirty = true
+        let connection = try Connection(databaseURL.path)
+        let filteredTable = todoItemsTable.filter(
+            TodoItem.Constants.idExpression == id
+        )
+        let query = filteredTable.delete()
+        try connection.run(query)
+        setNeedsSort()
     }
 
     // MARK: - Private
 
-    private func cachePath(for file: String) -> URL? {
-        guard let cachePath = FileManager.default.urls(
-            for: .cachesDirectory,
-            in: .userDomainMask
-        ).first
-        else {
-            print("Unable to find cache directory")
-            return nil
+    private func initDatabase() throws {
+        guard let databaseURL = databaseURL else {
+            return
         }
-        return cachePath.appendingPathComponent(file)
+
+        if !fileManager.fileExists(atPath: databaseURL.path) {
+            fileManager.createFile(atPath: databaseURL.path, contents: nil, attributes: nil)
+        }
+
+        let connection = try Connection(databaseURL.path)
+        try connection.run(todoItemsTable.create(ifNotExists: true) { table in
+            table.column(TodoItem.Constants.idExpression, primaryKey: true)
+            table.column(TodoItem.Constants.textExpression)
+            table.column(TodoItem.Constants.priorityExpression)
+            table.column(TodoItem.Constants.deadlineExpression)
+            table.column(TodoItem.Constants.isDoneExpression)
+            table.column(TodoItem.Constants.createdAtExpression)
+            table.column(TodoItem.Constants.editedAtExpression)
+        })
     }
 
     private func setNeedsSort() {
         isDirty = true
+    }
+}
+
+extension FileCache {
+    enum Constatns {
+        static let filename: String = "ToDoListDatabase.sqlite3"
+        static let tableName: String = "TodoItems"
     }
 }
